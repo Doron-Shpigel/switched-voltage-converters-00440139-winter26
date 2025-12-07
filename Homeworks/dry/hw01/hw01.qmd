@@ -49,7 +49,7 @@ $$
 $$
 
 $$
-\Delta I_L = \frac{5V \times 0.583}{1mH} = 2.915A
+\Delta I_L = \frac{5V \times 0.583}{10 \times 10^{-6}H \times 100 \times 10^3 Hz} = \frac{2.915V}{1H} = 2.915A
 $$
 
 ## Problem 2: Efficiency Calculations
