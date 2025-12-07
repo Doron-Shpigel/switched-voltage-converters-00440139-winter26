@@ -1,0 +1,23 @@
+/* Custom styles for the course website */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.navbar {
+  background-color: #2c3e50;
+}
+
+h1, h2, h3 {
+  color: #2c3e50;
+}
+
+code {
+  background-color: #f4f4f4;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.equation {
+  margin: 1em 0;
+}

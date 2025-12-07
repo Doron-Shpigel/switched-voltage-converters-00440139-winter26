@@ -1,0 +1,31 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Switched Voltage Converters (00440139)"
+  page-navigation: true
+  navbar:
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "Lectures"
+        href: Lectures/index.qmd
+      - text: "Tutorials"
+        href: Tutorials/index.qmd
+      - text: "Homeworks"
+        menu:
+          - text: "Dry Homeworks"
+            href: Homeworks/dry/index.qmd
+          - text: "Wet Homeworks"
+            href: Homeworks/wet/index.qmd
+      - text: "Books"
+        href: books/index.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    code-copy: true
+    code-fold: false

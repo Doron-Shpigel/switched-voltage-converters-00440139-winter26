@@ -1,0 +1,17 @@
+# Quarto configuration for dry homework PDF generation
+# This configuration is used when rendering individual homework files to PDF
+
+format:
+  pdf:
+    documentclass: article
+    papersize: a4
+    toc: true
+    number-sections: true
+    geometry:
+      - margin=1in
+    keep-tex: true
+    include-in-header:
+      text: |
+        \usepackage{amsmath}
+        \usepackage{amssymb}
+        \usepackage{amsthm}
