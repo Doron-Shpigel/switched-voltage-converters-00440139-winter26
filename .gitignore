@@ -416,3 +416,13 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Quarto build artifacts
+/.quarto/
+/_site/
+*.html
+!index.html
+*.tex
+!*_files/
+*_files/
+.Rproj.user

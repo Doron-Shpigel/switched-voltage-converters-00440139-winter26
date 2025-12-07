@@ -1,0 +1,20 @@
+---
+title: "Switched Voltage Converters (00440139) - Winter 2026"
+---
+
+## Welcome
+
+This is the course website for Switched Voltage Converters (00440139) - Winter 2026.
+
+## Course Structure
+
+- **Lectures**: Course lecture materials and notes
+- **Tutorials**: Tutorial sessions and exercises
+- **Homeworks**: 
+  - Dry homeworks (theoretical exercises)
+  - Wet homeworks (practical assignments)
+- **Books**: Reference materials and textbooks
+
+## Getting Started
+
+Navigate through the sections using the menu above.

@@ -1,0 +1,16 @@
+---
+title: "Dry Homeworks (Theoretical Exercises)"
+---
+
+## Dry Homeworks
+
+Dry homeworks are theoretical exercises written in LaTeX with PDF export capability.
+
+Each homework has its own folder with LaTeX source and PDF output.
+
+### Available Homeworks
+
+- [Homework 1](hw01/hw01.qmd)
+- [Homework 2](hw02/hw02.qmd)
+
+Additional homeworks will be added throughout the semester.
