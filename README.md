@@ -30,11 +30,44 @@ This repository contains course materials for the course Switched Voltage Conver
 
 ### Prerequisites
 
-1. Install [Quarto](https://quarto.org/docs/get-started/)
-2. (Optional) For PDF export, install [TinyTeX](https://yihui.org/tinytex/):
+1. Install [Anaconda](https://www.anaconda.com/products/distribution) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
+2. Install [Quarto](https://quarto.org/docs/get-started/)
+3. (Optional) For PDF export, install [TinyTeX](https://yihui.org/tinytex/):
    ```bash
    quarto install tinytex
    ```
+
+### Setting Up the Environment
+
+Create and activate the conda environment with all required packages:
+
+```bash
+# Create the environment from the environment.yml file
+conda env create -f environment.yml
+
+# Activate the environment
+conda activate switched-voltage-converters
+```
+
+The environment includes:
+- **Jupyter**: Interactive notebook environment
+- **Matplotlib**: 2D plotting library
+- **Plotly**: Interactive visualization library
+- **SymPy**: Symbolic mathematics library
+- **NumPy**: Numerical computing library
+- **Lcapy**: Linear circuit analysis library (includes GUI support via Jupyter)
+
+To deactivate the environment:
+
+```bash
+conda deactivate
+```
+
+To update the environment after changes to `environment.yml`:
+
+```bash
+conda env update -f environment.yml --prune
+```
 
 ### Building the Website
 
