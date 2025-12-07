@@ -1,0 +1,14 @@
+name: switched-voltage-converters
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.9
+  - jupyter
+  - matplotlib
+  - plotly
+  - sympy
+  - numpy
+  - pip
+  - pip:
+    - lcapy
