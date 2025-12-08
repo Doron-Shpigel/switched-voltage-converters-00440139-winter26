@@ -2,7 +2,7 @@
 title: "Homework 1 - Switched Voltage Converters"
 subtitle: "Course 00440139 - Winter 2026"
 date: today
-author: "Your Name"
+author: "Doron Shpigel - 313545600"
 format:
   html:
     toc: true
@@ -10,85 +10,44 @@ format:
     number-sections: true
 ---
 
-::: {.callout-note}
-## PDF Export
-To generate a PDF version of this homework, run:
-```bash
-quarto render hw01.qmd --to pdf
+## Question 1: Buck converter
+
+```{python}
+#|echo: false 
+from lcapy import *
+buck = Circuit(r"""
+    V ._plus  0 {V_g  }; down
+    M1 ._ND ._NG ._NS M1; up, kind=nigfetd, val=M1
+    W V._plus M1._ND; right
+    W M1._NG _gate_trigger; left, size=0.5
+    ;;\ctikzset{bipoles/oscope/waveform=square}
+    ;;\path (_gate_trigger) node[oscopeshape, scale=0.8, anchor=east](PWM){}; 
+    W M1._NS X; right 
+    D .1 X; up
+    W 0 D.1; right
+    W X L.1; right, i=i_L(t)
+    L L.1 L.2; right, v=V_L(t)
+    W L.2 _L2; right
+    C _L2 .2; down, v=V
+    W D.1 C.2; right
+    W _L2 R.1; right
+    R .1 .2; down, l^=R
+    W C.2 R.2; right
+    ; autoground=false, draw_nodes=connections, label_ids=false, label_nodes=alpha, european voltages,  """)
+buck.draw()
 ```
-Note: Requires TeX installation (TinyTeX, TeXLive, or similar).
-:::
 
-## Problem 1: Basic Converter Analysis
+Given buck converter with the following parameters:
 
-Consider a buck converter with the following specifications:
+-   $V_g=30 [V]$
+-   $V_{out}=15[V]$
+-   $P_{out}=60[W]$
+-   $f_{s}=500[kHZ]$
 
-- Input voltage: $V_{in} = 12V$
-- Output voltage: $V_{out} = 5V$
-- Switching frequency: $f_s = 100kHz$
+Also, there are the following assumptions:
 
-### Part A
+-   The converter is in CCM mode (the current through the coil always positive).
 
-Calculate the duty cycle $D$ for continuous conduction mode (CCM):
+-   Both the transistor and the diode are ideal.
 
-$$
-D = \frac{V_{out}}{V_{in}} = \frac{5V}{12V} \approx 0.417
-$$
-
-### Part B
-
-Derive the inductor current ripple $\Delta I_L$ given:
-
-- Inductance $L = 10\mu H$
-- Load current $I_{out} = 2A$
-
-The inductor current ripple is given by:
-
-$$
-\Delta I_L = \frac{V_{out}(1-D)}{Lf_s} = \frac{5V \times (1-0.417)}{10\mu H \times 100kHz}
-$$
-
-$$
-\Delta I_L = \frac{5V \times 0.583}{10 \times 10^{-6}H \times 100 \times 10^3 Hz} = \frac{2.915V}{1H} = 2.915A
-$$
-
-## Problem 2: Efficiency Calculations
-
-Given the following converter parameters:
-
-- Output power: $P_{out} = 10W$
-- Conduction losses: $P_{cond} = 0.5W$
-- Switching losses: $P_{sw} = 0.3W$
-
-Calculate the converter efficiency $\eta$:
-
-$$
-\eta = \frac{P_{out}}{P_{out} + P_{losses}} = \frac{10W}{10W + 0.5W + 0.3W} = \frac{10W}{10.8W} \approx 92.6\%
-$$
-
-## Problem 3: Design Exercise
-
-Design a boost converter with:
-
-- Input voltage: $V_{in} = 3.3V$
-- Output voltage: $V_{out} = 12V$
-- Output current: $I_{out} = 0.5A$
-- Switching frequency: $f_s = 200kHz$
-
-### Solution Approach
-
-The duty cycle for a boost converter is:
-
-$$
-D = 1 - \frac{V_{in}}{V_{out}} = 1 - \frac{3.3V}{12V} = 0.725
-$$
-
-The average inductor current is:
-
-$$
-I_L = \frac{I_{out}}{1-D} = \frac{0.5A}{1-0.725} = 1.818A
-$$
-
-## Conclusion
-
-This homework covers fundamental concepts in switched-mode power converter design and analysis.
+-    The output capacitor is very large, meaning constant $V_{out}$.

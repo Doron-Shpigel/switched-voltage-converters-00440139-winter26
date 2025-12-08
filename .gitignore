@@ -420,6 +420,13 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# Python virtual environments
+env/
+venv/
+ENV/
+VENV/
+.venv/
+
 # Quarto build artifacts
 /.quarto/
 /_site/
@@ -429,3 +436,5 @@ FodyWeavers.xsd
 !*_files/
 *_files/
 .Rproj.user
+
+/env/
