@@ -6,14 +6,18 @@ author: "Doron Shpigel - 313545600"
 format:
   html:
     toc: true
-    toc-depth: 2
+    toc-depth: 4
     number-sections: true
+    page-layout: full
+execute: 
+  enabled: true
 ---
 
 ## Question 1: Buck converter
 
 ```{python}
 #|echo: false 
+#|output: true
 from lcapy import *
 buck = Circuit(r"""
     V ._plus  0 {V_g  }; down
@@ -50,4 +54,176 @@ Also, there are the following assumptions:
 
 -   Both the transistor and the diode are ideal.
 
--    The output capacitor is very large, meaning constant $V_{out}$.
+-   The output capacitor is very large, meaning constant $V_{out}$.
+
+### subquestions: calculate the following:
+
+#### Calculate the duty cycle D of the converter.
+
+To find the duty cycle D of the buck converter, I'll use the fact that in CCM mode, the average voltage across the inductor over period is zero. This leads to the following equation: 
+$$
+\int_0^{DT_s}\left(V_1-V_2\right)dt + \int_{DT_s}^{T_s}\left(0-V_2\right)dt = 0 
+$$ {#eq-average-voltage-across-the-inductor} 
+
+which simplifies to:
+$$
+\begin{aligned}
+&D\left(V_1-V_2\right)+D'\left(-V_2\right) = 0\\
+\xrightarrow{D+D'=1}& DV_1 - V_2 = 0\\
+\rightarrow &D = \frac{V_2}{V_1}
+\end{aligned}
+$$ {#eq-duty-cycle-as-ratio-of-voltages}
+
+Now, since the transistor and diode are ideal, we can assume that $V_1 = V_g$ and $V_2 = V_{out}$. Therefore, we substitute the values into @eq-duty-cycle-as-ratio-of-voltages: and getting: 
+$$
+\boxed{D = \frac{V_{out}}{V_g} = \frac{15[V]}{30[V]} = 0.5\to 50\%}
+$$
+
+#### calculate the average inductor current $I_L$.
+
+We know that the output capacitor is very large, meaning that the output voltage is constant. From kirchhoff's current law the current flowing into the capacitor is the difference between the inductor current $i_L(t)$ and the load current $i_{out}(t)$, but in CCM mode the average current flowing into the capacitor is zero, therefore the equation of the average current through the capacitor in steady state is: 
+$$
+\int_0^{T_s}\left(i_L(t)-i_{out}(t)\right)dt = 0
+$$ {#eq-question-1-average-current-through-capacitor}
+
+The output voltage is constant, but also the load is resistive and constant as well, therefore the output current is constant too: $i_{out}(t) = I_{out}$. Also, in CCM mode, the following equation always true for currents and voltages across inductors and capacitors: 
+
+$$
+\int_0^{T_s}x\left(\tau\right)d\tau = T_s X_{avg}=\int_0^{T_s}Xd\tau
+$$ {#eq-average-signal-through-LC-in-CCM}
+
+Using @eq-question-1-average-current-through-capacitor and @eq-average-signal-through-LC-in-CCM, we can write: 
+
+$$
+\begin{aligned}
+0&=\int_0^{T_s}\left(i_L(t)-i_{out}(t)\right)dt=\int_{0}^{T_s}{\left(I_L-I_{out}\right)dt}\\
+\rightarrow &0=T_s\left(I_L-I_{out}\right)\\
+\rightarrow &I_L=I_{out}=\frac{P_{out}}{V_{out}}=\frac{60[W]}{15[V]}=4[A]\\
+\Rightarrow &\boxed{I_L=4[A]}
+\end{aligned}
+$$
+
+#### Calculate the input power $P_{in}$.
+
+We know the following about the circuit:
+
+-   Both the transistor and the diode are ideal, so there is no power loss on them.
+
+-   Capacitors and inductors conserve power (lossless / don't dissipate power).
+
+Therefor, this buck converter is ideal and have no power loss:
+
+$$
+\boxed{P_{in}=P_{out}=60[W]}
+$$
+
+#### Calculate the average input current $I_{g}$.
+
+Knowing that the input power is: $$ P_{in} =60[W] $$ and the input voltage is: $$ V_g = 30[V] $$ we can calculate the average input current directly from Ohm's law:
+
+$$
+\boxed{I_g = \frac{P_{in}}{V_g} = \frac{60[W]}{30[V]}=2[A]}
+$$
+
+### Express the ripple inside the inductor current as a function of the inductance L.
+
+The ripple in the inductor current is simply the total rise in current during the ON time (Region 1). Using the relationship between voltage, inductance, and current:
+
+$$
+\frac{di_L}{dt} = \frac{v_L(t)}{L}
+$$
+
+During Region 1 ($0 \leq t < DT_s$), the voltage across the inductor is:
+
+$$
+v_L = V_g - V_{out}
+$$
+
+The current rise during this period (Slope $\times$ Time) is:
+
+$$
+2\Delta I_L = \frac{v_L}{L} \cdot DT_s = \frac{(V_g - V_{out}) \cdot DT_s}{L}= \frac{V_{out}(1-D)T_s}{L}= \frac{V_{out}(1-D)}{f_{s}L}
+$$
+
+plugging in the values we have:
+
+$$
+\begin{gathered}
+2\Delta I_L = \frac{15[V](1-0.5)}{L \cdot 500[kHZ]} =\frac{1}{L}\cdot1.5E-5 [A]=\frac{15}{L}\left[\mu A\right]\\
+\Rightarrow \boxed{\Delta I_L = \frac{7.5}{L}[\mu A]}
+\end{gathered}
+$$ {#eq-ripple-current-as-function-of-inductance}
+
+### Determine the minimum inductance value Lmin that will keep the converter in CCM mode.
+
+To ensure that the converter operates in CCM mode, the ripple current, $\Delta I_L$, must be less than the average inductor current, $I_L$. 
+
+$$
+\begin{gathered}
+\Delta I_L < I_L\\
+\frac{7.5}{L}[\mu A] < 4[A]\\
+\frac{7.5\cdot10^{-6}}{4} = 1.875\cdot10^{-6} < L\\
+\Rightarrow \boxed{L_{min} = 1.875[\mu H]}
+\end{gathered}
+$$
+
+{{< pagebreak >}}
+
+**For the following subsections, use $L = 2L_{min}$.**
+
+### Draw of the inductor current waveform $i_L(t)$ over two periods.
+**Include numeric values for current levels and time intervals.**
+
+```{python}
+#|echo: false
+#|output: true
+import numpy as np
+import sympy as sp
+import matplotlib.pyplot as plt
+fs = 500e3  # switching frequency
+Ts = 1 / fs  # switching period
+D = 0.5  # duty cycle
+L_min = 1.875e-6  # minimum inductance in Henry
+L = 2 * L_min  # chosen inductance
+```
+
+The chosen inductance is $L = 2 \cdot L_{min}=$ `{python} f"{L*1e6:.3f}"` $\left[\mu H\right]$.
+
+```{python}
+#|echo: false
+Vg = 30  # input voltage in Volts
+Vout = 15  # output voltage in Volts
+IL = 4  # average inductor current in Amperes
+delta_IL = (Vout * (1 - D)) / (2*fs * L)  # ripple current in Amperes
+```
+
+substitute the new inductor into @eq-ripple-current-as-function-of-inductance to get the new ripple current value: $\Delta I_L=$
+`{python} f"{delta_IL:.3f}"` $\left[A\right]$.
+
+```{python}
+#|echo: false
+#|output: true
+#|fig-align: center
+t= np.linspace(0, 2*Ts, 1000)
+i_L = np.piecewise(t, 
+                    [ (t % Ts) < D * Ts, (t % Ts) >= D * Ts],
+                    [lambda t: IL - delta_IL + (Vg - Vout) / L * (t % Ts),
+                     lambda t: IL + delta_IL - Vout / L * (t % Ts - D * Ts)]
+                   )
+plt.figure(figsize=(10, 7))
+plt.plot(t * 1e6, i_L, label='$i_L(t)$', color='blue')
+plt.title('Inductor Current Waveform $i_L(t)$ over Two Periods')
+plt.xlabel(r'Time [$\mu s$]')
+plt.ylabel('Inductor Current [$A$]')
+plt.axhline(y=IL, color='r', linestyle='--', label=r'Average Current $I_L$')
+plt.axhline(y=IL + delta_IL, color='g', linestyle='--', label=r'$I_L + \Delta I_L$')
+plt.axhline(y=IL - delta_IL, color='orange', linestyle='--', label=r'$I_L - \Delta I_L$')
+plt.xticks(np.arange(0, 2.5 * Ts * 1e6, Ts * 1e6 / 2))
+# plt.xticks(np.arange(0, 2 * Ts * 1e6, Ts * 1e6 / 2), 
+#            [f'{i * Ts * 1e6 / 2:.1f}' for i in range(4)])
+plt.yticks(np.arange(0, IL + delta_IL + 2, 1))
+plt.grid()
+plt.legend()
+plt.show()
+```
+
