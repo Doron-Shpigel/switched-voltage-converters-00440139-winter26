@@ -1,8 +1,7 @@
 ---
 title: "Homework 2 - Advanced Converter Topologies"
 subtitle: "Course 00440139 - Winter 2026"
-date: today
-author: "Your Name"
+author: "Doron Shpigel 313545600"
 format:
   html:
     toc: true
@@ -10,86 +9,63 @@ format:
     number-sections: true
 ---
 
-::: {.callout-note}
-## PDF Export
-To generate a PDF version of this homework, run:
-```bash
-quarto render hw02.qmd --to pdf
+# Problem 1:
+
+```{python}
+#|echo: false 
+#|output: true
+from contextlib import redirect_stdout, redirect_stderr
+import io
+import warnings
+import logging
+from lcapy import *
+
+warnings.filterwarnings('ignore')
+logging.getLogger('lcapy').setLevel(logging.ERROR)
+
+with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+    Converter = Circuit(r"""
+    #create voltage source
+        V ._plus  0 {V_g  }; down, size=2
+    #create inductor
+        L L.1 L.2; right, l= L, size=1.5
+    # create SW1
+        SW1 ._COM ._NC ._NO spdt; invert, l={}
+        A1 SW1._NC; l=1, anchor=south west
+        A2 SW1._NO; l=2, anchor=north west
+    #create SW2
+        SW2 ._COM ._NO ._NC spdt; mirror, l={}
+        A3 SW2._NC; l=1, anchor=north west
+        A4 SW2._NO; l=2, anchor=south west
+    #create RC
+        C C.1 C.2; right, l= C
+        R R.1 R.2; right, l= R, v={V}
+        O _RC1 C.1; right, rotate=45, size=0.75, 
+        O _RC1 R.1; right, rotate=-45, size=0.75
+        W _RC1 C.1; steps=|-, free
+        W _RC1 R.1; steps=|-, free
+        ;;\draw (_RC1)node[circ];
+        O C.2 _RC2; right, rotate=-45, size=0.75
+        O R.2 _RC2; right, rotate=45, size=0.75
+        W C.2 _RC2; steps=-|, free
+        W R.2 _RC2; steps=-|, free
+        ;;\draw (_RC2)node[circ];
+    #create connections:
+    # connect RC to switches
+        W SW1._COM _RC1; right, size=0.1
+        W _RC2 SW2._COM; right, size=0.1
+    # connect voltage source to inductor
+        W V._plus L.1; right, size=0
+    # connect inductor L to switches
+        W L.2 SW1._NC; down
+        W L.2 SW2._NO; steps=-|, free
+    # connect ground to switches
+        O SW1._NO 0_0; down, size=1
+        W SW1._NO 0_0; down
+        ;;\draw (0_0)node[circ];
+        W 0 0_0; right
+        W 0_0 SW2._NC; steps=-|, free
+        ; autoground=false, draw_nodes=connections, label_ids=false, label_nodes=alpha, european voltages""")
+    Converter.draw()
 ```
-Note: Requires TeX installation (TinyTeX, TeXLive, or similar).
-:::
 
-## Problem 1: Buck-Boost Converter
-
-Analyze a non-inverting buck-boost converter with:
-
-- Input voltage range: $V_{in} = 8V - 16V$
-- Output voltage: $V_{out} = 12V$
-- Maximum load current: $I_{out,max} = 3A$
-
-### Part A
-
-Calculate the duty cycle range for the given input voltage range.
-
-For a non-inverting buck-boost converter:
-
-$$
-D = \frac{V_{out}}{V_{in} + V_{out}}
-$$
-
-At $V_{in} = 8V$:
-$$
-D_{max} = \frac{12V}{8V + 12V} = 0.6
-$$
-
-At $V_{in} = 16V$:
-$$
-D_{min} = \frac{12V}{16V + 12V} = 0.429
-$$
-
-## Problem 2: Resonant Converters
-
-Consider an LLC resonant converter with the following parameters:
-
-- Resonant frequency: $f_r = 100kHz$
-- Resonant inductance: $L_r = 20\mu H$
-- Resonant capacitance: $C_r = 127nF$
-
-Verify the resonant frequency:
-
-$$
-f_r = \frac{1}{2\pi\sqrt{L_r C_r}} = \frac{1}{2\pi\sqrt{20\mu H \times 127nF}}
-$$
-
-$$
-f_r = \frac{1}{2\pi\sqrt{2.54 \times 10^{-12}}} \approx 100kHz \quad \checkmark
-$$
-
-## Problem 3: Multi-Phase Converters
-
-Design a 4-phase interleaved buck converter:
-
-- Input voltage: $V_{in} = 48V$
-- Output voltage: $V_{out} = 12V$
-- Total output current: $I_{out} = 40A$
-- Per-phase current: $I_{phase} = 10A$
-
-Calculate the effective output ripple frequency and the per-phase duty cycle.
-
-### Solution
-
-Duty cycle per phase:
-$$
-D = \frac{V_{out}}{V_{in}} = \frac{12V}{48V} = 0.25
-$$
-
-Effective ripple frequency:
-$$
-f_{ripple} = n \times f_s = 4 \times f_s
-$$
-
-where $n$ is the number of phases.
-
-## Conclusion
-
-This homework explores advanced topologies and multi-phase converter designs.
