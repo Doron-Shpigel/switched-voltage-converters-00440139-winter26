@@ -1,0 +1,112 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Homework 2 - Advanced Converter Topologies\"\n",
+        "subtitle: \"Course 00440139 - Winter 2026\"\n",
+        "author: \"Doron Shpigel 313545600\"\n",
+        "format:\n",
+        "  html:\n",
+        "    toc: true\n",
+        "    toc-depth: 2\n",
+        "    number-sections: true\n",
+        "---\n",
+        "\n",
+        "# Problem 1:"
+      ],
+      "id": "0f720374"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#|echo: false \n",
+        "#|output: true\n",
+        "from contextlib import redirect_stdout, redirect_stderr\n",
+        "import io\n",
+        "import warnings\n",
+        "import logging\n",
+        "from lcapy import *\n",
+        "\n",
+        "warnings.filterwarnings('ignore')\n",
+        "logging.getLogger('lcapy').setLevel(logging.ERROR)\n",
+        "\n",
+        "with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):\n",
+        "    Converter = Circuit(r\"\"\"\n",
+        "    #create voltage source\n",
+        "        V ._plus  0 {V_g  }; down, size=2\n",
+        "    #create inductor\n",
+        "        L L.1 L.2; right, l= L, size=1.5\n",
+        "    # create SW1\n",
+        "        SW1 ._COM ._NC ._NO spdt; invert, l={}\n",
+        "        A1 SW1._NC; l=1, anchor=south west\n",
+        "        A2 SW1._NO; l=2, anchor=north west\n",
+        "    #create SW2\n",
+        "        SW2 ._COM ._NO ._NC spdt; mirror, l={}\n",
+        "        A3 SW2._NC; l=1, anchor=north west\n",
+        "        A4 SW2._NO; l=2, anchor=south west\n",
+        "    #create RC\n",
+        "        C C.1 C.2; right, l= C\n",
+        "        R R.1 R.2; right, l= R, v={$+\\quad V\\quad -$}\n",
+        "        O _RC1 C.1; right, rotate=45, size=0.75, \n",
+        "        O _RC1 R.1; right, rotate=-45, size=0.75\n",
+        "        W _RC1 C.1; steps=|-, free\n",
+        "        W _RC1 R.1; steps=|-, free\n",
+        "        ;;\\draw (_RC1)node[circ];\n",
+        "        O C.2 _RC2; right, rotate=-45, size=0.75\n",
+        "        O R.2 _RC2; right, rotate=45, size=0.75\n",
+        "        W C.2 _RC2; steps=-|, free\n",
+        "        W R.2 _RC2; steps=-|, free\n",
+        "        ;;\\draw (_RC2)node[circ];\n",
+        "    #create connections:\n",
+        "    # connect RC to switches\n",
+        "        W SW1._COM _RC1; right, size=0.1\n",
+        "        W _RC2 SW2._COM; right, size=0.1\n",
+        "    # connect voltage source to inductor\n",
+        "        W V._plus L.1; right, size=0\n",
+        "    # connect inductor L to switches\n",
+        "        W L.2 SW1._NC; down\n",
+        "        W L.2 SW2._NO; steps=-|, free\n",
+        "    # connect ground to switches\n",
+        "        O SW1._NO 0_0; down, size=1\n",
+        "        W SW1._NO 0_0; down\n",
+        "        ;;\\draw (0_0)node[circ];\n",
+        "        W 0 0_0; right\n",
+        "        W 0_0 SW2._NC; steps=-|, free\n",
+        "        ; autoground=false, draw_nodes=connections, label_ids=false, label_nodes=alpha, european voltages\"\"\")\n",
+        "    Converter.draw()"
+      ],
+      "id": "eca91eb2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "* The inductor has ohmic resistance $R_L$.\n",
+        "* All the other losses are neglected.\n",
+        "* The switches operate in a complementary manner, such that:\n",
+        "    - The switches on mode $1$ in time interval $\\left[0, DT_s\\right]$.\n",
+        "    - The switches on mode $2$ in time interval $\\left[D T_s, T_s\\right]$.\n",
+        "\n",
+        "## Question A:\n",
+        "The voltage amplification of the converter $V/V_g$:"
+      ],
+      "id": "d79fff6b"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "/home/doron/Links/GitHub Folder/winter26/switched-voltage-converters-00440139-winter26/env/share/jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

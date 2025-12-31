@@ -39,7 +39,7 @@ with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
         A4 SW2._NO; l=2, anchor=south west
     #create RC
         C C.1 C.2; right, l= C
-        R R.1 R.2; right, l= R, v={V}
+        R R.1 R.2; right, l= R, v={$+\quad V\quad -$}
         O _RC1 C.1; right, rotate=45, size=0.75, 
         O _RC1 R.1; right, rotate=-45, size=0.75
         W _RC1 C.1; steps=|-, free
@@ -69,3 +69,11 @@ with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
     Converter.draw()
 ```
 
+* The inductor has ohmic resistance $R_L$.
+* All the other losses are neglected.
+* The switches operate in a complementary manner, such that:
+    - The switches on mode $1$ in time interval $\left[0, DT_s\right]$.
+    - The switches on mode $2$ in time interval $\left[D T_s, T_s\right]$.
+
+## Question A:
+The voltage amplification of the converter $V/V_g$:
