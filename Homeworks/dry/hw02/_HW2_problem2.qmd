@@ -1,0 +1,56 @@
+The following circuit is converter type BUCK-BOOST running in DCM mode.
+
+```{python}
+#|echo: false 
+#|output: true
+from contextlib import redirect_stdout, redirect_stderr
+import io
+import warnings
+import logging
+from lcapy import *
+
+warnings.filterwarnings('ignore')
+logging.getLogger('lcapy').setLevel(logging.ERROR)
+with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+    converter_P2 = Circuit(r"""
+    #create voltage source
+        V ._plus  0 {V_g  }; down, size=2
+    #create inductor
+        L ._1 ._2; down, l= L, size=2, i>^=i(t)
+    #create diode
+        D ._A ._K; left, l= D, size=2
+    #create capacitor
+        C ._1 ._2; down, l= C, size=2
+    #create resistor
+        R ._1 ._2; down, l= R, size=2, v={$+\quad V\quad -$}
+    #create transistor-NMOS
+        M ._D ._G ._S nmos; up, l= Q1, size=2
+    #create connections:
+    # connect voltage source to transistor
+        W V._plus M._D; right, size=1
+    # connect transistor to inductor
+        W M._S L._1; steps=-|, free
+    # connect transistor to diode
+        W M._S D._K; right, size=0
+    # connect diode to capacitor
+        W D._A C._1; steps=-|, free
+    # connect diode to resistor
+        W D._A R._1; steps=--|, free
+    # connecting grounds
+        #ground inductor
+        W 0 L._2; right, size=3
+        #ground capacitor
+        W L._2 C._2; right, size=2
+        #ground resistor
+        W C._2 R._2; right
+        ; autoground=false, draw_nodes=connections, label_ids=false, label_nodes=alpha, european voltages""")
+    converter_P2.draw()
+```
+
+-   All the elements are ideal.
+-   All the losses are neglected.
+-   The transistor is conduction at time interval $\left[0, D_{1}T_{s}\right]$.
+-   DCM mode.
+
+## Question A:
+
