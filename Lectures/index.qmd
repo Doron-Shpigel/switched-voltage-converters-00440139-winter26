@@ -4,6 +4,9 @@ title: "Lectures"
 
 ## Course Lectures
 
-This section contains all lecture materials for the course.
+Lecture summaries and source PDFs:
 
-Lecture materials will be added here throughout the semester.
+- [lesson 2 - DC-DC converters at steady-state.pdf](lesson 2 - DC-DC converters at steady-state.pdf)  
+  → [Summary](summaries/lesson 2 - DC-DC converters at steady-state.qmd)
+- [lesson 2 - summary.pdf](lesson 2 - summary.pdf)  
+  → [Summary](summaries/lesson 2 - summary.qmd)

@@ -1,0 +1,69 @@
+---
+title: "lesson 2 - summary"
+date: "2026-03-07 22:14"
+---
+
+# Switched-Mode Converters: Steady-State Analysis - Key Points Summary
+
+## Analysis of Converters in Continuous Conduction Mode (CCM)
+
+### Assumptions
+
+*   All system voltages and currents are periodic waveforms with a period $T_s$. This defines the steady-state operation of a switched converter.
+*   Each cycle consists of two parts, each with a specific switch configuration:
+    *   First part duration: $DT_s$
+    *   Second part duration: $(1-D)T_s = D'T_s$
+*   For capacitor voltages and inductor currents, the following relationships hold between their instantaneous and average values over a cycle:
+    *   Average over full cycle: $\frac{1}{T_s} \int_0^{T_s} x(\tau) d\tau = \overline{X}$
+    *   Average over first interval: $\frac{1}{DT_s} \int_0^{DT_s} x(\tau) d\tau \approx \overline{X}$
+    *   Average over second interval: $\frac{1}{D'T_s} \int_0^{D'T_s} x(\tau) d\tau \approx \overline{X}$
+*   In each part of the cycle, any circuit voltage or current can be expressed as a linear function of capacitor voltages and inductor currents.
+
+### Analysis Principles
+
+*   **Variable Selection:** Each passive component (inductor or capacitor) is described by a single average variable:
+    *   **Inductors:** Average current over a cycle: $\overline{I} = \frac{1}{T_s} \int_0^{T_s} i(\tau) d\tau$
+    *   **Capacitors:** Average voltage over a cycle: $\overline{V} = \frac{1}{T_s} \int_0^{T_s} v(\tau) d\tau$
+*   **Average voltage across an inductor over a cycle is zero:** $\overline{V}_L = 0$
+*   **Average current through a capacitor over a cycle is zero:** $\overline{I}_C = 0$
+
+## Representing Switched Converters Using Equivalent Circuits
+
+### Ideal Transformer Model
+
+This model uses an ideal transformer with a duty cycle-dependent turns ratio, $M(D)$, representing the converter's voltage gain.
+
+*   Voltage relationship: $V_g = M(D)V$
+*   Current relationship: $I_g = M(D)I$
+*   Power conservation: $P_{in} = V_g I_g = V I = P_{out}$
+
+### Impedance Reflection
+
+This technique simplifies circuit analysis by reflecting impedances across the equivalent transformer model.
+
+*   An original circuit element with voltage $V_g$ and impedance $Z$ (on one side of the equivalent transformer) can be represented on the other side as:
+    *   Reflected voltage source: $V_g / M(D)$
+    *   Reflected impedance: $Z / (M(D))^2$
+
+## Analysis of Converters in Discontinuous Conduction Mode (DCM)
+
+### Assumptions for DCM
+
+*   All circuit voltages and currents are periodic waveforms with a period $T_s$. This defines steady-state operation.
+*   Consequently:
+    *   Average voltage across an inductor over a cycle is zero: $\overline{V}_L = 0$
+    *   Average current through a capacitor over a cycle is zero: $\overline{I}_C = 0$
+*   The following relationships hold between instantaneous and average values over a cycle:
+    *   For all signals (voltage and current): $\frac{1}{T_s} \int_0^{T_s} x(\tau) d\tau = \overline{X}$ (This is an exact equality, derived directly from the definition of an average signal).
+*   Additionally, for capacitor voltages only (assuming small ripple):
+    *   The average voltage over specific conduction sub-intervals (e.g., $DT_s$, $(D+D_2)T_s$) can be approximated by the overall average voltage $\overline{V}$.
+    *   Example: $\frac{1}{DT_s} \int_0^{DT_s} v(\tau) d\tau \approx \overline{V}$
+
+### Analysis Method for DCM
+
+Based on these assumptions, a common method for analyzing converters in DCM is:
+
+1.  **Inductor Voltage Balance:** Write equations for the zero average voltage across inductors ($\overline{V}_L = 0$).
+2.  **Voltage Substitution:** Substitute the voltages appearing in these equations with their average values, similar to the CCM analysis.
+3.  **Capacitor Current Balance:** Write equations for the zero average current through capacitors ($\overline{I}_C = 0$).
+4.  **Direct Integral Calculation for Currents:** For current equations, it is not possible to simply replace instantaneous currents with their average values. Instead, the integrals must be calculated directly to derive relationships between the average voltages.

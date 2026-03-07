@@ -1,0 +1,340 @@
+---
+title: "lesson 2 - DC-DC converters at steady-state"
+date: "2026-03-07 22:15"
+---
+
+# Switched Converters: Steady-State Analysis
+
+This lecture focuses on analyzing switched converters operating in a steady state, developing a method to calculate voltage and current ratios for general converters.
+
+## 1. Defining Steady State in Switched Converters
+
+*   **General System Definition**: In time-domain analysis, steady state usually implies all system signals are constant over time.
+*   **Switched Converter Definition**: This general definition is not useful for switched converters due to switching-induced variations. Therefore, for switched converters:
+    *   A converter operates in **steady state** if all voltage and current signals are periodic with a period $T_s$.
+
+## 2. Average Signals
+
+Direct analysis of time-varying signals is complex. To simplify, we analyze the behavior of average signals over a period.
+
+*   **Average Value Definition**: For a periodic signal $v(t)$, its average value over a period $T_s$ is:
+    $$V = \frac{1}{T_s} \int_{t}^{t+T_s} v(\tau) d\tau$$
+    (This average is independent of the starting time $t$ because the signal is periodic).
+*   **Signal Components**: An original signal $v(t)$ consists of:
+    *   The average voltage $V$.
+    *   The ripple component $v_{ripple}(t)$.
+    $$v(t) = V + v_{ripple}(t)$$
+*   **Ripple Approximation**: Often, we assume the ripple is very small compared to the average, i.e., $v_{ripple}(t) \ll V$. In this case, we approximate $v(t) \approx V = \text{constant}$, treating the signal as an approximate DC value.
+
+## 3. Continuous Conduction Mode (CCM) Analysis
+
+CCM is a common operating mode where the converter's switch states are directly controlled by the control system.
+
+*   **CCM Definition**: Occurs when the converter's switches are directly controlled, typically resulting in two main switch states.
+*   **Cycle Division in CCM**: The switching period $T_s$ is usually divided into two parts:
+    *   **Part 1**: Switch in State 1 for duration $DT_s$.
+    *   **Part 2**: Switch in State 2 for duration $(1-D)T_s = D'T_s$.
+    *   (In Discontinuous Conduction Mode (DCM), the cycle divides into three or more parts).
+
+### Approximations for Integrals in Steady State
+
+For any signal $x(t)$ (current or voltage) with an average value $X$ over a period, the following holds:
+$$\frac{1}{T_s} \int_{t}^{t+T_s} x(\tau) d\tau = X$$
+This means that for calculating integrals over a period in steady state, `capacitor voltages` and `inductor currents` can be replaced by their average values *inside the integral*.
+
+Additionally, for capacitor voltages and inductor currents, we make these approximations for parts of the cycle:
+*   $\frac{1}{DT_s} \int_{t}^{t+DT_s} x(\tau) d\tau \approx X$
+*   $\frac{1}{D'T_s} \int_{t}^{t+D'T_s} x(\tau) d\tau \approx X$
+These approximations are justified by:
+*   **Small Ripple Approximation**: If $x_{ripple}(t) \ll X$, then $x(t)$ is almost constant, making the approximation valid. This is often true for input/output voltages in DC/DC converters.
+*   **Triangular Waveform Approximation**: For signals like inductor current in Buck converters with constant input/output, the waveform is approximately triangular. In this specific case, the average value approximation is exact.
+
+### Summary of Working Assumptions for CCM Steady State
+
+*   All voltages and currents are periodic with period $T_s$.
+*   The cycle has two parts: $DT_s$ and $D'T_s$.
+*   For capacitor voltages and inductor currents, the integral approximations above hold.
+*   Within each part of the cycle, any voltage or current can be expressed as a linear function of capacitor voltages and inductor currents.
+
+### Principles of Analysis for CCM
+
+1.  **Variable Selection**: Each inductor and capacitor is represented by one average variable:
+    *   Inductors: Average current over a cycle, $I_L = \frac{1}{T_s} \int_{0}^{T_s} i_L(\tau) d\tau$.
+    *   Capacitors: Average voltage over a cycle, $V_C = \frac{1}{T_s} \int_{0}^{T_s} v_C(\tau) d\tau$.
+2.  **Inductor Voltage Balance**: The average voltage across an inductor over a cycle is zero:
+    $$\frac{1}{T_s} \int_{0}^{T_s} v_L(\tau) d\tau = 0$$
+    (This follows from $v_L = L \frac{di_L}{dt}$ and $i_L$ being periodic).
+3.  **Capacitor Charge Balance**: The average current through a capacitor over a cycle is zero:
+    $$\frac{1}{T_s} \int_{0}^{T_s} i_C(\tau) d\tau = 0$$
+    (This follows from $i_C = C \frac{dv_C}{dt}$ and $v_C$ being periodic).
+
+These principles allow analysis of any converter operating in CCM.
+
+## 4. Example: Buck Converter Analysis in CCM
+
+Let $I_L$ be the average inductor current and $V$ be the average capacitor voltage (output voltage).
+
+### Voltage Ratio Calculation
+
+Using the inductor voltage balance principle ($<v_L>=0$):
+$$\frac{1}{T_s} \int_{0}^{T_s} (v_x(\tau) - V) d\tau = 0$$
+Here, $v_x(\tau)$ is the voltage before the inductor.
+*   During $DT_s$ (State 1): $v_x(\tau) = V_g$ (input voltage).
+*   During $D'T_s$ (State 2): $v_x(\tau) = 0$.
+
+So, the integral becomes:
+$$\frac{1}{T_s} \left[ \int_{0}^{DT_s} (V_g - V) d\tau + \int_{DT_s}^{T_s} (0 - V) d\tau \right] = 0$$
+$$(V_g - V)DT_s + (0 - V)D'T_s = 0$$
+$$V_g D T_s - V D T_s - V D' T_s = 0$$
+$$V_g D T_s - V (D + D') T_s = 0$$
+Since $D+D' = 1$:
+$$V_g D - V = 0 \implies V = DV_g$$
+This is the voltage gain for an ideal Buck converter in CCM, $V/V_g = D$.
+
+### Current Ratio Calculation
+
+Using the capacitor charge balance principle ($<i_C>=0$):
+$$<i_L - i_{out}> = 0 \implies <i_L> = <i_{out}>$$
+Where $i_{out} = V/R$. So, $I_L = V/R$.
+
+Now consider the input current $i_g(t)$:
+*   During $DT_s$ (State 1): $i_g(t) = i_L(t)$.
+*   During $D'T_s$ (State 2): $i_g(t) = 0$.
+
+The average input current $I_g$ is:
+$$I_g = \frac{1}{T_s} \left[ \int_{0}^{DT_s} i_L(\tau) d\tau + \int_{DT_s}^{T_s} 0 d\tau \right]$$
+Using the approximation $i_L(\tau) \approx I_L$ within the integral for $DT_s$:
+$$I_g = \frac{1}{T_s} (I_L DT_s) = DI_L$$
+Substitute $I_L = V/R$ and $V = DV_g$:
+$$I_g = D \left( \frac{V}{R} \right) = D \left( \frac{DV_g}{R} \right) = \frac{D^2 V_g}{R}$$
+The output current $I_{out} = V/R$. So, $I_g = D I_{out}$. The current gain is $I_{out}/I_g = 1/D$.
+
+### Power Conservation
+
+*   Output Power: $P_{out} = V \cdot I_{out} = V \cdot (V/R) = V^2/R$.
+*   Input Power: $P_{in} = V_g \cdot I_g = V_g \cdot (D^2 V_g / R) = D^2 V_g^2 / R$.
+Since $V=DV_g$, then $V^2 = D^2 V_g^2$. So, $P_{out} = P_{in}$.
+The efficiency is 100% in this ideal model, as no losses are considered.
+
+## 5. Example: Boost Converter Analysis in CCM
+
+A Boost converter increases the voltage, i.e., $V > V_g$.
+
+### Voltage Gain Calculation
+
+Using inductor voltage balance ($<v_L>=0$):
+*   During $DT_s$ (State 1): $v_L = V_g$.
+*   During $D'T_s$ (State 2): $v_L = V_g - V$.
+
+$$\frac{1}{T_s} \left[ \int_{0}^{DT_s} V_g d\tau + \int_{DT_s}^{T_s} (V_g - V) d\tau \right] = 0$$
+$$V_g DT_s + (V_g - V)D'T_s = 0$$
+$$V_g D + V_g D' - V D' = 0$$
+$$V_g (D + D') - V D' = 0$$
+$$V_g - V D' = 0 \implies V = \frac{V_g}{D'}$$
+The voltage gain for an ideal Boost converter in CCM is $V/V_g = \frac{1}{D'}$.
+
+### Current Gain Calculation
+
+From power conservation (assuming 100% efficiency): $P_{in} = P_{out}$.
+$V_g I_g = V I_{out}$
+$I_g = \frac{V}{V_g} I_{out} = \frac{1}{D'} I_{out}$
+The current gain is $I_{out}/I_g = D'$.
+
+This can also be verified using capacitor charge balance:
+*   During $DT_s$: $i_C = -I_{out}$.
+*   During $D'T_s$: $i_C = I_L - I_{out}$.
+Using average values:
+$$\frac{1}{T_s} \left[ \int_{0}^{DT_s} (-I_{out}) d\tau + \int_{DT_s}^{T_s} (I_L - I_{out}) d\tau \right] = 0$$
+$$-I_{out} D T_s + (I_L - I_{out}) D' T_s = 0$$
+$$-I_{out} D + I_L D' - I_{out} D' = 0$$
+$$-I_{out} (D + D') + I_L D' = 0$$
+$$-I_{out} + I_L D' = 0 \implies I_L = \frac{I_{out}}{D'}$$
+The average input current $I_g$ is the average inductor current $I_L$, so $I_g = I_L = \frac{I_{out}}{D'}$. This confirms $I_{out}/I_g = D'$.
+
+### Output Ripple Calculation
+
+For the Boost converter, the output voltage ripple $\Delta v$ is often important.
+From the capacitor equation $i_C = C \frac{dv_C}{dt}$:
+During the first part of the cycle ($DT_s$), the capacitor current is $i_C(t) \approx -I_{out} = -V/R$.
+The change in capacitor voltage during this period is:
+$$\Delta V = \frac{1}{C} \int_{0}^{DT_s} i_C(\tau) d\tau = \frac{1}{C} (-I_{out} DT_s) = -\frac{V}{RC} DT_s$$
+The peak-to-peak ripple is usually defined as the magnitude of this change:
+$$\Delta v = \frac{V D T_s}{RC}$$
+To reduce ripple, increase output capacitance $C$ or switching frequency $f_s = 1/T_s$. Practical ripple is higher due to ESR.
+
+## 6. Equivalent Circuits for Switched Converters (Average Signal Model)
+
+Equivalent circuits simplify the analysis of switched converters within larger systems. These are often called "average signal models."
+
+### The Ideal Transformer
+
+A basic component of the average signal model is the ideal transformer.
+*   **Notation**: An ideal transformer is represented with turns ratio $M(D)$, where $M(D)$ is the voltage gain. Dots indicate voltage polarity.
+*   **Equations**:
+    *   $V_g = M(D) V$
+    *   $I = M(D) I_g$
+*   **Power Conservation**: $P_{in} = V_g I_g = (M(D) V) (I/M(D)) = V I = P_{out}$. The ideal transformer conserves power.
+*   **Representation**: Can be represented by controlled voltage and current sources.
+
+### Impedance Reflection
+
+A common technique for analyzing circuits with ideal transformers is impedance reflection.
+*   An impedance $Z_2$ on the secondary side can be reflected to the primary side as $Z_1 = \frac{Z_2}{M(D)^2}$.
+*   A voltage source $V_2$ on the secondary can be reflected as $V_1 = \frac{V_2}{M(D)}$.
+*   A current source $I_2$ on the secondary can be reflected as $I_1 = M(D) I_2$.
+This allows the entire circuit to be analyzed from one side of the transformer.
+
+### Representing a Lossless Switched Converter with an Ideal Transformer
+
+*   A lossless switched converter operating in steady state can be represented by an ideal transformer with a voltage gain of $M(D)$.
+    *   For Buck: $M(D) = D$.
+    *   For Boost: $M(D) = \frac{1}{D'}$.
+*   **Advantage**: This model simplifies analyzing the converter as part of a larger system.
+
+### Examples of Complex System Analysis
+
+1.  **Buck converter with input resistance**: If a resistor $R_s$ is in series with the input voltage $V_s$ of a Buck converter ($M(D)=D$), reflect $R_s$ and $V_s$ to the output side:
+    *   Reflected input source: $V_s / D$.
+    *   Reflected series resistor: $R_s / D^2$.
+    *   Now the output circuit is $V_{out}$ in series with $R_s/D^2$ across $V_s/D$ connected to the load $R$.
+    *   $V = \frac{R}{R + R_s/D^2} \frac{V_s}{D}$.
+2.  **Cascade of two converters**: Two ideal converters in series ($M_1(D_1)$ and $M_2(D_2)$).
+    *   Replace each with an ideal transformer.
+    *   Reflect all elements to the final output side. The total gain would be $M_{total} = M_1(D_1) M_2(D_2)$.
+
+## 7. Equivalent Circuit of a Converter with Ohmic Losses
+
+The ideal transformer model assumes a lossless converter. To model losses, additional elements are included in the equivalent circuit.
+
+### Example: Buck Converter with Inductor Series Resistance ($R_L$)
+
+For a Buck converter with a series resistance $R_L$ for the inductor:
+1.  **Inductor Voltage Balance ($<v_L>=0$)**:
+    *   During $DT_s$: $v_L = V_g - I_L R_L - V$.
+    *   During $D'T_s$: $v_L = 0 - I_L R_L - V$.
+    *   Averaging: $D(V_g - I_L R_L - V) + D'( -I_L R_L - V) = 0$
+    *   $DV_g - DI_L R_L - DV - D'I_L R_L - D'V = 0$
+    *   $DV_g - I_L R_L (D+D') - V(D+D') = 0$
+    *   $DV_g - I_L R_L - V = 0 \implies V = DV_g - I_L R_L$.
+2.  **Capacitor Current Balance ($<i_C>=0$)**:
+    *   $<i_L - V/R> = 0 \implies I_L = V/R$.
+3.  **Input Current ($I_g$)**:
+    *   $I_g = D I_L$.
+
+From these equations, an equivalent circuit can be built: an ideal transformer ($M(D)=D$) followed by a series resistor $R_L$ (representing inductor losses) on the output side.
+
+### Efficiency Calculation for Buck with $R_L$
+
+Using impedance reflection, reflect the output load $R$ and the series resistor $R_L$ to the input side of the ideal transformer:
+*   Reflected load: $R/D^2$.
+*   Reflected series resistor: $R_L/D^2$.
+The efficiency $\eta$ is the ratio of output power to input power.
+$$\eta = \frac{P_{out}}{P_{in}} = \frac{I_L^2 R}{(I_L D)^2 R_{in}} = \frac{V^2/R}{V_g I_g} = \frac{(DV_g - I_L R_L)I_L}{V_g I_g}$$
+Substitute $I_L = V/R$ and $I_g = DI_L$:
+$$\eta = \frac{V}{DV_g} = \frac{DV_g - I_L R_L}{DV_g} = 1 - \frac{I_L R_L}{DV_g}$$
+Using $I_L = V/R = (DV_g - I_L R_L)/R$:
+$I_L (R + R_L) = DV_g \implies I_L = \frac{DV_g}{R+R_L}$
+$$\eta = 1 - \frac{\frac{DV_g}{R+R_L} R_L}{DV_g} = 1 - \frac{R_L}{R+R_L} = \frac{R}{R+R_L}$$
+This simplified efficiency accounts only for inductor ohmic losses. If $R_L = 0$, $\eta = 1$.
+
+### Example: Boost Converter with Losses in Inductor, Transistor, and Diode
+
+To include more losses:
+*   Inductor: Series resistance $R_L$.
+*   Transistor (on-state): Series resistance $R_{on}$.
+*   Diode (on-state): Voltage drop $V_D$ and series resistance $R_D$.
+
+1.  **State 1 (Transistor conducts, duration $DT_s$)**: Input voltage $V_g$ is applied across $L$ and $R_L$, with $R_{on}$ also in series if using transistor model. $v_L = V_g - I_L (R_L + R_{on})$.
+2.  **State 2 (Diode conducts, duration $D'T_s$)**: $V_g$ is applied across $L$ and $R_L$, and the diode path (diode forward drop $V_D$ and $R_D$) is in series with the output voltage $V$. $v_L = V_g - I_L R_L - V_D - I_L R_D - V$.
+
+Using average voltage balance across the inductor ($<v_L>=0$) and average current balance through the capacitor ($<i_C>=0$), and $I_g = I_L$:
+*   $<v_L>=0$:
+    $D(V_g - I_L(R_L + R_{on})) + D'(V_g - I_L(R_L + R_D) - V_D - V) = 0$
+    $V_g - I_L(DR_L + DR_{on} + D'R_L + D'R_D) - D'V_D - D'V = 0$
+    $V_g - I_L(R_L + DR_{on} + D'R_D) - D'V_D - D'V = 0$
+*   $<i_C>=0$:
+    $D(-V/R) + D'(I_L - V/R) = 0 \implies -DV/R + D'I_L - D'V/R = 0$
+    $D'I_L = V/R \implies I_L = \frac{V}{D'R}$ (Assuming small output ripple so $i_{out}=V/R$ during both phases and $i_C = I_L - V/R$ during second phase).
+    (The derivation in the PDF for Boost $<i_C>=0$ is $(D(0) + D'(I_L - V/R)) = 0$, which implies during $DT_s$ the diode is off and the capacitor only supplies current to the load, and during $D'T_s$ the inductor also supplies current to the load and capacitor. This leads to $I_L = V/(D'R)$ if $i_{out}$ is average $V/R$.)
+
+From these equations, a more complex equivalent circuit can be formed, containing the ideal transformer and equivalent series resistances representing losses in various components, and a voltage source for the diode drop. The voltage gain and efficiency formulas derived from this model will be more intricate.
+
+## 8. Discontinuous Conduction Mode (DCM) Analysis
+
+DCM occurs when the converter's switch states are not solely determined by the control system but also by currents and voltages (e.g., an inductor current dropping to zero).
+
+*   **DCM Definition**: Inductor current falls to zero during a part of the switching cycle.
+*   **CCM vs. DCM Inductor Current**:
+    *   **CCM**: Inductor current always remains positive (or always negative for current-fed circuits).
+    *   **DCM**: Inductor current goes to zero for a portion of the cycle.
+*   **Cycle Division in DCM**: The switching cycle $T_s$ is divided into three or more parts:
+    *   **Part 1 (duration $D_1 T_s$)**: Transistor conducts. $D_1$ is set by the designer.
+    *   **Part 2 (duration $D_2 T_s$)**: Diode conducts. $D_2$ is determined by the circuit (when inductor current falls to zero).
+    *   **Part 3 (duration $D_3 T_s$)**: Neither transistor nor diode conducts (inductor current is zero). $D_3$ is also circuit-determined.
+    *   $D_1 + D_2 + D_3 = 1$.
+*   **Occurrence**: DCM often occurs when the load current is low.
+
+### Condition for DCM (Buck Converter Example)
+
+A Buck converter enters DCM when the inductor current ripple is large enough to cause the current to drop to zero. The condition is roughly $I_L < \Delta i_L / 2$.
+For a Buck in CCM, $\Delta i_L = \frac{V_g D T_s}{2L} (1-D) = \frac{V_g (D T_s) (1-D)}{L}$.
+The minimum inductor current is $I_L - \Delta i_L/2$. If this becomes negative, the converter enters DCM.
+The boundary condition for DCM is $I_L = \frac{\Delta i_L}{2}$.
+This leads to a condition dependent on $R$, $L$, $T_s$, and $D$:
+$$R < \frac{2L}{T_s (1-D)} \text{ for CCM, and } R > \frac{2L}{T_s (1-D)} \text{ for DCM}$$
+Thus, if the load resistance $R$ is sufficiently high (light load), the converter operates in DCM.
+
+### Analysis of Converters in DCM
+
+*   **Steady State Definition**: Still periodic with period $T_s$. Therefore, inductor voltage balance ($<v_L>=0$) and capacitor charge balance ($<i_C>=0$) still hold.
+*   **Approximation Challenges**:
+    *   The "small ripple" approximation is generally **not valid** for inductor currents in DCM.
+    *   The "triangular waveform" approximation is also **not valid** for *all* signals (specifically, inductor current has a zero portion).
+*   **Revised Assumptions for DCM**:
+    *   All signals are periodic with period $T_s$.
+    *   $<v_L>=0$ and $<i_C>=0$ are still valid.
+    *   For **capacitor voltages only**, the "small ripple" approximation still holds (i.e., $v_C(t) \approx V$).
+    *   For **inductor currents**, direct integration of the time-varying waveform is required.
+
+### Method for Analyzing DCM Converters
+
+1.  Write equations for inductor voltage balance, substituting capacitor voltages with their average values (assuming small ripple).
+2.  Write equations for capacitor current balance. **Do not** substitute inductor currents with their average values inside the integral. Instead, **calculate the integrals directly** using the time-varying inductor current waveform to find relationships between average voltages.
+
+### Example: Buck Converter Analysis in DCM
+
+Assume output ripple is small, so $v(t) \approx V$.
+The inductor current waveform is triangular, rising from 0 to $i_{pk}$ in $D_1 T_s$, falling from $i_{pk}$ to 0 in $D_2 T_s$, and staying at 0 for $D_3 T_s$.
+
+1.  **Inductor Voltage Balance ($<v_L>=0$)**:
+    *   During $D_1 T_s$: $v_L = V_g - V$.
+    *   During $D_2 T_s$: $v_L = -V$.
+    *   During $D_3 T_s$: $v_L = 0$.
+    $$D_1 (V_g - V) + D_2 (-V) + D_3 (0) = 0$$
+    $$D_1 V_g - D_1 V - D_2 V = 0$$
+    $$D_1 V_g = (D_1 + D_2) V \implies V = \frac{D_1}{D_1 + D_2} V_g$$
+    We need to find $D_2$.
+
+2.  **Capacitor Current Balance ($<i_C>=0$)**:
+    This means the average output current equals the average inductor current: $V/R = I_L$.
+    The average inductor current $I_L$ is the area under the triangular current waveform divided by $T_s$:
+    $$I_L = \frac{1}{T_s} \left[ \frac{1}{2} (D_1 T_s + D_2 T_s) i_{pk} \right] = \frac{1}{2} (D_1 + D_2) i_{pk}$$
+    The peak inductor current $i_{pk}$ can be found from the rising phase:
+    $i_{pk} = \frac{(V_g - V) D_1 T_s}{L}$
+    Substitute $i_{pk}$ into the $I_L$ equation:
+    $$I_L = \frac{1}{2} (D_1 + D_2) \frac{(V_g - V) D_1 T_s}{L}$$
+    Now equate $I_L = V/R$:
+    $$\frac{V}{R} = \frac{1}{2} (D_1 + D_2) \frac{(V_g - V) D_1 T_s}{L}$$
+    We have two equations with $V, D_1, D_2, V_g, R, L, T_s$. Solving for $V/V_g$ and $D_2$ (algebra skipped in lecture):
+    $$V = V_g \frac{D_1^2}{D_1^2 + \frac{2L}{RT_s}}$$
+    This is the voltage gain for an ideal Buck converter in DCM.
+
+*   **Load Dependence**: Unlike CCM, the DCM voltage gain depends on the load resistance $R$ (via the term $L/(RT_s)$).
+*   **DCM Condition**: This solution is valid when the converter is indeed in DCM, i.e., $D_1 + D_2 < 1$.
+
+***
+
+Dr. Yoash Lebron,
+Faculty of Electrical Engineering,
+Technion, Israel Institute of Technology.
+yoashl@ee.technion.ac.il
