@@ -9,10 +9,10 @@ dependencies:
   - plotly>=5.0
   - sympy>=1.12
   - numpy>=1.24
+  - pdflatex
   - pip
   - pip:
     - lcapy>=1.20
-    - pdflatex
     - schemdraw
     - jupyter-cache
     - attrs
