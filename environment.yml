@@ -12,3 +12,4 @@ dependencies:
   - pip
   - pip:
     - lcapy>=1.20
+    - pdflatex
