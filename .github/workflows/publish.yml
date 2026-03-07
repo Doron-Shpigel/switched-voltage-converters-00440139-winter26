@@ -52,6 +52,11 @@ jobs:
         shell: bash -el {0}
         run: quarto install tinytex
 
+      - name: Install LaTeX for lcapy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-pictures texlive-science
+
       - name: Render Quarto Project (in conda env)
         shell: bash -el {0}
         run: quarto render
