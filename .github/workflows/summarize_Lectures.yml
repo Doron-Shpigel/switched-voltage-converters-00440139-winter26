@@ -1,0 +1,41 @@
+name: Summarize Lectures PDFs
+
+permissions:
+  contents: write
+
+on:
+  push:
+    paths:
+      - "Lectures/*.pdf"
+  schedule:
+    # Runs at 22:00 UTC every day (Midnight IST)
+    - cron: '0 22 * * *'
+  workflow_dispatch: # Allows you to trigger it manually from the GitHub UI
+
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+
+      - name: Extract text and summarize with Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/summarize_Lectures_pdf.py
+
+      - name: Commit summaries
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add Lectures/summaries/*.qmd Lectures/summaries/*.hash Lectures/index.qmd || true
+          git commit -m "Auto summary update" || echo "No changes"
+          git push
