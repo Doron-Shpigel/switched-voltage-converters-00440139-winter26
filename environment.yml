@@ -15,3 +15,7 @@ dependencies:
     - pdflatex
     - schemdraw
     - jupyter-cache
+    - attrs
+    - nbformat
+    - nbconvert
+    - jsonschema
