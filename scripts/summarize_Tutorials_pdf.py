@@ -34,9 +34,9 @@ from pypdf import PdfReader # type: ignore
 # -------------------------------------------------------------------
 # Paths
 # -------------------------------------------------------------------
-LECTURES_DIR = "Tutorials"
-SUMMARY_DIR = os.path.join(LECTURES_DIR, "summaries")
-INDEX_FILE = os.path.join(LECTURES_DIR, "index.qmd")
+Tutorials_DIR = "Tutorials"
+SUMMARY_DIR = os.path.join(Tutorials_DIR, "summaries")
+INDEX_FILE = os.path.join(Tutorials_DIR, "index.qmd")
 
 os.makedirs(SUMMARY_DIR, exist_ok=True)
 
@@ -91,12 +91,12 @@ PDF content:
 # Find PDFs
 # -------------------------------------------------------------------
 pdf_files = [
-    f for f in glob.glob(f"{LECTURES_DIR}/*.pdf") +
-              glob.glob(f"{LECTURES_DIR}/*.PDF")
+    f for f in glob.glob(f"{Tutorials_DIR}/*.pdf") +
+              glob.glob(f"{Tutorials_DIR}/*.PDF")
     if "lecture refernce" not in f.lower()
 ]
 
-print("DEBUG: Scanning folder:", LECTURES_DIR)
+print("DEBUG: Scanning folder:", Tutorials_DIR)
 print("DEBUG: PDFs found:", pdf_files)
 
 # -------------------------------------------------------------------
@@ -163,14 +163,14 @@ for pdf in pdf_files:
     time.sleep(15)
 
 # -------------------------------------------------------------------
-# 2. Rebuild Lectures/index.qmd
+# 2. Rebuild Tutorials/index.qmd
 # -------------------------------------------------------------------
 print("DEBUG: Rebuilding index.qmd...")
 index_header = """---
-title: "Lectures"
+title: "Tutorials"
 ---
 
-## Course Lectures
+## Course Tutorials
 
 Lecture summaries and source PDFs:
 """
