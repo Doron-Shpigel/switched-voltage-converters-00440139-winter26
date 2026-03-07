@@ -13,3 +13,5 @@ dependencies:
   - pip:
     - lcapy>=1.20
     - pdflatex
+    - schemdraw
+    - jupyter-cache
