@@ -1,0 +1,101 @@
+---
+title: "Tutorial 3"
+date: "2026-03-08 22:28"
+---
+
+## Summary: Switched-Mode Converters -- Ideal Transformers & Impedance Reflection
+
+This document summarizes key concepts and exercises related to the analysis of switched-mode converters using ideal transformer models and impedance reflection techniques. The focus is on simplifying complex converter behavior for easier analysis.
+
+### Ideal Transformer Model for Switched Converters
+
+*   **Average Signal Models:** Switched converters are often analyzed using equivalent circuits that represent the relationships between average signals. This "average signal model" simplifies analysis, especially when the converter is part of a larger system.
+*   **Lossless Converter as Ideal Transformer:** An ideal (lossless) switched converter operating in steady-state can be represented as an ideal transformer.
+*   **Transformer Equations:** For an ideal transformer model, if $V_g$ and $I_g$ are input voltage and current, and $V$ and $I$ are output voltage and current, the relationships are:
+    *   $V_g = M(D)V$
+    *   $I = M(D)I_g$
+    where $M(D)$ is the voltage gain relating input voltage to output voltage (i.e., $V_{in} = M(D)V_{out}$).
+*   **Power Conservation:** An ideal transformer conserves power: $P_{in} = V_g I_g = V I = P_{out}$.
+
+### Impedance Reflection
+
+*   **Principle:** A common method for analyzing circuits with ideal transformers (or their equivalent switched-mode converter models) is impedance reflection. This involves moving an impedance from one side of the transformer to the other, transforming its value in the process.
+*   **Reflection Formula (using $v_{in} = M(D) v_{out}$):** If $Z_2$ is an impedance on the output side and $M(D)$ is the ratio $V_{in}/V_{out}$, the equivalent reflected impedance $Z_1'$ on the input side is:
+    *   $Z_1' = M(D)^2 Z_2$
+*   **General Applicability:** Any linear circuit can be reflected from one side of the ideal transformer to the other.
+
+### Exercise 1: Capacitor Reflection
+
+#### Problem Statement
+An ideal DC/DC converter (lossless, no energy storage) has an output voltage gain $K$, meaning $v_2(t) = K v_1(t)$. A capacitor $C$ is connected at the output.
+
+#### Part A: Input-Output Relationship between $v_1(t)$ and $i_1(t)$
+
+*   **Direct Solution:**
+    *   Using the capacitor's fundamental equation $i_2(t) = C \frac{dv_2(t)}{dt}$ and the converter's voltage and current relations ($v_2 = K v_1$, $i_1 = K i_2$ due to power conservation $v_1 i_1 = v_2 i_2$), we derive:
+    *   $i_1(t) = K^2 C \frac{dv_1(t)}{dt}$
+    *   This shows that the converter, when viewed from the input, behaves like an effective capacitor with capacitance $C_{eff} = K^2 C$.
+*   **Impedance Reflection Solution:**
+    *   Representing the converter as an ideal transformer with turns ratio $1:K$ (meaning $v_2 = K v_1$).
+    *   The impedance of the output capacitor is $Z_C = \frac{1}{sC}$.
+    *   Reflecting this impedance to the input side yields $Z_C' = \frac{1}{K^2} Z_C = \frac{1}{s(K^2 C)}$.
+    *   This confirms the effective capacitance at the input is $K^2 C$.
+
+#### Part B: Energy Conservation
+
+*   **Energy in Original Capacitor:** The energy stored in the output capacitor is $E = \frac{1}{2} C v_2(t)^2$.
+*   **Energy in Reflected Capacitor:** The energy stored in the effective reflected capacitor at the input is $E' = \frac{1}{2} (K^2 C) v_1(t)^2$.
+*   **Comparison:** Substituting $v_1 = v_2/K$ into the expression for $E'$, we get $E' = \frac{1}{2} (K^2 C) (v_2/K)^2 = \frac{1}{2} C v_2^2$.
+*   **Conclusion:** The energy stored is the same ($E = E'$). While switched-mode converters can alter the *apparent* or *effective* capacitance (e.g., make a small capacitor seem large), they do not change the amount of energy stored. Energy conservation hints at a general rule: obtaining more energy fundamentally requires "paying" with better materials or larger physical size.
+
+### Exercise 2: Maximum Power Transfer
+
+#### Problem Statement
+An ideal DC/DC converter ($V_2 = K V_1$) is connected to a voltage source $V_s$ with internal resistance $R_s$ at its input, and a load resistance $R$ at its output. The goal is to find the gain $K$ that maximizes the power delivered to the load.
+
+#### Part A: Power as a Function of Gain K
+
+*   **Power Conservation:** Since the converter is ideal, $P_{in} = P_{out}$. It's convenient to reflect the load resistance to the input.
+*   **Reflected Resistance:** Given $V_2 = K V_1$, the reflected load resistance $R'$ at the input is $R' = R/K^2$.
+*   **Power Formula:** The power delivered to the load (which is equal to the power dissipated by the reflected resistance $R'$) is:
+    *   $P = \left( \frac{V_s}{R_s + R'} \right)^2 R' = \left( \frac{V_s}{R_s + R/K^2} \right)^2 \frac{R}{K^2}$
+    *   This simplifies to: $P(K) = \frac{V_s^2 K^2 R}{(R_s K^2 + R)^2}$
+
+#### Part B: Optimal Gain for Maximum Power
+
+*   **Method 1: Differentiation**
+    *   By differentiating $P(K)$ with respect to $K$ and setting the derivative to zero, we find the value of $K$ that maximizes power.
+    *   The result is $K = \sqrt{R/R_s}$.
+*   **Method 2: Maximum Power Transfer Theorem**
+    *   Maximum power is transferred to a load when the load resistance equals the source resistance. In this case, the load resistance is the *reflected* resistance $R'$, so $R' = R_s$.
+    *   Substituting $R' = R/K^2$, we get $R/K^2 = R_s$, which implies $K^2 = R/R_s$, and thus $K = \sqrt{R/R_s}$.
+*   **Maximum Power Value:** Substituting the optimal $K = \sqrt{R/R_s}$ back into the power equation yields the maximum power:
+    *   $P_{max} = \frac{V_s^2}{4R_s}$
+
+### Exercise 3: Buck Converter Analysis (CCM)
+
+#### Problem Statement
+Analyze an ideal Buck converter operating in steady-state, Continuous Conduction Mode (CCM).
+
+#### Part A: Inductor Current $i_L(t)$ Sketch
+
+*   **Inductor Voltage:** The voltage across the inductor $V_L(t)$ is $V_g - V$ during the ON time ($[0, DT_s]$) and $-V$ during the OFF time ($[DT_s, T_s]$).
+*   **Inductor Current:** Since $V_L(t) = L \frac{di_L(t)}{dt}$, the inductor current $i_L(t)$ changes linearly. It ramps up during the ON time and ramps down during the OFF time.
+*   **Waveform:** The current waveform is triangular, centered around an average inductor current $I_L$. $\Delta i_L$ denotes the peak-to-peak ripple current.
+
+#### Part B: Capacitor Current $i_C(t)$ Sketch
+
+*   **KCL at Output Node:** Applying Kirchhoff's Current Law at the output node (point X in the diagram) gives $i_C(t) = i_L(t) - V/R$.
+*   **Average Inductor Current:** For a DC/DC converter in steady-state, the average capacitor current must be zero ($<i_C(t)> = 0$). This implies that the average inductor current is equal to the average load current, $I_L = V/R$.
+*   **AC Component:** Therefore, the capacitor current $i_C(t)$ represents only the AC component of the inductor current $i_L(t)$, shifted vertically to have a zero average value.
+*   **Waveform:** The capacitor current waveform is also triangular, identical in shape to the AC ripple of $i_L(t)$ but centered at zero. This is consistent with the assumption of a large output capacitor, which has a very low impedance for AC components, causing them to flow through it.
+
+#### Part C: Capacitor Voltage Ripple $\Delta v_C$
+
+*   **Voltage Equation:** The capacitor voltage is related to its current by $\frac{dv_C(t)}{dt} = \frac{i_C(t)}{C}$.
+*   **Parabolic Voltage:** Since $i_C(t)$ is triangular, integrating it results in a parabolic capacitor voltage waveform.
+*   **Ripple Calculation (Charge Method):** The peak-to-peak voltage ripple $\Delta v_C$ can be calculated from the charge accumulated in the capacitor over a specific time interval. The voltage reaches its peaks (min/max) when $i_C(t)=0$. For a linear triangular current, these zero crossings occur at $DT_s/2$ and $T_s - D'T_s/2$.
+    *   The charge accumulated during half of the current ripple cycle (e.g., when the current is positive, causing voltage to increase from minimum to maximum) is the area under the triangular capacitor current waveform for that half-cycle.
+    *   This charge $q = \frac{1}{2} \cdot (\text{base}) \cdot (\text{height}) = \frac{1}{2} \cdot \frac{T_s}{2} \cdot \frac{\Delta i_L}{2} = \frac{\Delta i_L T_s}{8}$.
+    *   The corresponding voltage ripple is $\Delta v_C = q/C$.
+*   **Final Expression:** $\Delta v_C = \frac{\Delta i_L T_s}{8C}$

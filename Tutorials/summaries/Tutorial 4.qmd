@@ -1,0 +1,78 @@
+---
+title: "Tutorial 4"
+date: "2026-03-08 22:33"
+---
+
+## Practice: Switched-Mode Voltage Converters
+
+This document summarizes the derivation of an equivalent circuit for a Boost converter that includes ohmic losses, specifically the series resistance of the inductor ($R_L$). It then uses this equivalent circuit to find the voltage gain, inductor current, and efficiency.
+
+### Introduction to Equivalent Circuits with Ohmic Losses
+
+While ideal converters can be represented by ideal transformers, real converters include losses, making their equivalent circuits more complex. This practice focuses on a Boost converter operating in steady-state and Continuous Conduction Mode (CCM), incorporating the inductor's series resistance, $R_L$.
+
+### Section A: Equivalent Circuit Derivation
+
+The goal is to find an equivalent circuit that represents the relationships between the average input and output signals as a function of the duty cycle $D$.
+
+#### Assumptions and Operating States
+*   **Operating Mode**: Continuous Conduction Mode (CCM).
+*   **Steady State**: All average values are constant.
+*   **Two States**:
+    *   **State 1 (Switch ON)**: Duration $DT_s$.
+    *   **State 2 (Switch OFF)**: Duration $D'T_s$, where $D' = 1-D$.
+
+#### State-Space Averaging Equations
+Let $V_g$ be the average input voltage, $V$ be the average output voltage, and $I$ be the average inductor current.
+1.  **Average Inductor Voltage**: The average voltage across the inductor must be zero in steady-state. From the circuit analysis, this yields:
+    $$V_g - D'V = I R_L \quad \text{(1)}$$
+    This equation represents the voltage relationship in the converter, accounting for the inductor's ohmic loss.
+
+2.  **Average Capacitor Current**: The average current through the output capacitor must be zero in steady-state. This implies that the average current flowing from the converter to the load equals the load current:
+    $$D'I = \frac{V}{R} \quad \text{(2)}$$
+    Where $R$ is the load resistance.
+
+#### Component-Level Equivalent Circuits
+*   Equation (1) can be represented by a circuit containing an input voltage source ($V_g$), the inductor series resistance ($R_L$) carrying current ($I$), and an ideal transformer with a turns ratio of $1:D'$ connecting to the output voltage ($V$).
+*   Equation (2) can be represented by a circuit containing an ideal current source ($I$) on the primary side of an ideal transformer ($1:D'$), which delivers current ($D'I$) to the load resistance ($R$).
+
+#### Combined Equivalent Circuit
+By combining these two representations, a full equivalent circuit for the Boost converter with inductor series resistance is obtained. The dependent sources within this combined circuit can then be replaced by an ideal transformer to simplify the representation.
+
+The final equivalent circuit consists of:
+*   An input voltage source $V_g$.
+*   A series resistor $R_L$ (representing the inductor loss).
+*   An ideal transformer with turns ratio $1:D'$.
+*   A load resistor $R$ on the secondary side.
+
+### Section B: Voltage Gain
+
+To determine the voltage gain $V/V_g$, the equivalent circuit can be simplified by reflecting the input voltage source and series resistor to the output side of the ideal transformer.
+
+The voltage gain is given by:
+$$\frac{V}{V_g} = \frac{D'^2 R}{R_L + D'^2 R} \quad \text{(3)}$$
+
+### Section C: Inductor Current
+
+To determine the inductor current $I$, the load resistor $R$ can be reflected to the input side of the ideal transformer. The reflected load resistance $R_{eq}$ is:
+$$R_{eq} = D'^2 R \quad \text{(4)}$$
+
+The inductor current, which is also the input current for the Boost converter in CCM, is then:
+$$I = \frac{V_g}{R_L + D'^2 R} \quad \text{(5)}$$
+
+### Section D: Converter Efficiency
+
+The efficiency $\eta$ of the converter is defined as the ratio of output power to input power.
+
+*   **Input Power**: $P_{in} = V_g I \quad \text{(6)}$
+*   **Output Power**: $P_{out} = V_o I_o = V (D'I) \quad \text{(7)}$
+
+Substituting the expressions for $P_{in}$ and $P_{out}$ into the efficiency definition:
+$$\eta = \frac{P_{out}}{P_{in}} = \frac{V D' I}{V_g I} = \frac{D' V}{V_g} \quad \text{(8)}$$
+
+By substituting the expression for the voltage gain $V/V_g$ from equation (3) into equation (8), the efficiency is found to be:
+$$\eta = D' \left( \frac{D'^2 R}{R_L + D'^2 R} \right) = \frac{D'^3 R}{R_L + D'^2 R}$$
+This can also be written as:
+$$\eta = \frac{D'}{1 + \frac{R_L}{D'^2 R}} \quad \text{(9)}$$
+
+**Observation**: If the inductor series resistance $R_L = 0$, the efficiency $\eta = D'/1 = D'$ (since $D'^2 R / D'^2 R = 1$), which indicates 100% efficiency, as expected for a lossless converter.

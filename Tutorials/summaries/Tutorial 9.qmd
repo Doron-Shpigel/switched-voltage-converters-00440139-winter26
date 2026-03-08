@@ -1,0 +1,155 @@
+---
+title: "Tutorial 9"
+date: "2026-03-08 22:25"
+---
+
+# Magnetic Device Analysis for Switched-Mode Converters
+
+This document provides a structured summary of the lecture on magnetic device analysis, focusing on its application in switched-mode power converters. It covers fundamental electromagnetic laws and their use in deriving equivalent circuit parameters for a given magnetic core structure.
+
+## Fundamental Concepts in Magnetic Analysis
+
+### Key Quantities and Units
+
+*   **Magnetic Field ($\vec{H}$):** Represents the magnetic field intensity or magnetizing force.
+    *   Units: Amperes per meter ($\text{A/m}$)
+*   **Magnetic Flux Density ($\vec{B}$):** Represents the density of magnetic field lines; also known as magnetic induction.
+    *   Units: Tesla ($\text{T}$), or Volt-seconds per square meter ($\text{Vs/m}^2$)
+*   **Magnetic Flux ($\Phi$):** The total amount of magnetic field passing through a given surface.
+    *   Units: Volt-seconds ($\text{Vs}$)
+    *   Mathematical definition: $\Phi = \iint \vec{B} \cdot d\vec{a}$
+
+### Constitutive Relation for Magnetic Materials
+
+For linear magnetic materials, the magnetic flux density is directly proportional to the magnetic field intensity:
+$$ B = \mu H = \mu_0 \mu_r H $$
+*   $\mu$: Permeability of the material.
+*   $\mu_0 = 4\pi \times 10^{-7} \text{ Vs/(Am)}$: Permeability of free space.
+*   $\mu_r$: Relative permeability of the material. For typical magnetic materials, $\mu_r$ ranges from $10^2$ to $10^6$.
+
+### Fundamental Laws of Electromagnetism for Magnetic Devices
+
+To analyze magnetic fields within a general magnetic device, three fundamental laws are applied:
+
+1.  **Ampere's Law:** The line integral of the magnetic field intensity $\vec{H}$ around a closed path is equal to the total current enclosed by that path.
+    $$ \oint \vec{H} \cdot d\vec{l} = \sum I_{\text{enclosed}} $$
+    *   The direction of the enclosed current is determined by the right-hand rule relative to the chosen integration path.
+2.  **Gauss's Law for Magnetism (No Magnetic Monopoles):** The total magnetic flux through any closed surface is zero. This implies that magnetic field lines always form continuous closed loops and never start or end.
+    $$ \iint \vec{B} \cdot d\vec{a} = 0 $$
+3.  **Faraday's Law of Induction:** A time-varying magnetic flux $\Phi$ through a loop induces an electromotive force (voltage) $v(t)$ in that loop.
+    $$ v(t) = \frac{d\Phi}{dt} = \frac{d}{dt} \iint \vec{B} \cdot d\vec{a} $$
+    *   The direction of the induced voltage can be determined by the right-hand rule, consistent with the principle of power conservation.
+
+### Right-Hand Rule
+
+For Ampere's Law, if the fingers of the right hand curl in the direction of the closed path, the thumb points in the direction of the positive current. For determining the voltage direction in a winding, it is convenient to follow the current direction and the principle of power conservation.
+
+## Example: Magnetic Device Analysis
+
+This section analyzes a specific magnetic core device with two coils to determine its equivalent circuit parameters.
+
+### Device Geometry and Parameters
+
+The device consists of a magnetic core with two coils and an air gap.
+*   **Coil 1:** $n_1$ turns (left winding).
+*   **Coil 2:** $n_2$ turns (right winding).
+*   **Core Permeability:** $\mu$.
+*   **Air Gap Permeability:** $\mu_0$.
+*   **Geometric Lengths (effective magnetic path lengths):**
+    *   $l_1 = 1.5 + 2 + 1.5 = 5 \text{ cm}$
+    *   $l_2 = 1.5 + 2 + 1.5 = 5 \text{ cm}$
+    *   $l_3 = 2 - 0.1 = 1.9 \text{ cm}$ (for the middle core leg)
+    *   $l_g = 0.1 \text{ cm}$ (for the air gap)
+*   **Cross-sectional Areas:**
+    *   $A_c = 2 \text{ cm}^2$ (for the left leg, associated with $B_1$)
+    *   $A_{c/2} = 1 \text{ cm}^2$ (for the right and middle legs, associated with $B_2$ and $B_3$ respectively)
+
+### Part A: Magnetic Field Calculation ($B_1, B_2, B_3$)
+
+The objective is to calculate the magnetic flux densities $B_1, B_2, B_3$ as functions of the currents $i_1$ and $i_2$.
+
+#### 1. Ampere's Law for the Left Loop
+
+Considering a counter-clockwise path around the left loop, and assuming $B_1$ in the left leg and $B_3$ in the middle leg (which includes the air gap $B_g$) are in the path direction:
+$$ \frac{B_1}{\mu} l_1 + \frac{B_3}{\mu} l_3 + \frac{B_g}{\mu_0} l_g = n_1 i_1 $$
+Assuming $B_g = B_3$ in the air gap due to flux continuity:
+$$ \frac{B_1}{\mu} l_1 + \left(\frac{l_3}{\mu} + \frac{l_g}{\mu_0}\right) B_3 = n_1 i_1 $$
+
+#### 2. Ampere's Law for the Right Loop
+
+Considering a clockwise path around the right loop, and assuming $B_2$ in the right leg and $B_3$ in the middle leg are in the direction opposite to the path:
+$$ -\frac{B_2}{\mu} l_2 - \left(\frac{l_3}{\mu} + \frac{l_g}{\mu_0}\right) B_3 = n_2 i_2 $$
+
+#### 3. Magnetic Flux Conservation at the Node
+
+At the central junction, the total magnetic flux entering equals the total flux exiting. Based on the given areas, $B_1$ is in area $A_c$, while $B_2$ and $B_3$ are in areas $A_c/2$:
+$$ B_1 A_c - B_2 \left(\frac{A_c}{2}\right) - B_3 \left(\frac{A_c}{2}\right) = 0 $$
+Dividing by $A_c$ (as implied in the lecture notes):
+$$ B_1 - \frac{B_2}{2} - \frac{B_3}{2} = 0 \implies 2B_1 = B_2 + B_3 $$
+
+#### 4. System of Equations and Solution
+
+Defining $\alpha = \frac{l_3}{\mu} + \frac{l_g}{\mu_0}$ and noting $l_1=l_2=l$, the system of three equations in terms of $B_1, B_2, B_3$ is:
+$$
+\begin{cases}
+\frac{l}{\mu} B_1 + \alpha B_3 = n_1 i_1 \\
+-\frac{l}{\mu} B_2 - \alpha B_3 = n_2 i_2 \\
+2B_1 = B_2 + B_3
+\end{cases}
+$$
+Solving this system yields the following expressions for $B_1, B_2, B_3$:
+$$
+\begin{align*}
+B_1 &= \frac{n_1 i_1 (\alpha\mu + l) + n_2 i_2 \mu \frac{l}{2}}{l(2(\alpha\mu + l) + \alpha\mu)} \\
+B_2 &= \frac{-n_2 i_2 (\alpha\mu + l) - n_1 i_1 \mu \frac{l}{2}}{l(2(\alpha\mu + l) + \alpha\mu)} \\
+B_3 &= \frac{(n_1 i_1 - n_2 i_2)\mu l}{l(2(\alpha\mu + l) + \alpha\mu)}
+\end{align*}
+$$
+Where $\alpha = \frac{l_g}{\mu_0} + \frac{l_3}{\mu}$.
+
+### Part B: Coupled Inductor Model ($L_1, L_2, k$)
+
+The device can be represented by a coupled inductor model with the following voltage-current relationships:
+$$
+\begin{pmatrix} v_1 \\ v_2 \end{pmatrix} = \begin{pmatrix} L_1 & M \\ M & L_2 \end{pmatrix} \begin{pmatrix} \frac{di_1}{dt} \\ \frac{di_2}{dt} \end{pmatrix}
+$$
+where $L_1$ and $L_2$ are the self-inductances, and $M$ is the mutual inductance, with $M = k \sqrt{L_1 L_2}$ where $k$ is the coupling coefficient.
+
+#### 1. Applying Faraday's Law
+
+The induced voltages across the coils are derived from Faraday's Law:
+$$
+\begin{align*} v_1 &= n_1 \frac{d\Phi_1}{dt} = n_1 A_c \frac{dB_1}{dt} \\ v_2 &= n_2 \frac{d\Phi_2}{dt} = n_2 \left(\frac{A_c}{2}\right) \frac{dB_2}{dt} \end{align*}
+$$
+Substituting the expressions for $B_1$ and $B_2$ from Part A and differentiating with respect to time allows us to identify the inductance terms.
+
+#### 2. Derivation of Self- and Mutual Inductances
+
+By comparing the derived voltage equations with the standard coupled inductor model, the following expressions for $L_1$, $L_2$, and $M$ are obtained:
+$$
+\begin{align*}
+L_1 &= n_1^2 A_c \frac{l(\alpha\mu + l)}{l(2(\alpha\mu + l) + \alpha\mu)} \\
+L_2 &= n_2^2 \frac{A_c}{2} \frac{l(\alpha\mu + l)}{l(2(\alpha\mu + l) + \alpha\mu)} \\
+M &= n_1 n_2 \frac{A_c}{2} \frac{l\mu}{l(2(\alpha\mu + l) + \alpha\mu)}
+\end{align*}
+$$
+Note that the factor $l$ in the numerator and denominator of these expressions can be canceled.
+
+#### 3. Calculation of Coupling Coefficient ($k$)
+
+The coupling coefficient $k$ is calculated as $k = \frac{M}{\sqrt{L_1 L_2}}$.
+Substituting the derived expressions for $L_1$, $L_2$, and $M$ (after canceling the common $l$ terms):
+$$
+k = \frac{n_1 n_2 \frac{A_c}{2} \frac{\mu}{(2(\alpha\mu + l) + \alpha\mu)}}{\sqrt{ \left(n_1^2 A_c \frac{(\alpha\mu + l)}{(2(\alpha\mu + l) + \alpha\mu)}\right) \left(n_2^2 \frac{A_c}{2} \frac{(\alpha\mu + l)}{(2(\alpha\mu + l) + \alpha\mu)}\right) }}
+$$
+$$
+k = \frac{n_1 n_2 \frac{A_c}{2} \mu}{n_1 n_2 \sqrt{A_c \frac{A_c}{2}} (\alpha\mu + l)} = \frac{\frac{A_c}{2} \mu}{\frac{A_c}{\sqrt{2}} (\alpha\mu + l)} = \frac{\mu}{\sqrt{2}(\alpha\mu + l)}
+$$
+
+### Part C: Ideal Transformer Equivalent
+
+Under certain simplifying assumptions (e.g., infinite permeability, perfect coupling), the magnetic device can be represented by an ideal transformer.
+
+The voltage gain of the ideal transformer is equal to the ratio of the turns:
+$$ \frac{v_2}{v_1} = \frac{n_2}{n_1} $$
+This specific result for the voltage gain is a consequence of the particular geometry and the assumptions of an ideal transformer model, and it is not a universally applicable result for all magnetic devices.

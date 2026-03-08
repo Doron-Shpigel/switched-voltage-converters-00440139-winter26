@@ -1,0 +1,118 @@
+---
+title: "Tutorial 6"
+date: "2026-03-08 22:31"
+---
+
+## Switched-Mode Power Converters: Losses and Efficiency
+
+This document summarizes an exercise on calculating conduction and switching losses, and overall efficiency, for a Buck converter.
+
+### Introduction to the Buck Converter Exercise
+
+A Buck converter is used to charge a battery with the following configuration:
+
+*   Input voltage: $V_g$
+*   Output voltage (battery): $V_{batt}$
+*   Load current: $I$ (assumed constant due to a very large inductor)
+*   The top diode shown in the figure is the body diode of the transistor.
+
+**Given Data:**
+
+*   Input voltage: $V_g = 28 \text{ V}$
+*   Battery voltage: $V_{batt} = 16 \text{ V}$
+*   Load current: $I = 40 \text{ A}$
+*   Transistor on-resistance: $R_{on} = 35 \text{ m}\Omega$
+*   Diode forward voltage drop: $V_D = 1 \text{ V}$
+
+### 1. Body Diode Conduction Analysis
+
+**Question:** Does the body diode of the upper transistor conduct current?
+
+**Solution:**
+The switching cycle is divided into two parts:
+*   **$[0, D T_s]$:** The upper transistor conducts.
+*   **$[D T_s, T_s]$:** The lower diode conducts.
+
+In both parts of the cycle, the voltage across the upper transistor's body diode is always negative (reverse-biased). Therefore, the body diode does not conduct any current.
+
+### 2. Average Signal Circuit Model for Conduction Losses
+
+An average model is developed to represent the converter's behavior, specifically including conduction losses.
+
+**Average Inductor Voltage Equation:**
+The average voltage across the inductor must be zero in steady-state:
+$$D(V_g - I R_{on} - V_{batt}) + (1-D)(-V_D - V_{batt}) = 0$$
+This simplifies to:
+$$D V_g - D I R_{on} - (1-D) V_D - V_{batt} = 0$$
+
+**Average Input Current Equation:**
+The average input current $I_g$ is related to the output current $I$ by the duty cycle $D$:
+$$I_g = D I$$
+
+**Average Model Diagram:**
+The provided average signal model includes:
+*   An ideal transformer with turns ratio $1:D$.
+*   A series resistance $D R_{on}$ reflecting the transistor's conduction loss.
+*   A series voltage source $D V_D$ (or related to $(1-D)V_D$ implicitly) reflecting the diode's conduction loss.
+*   The input voltage $V_g$ and output voltage $V_{batt}$ (with output current $I$).
+
+### 3. Duty Cycle Calculation
+
+Using the average inductor voltage equation, the duty cycle $D$ can be calculated.
+From $D V_g - D I R_{on} - (1-D) V_D - V_{batt} = 0$, we rearrange to solve for $D$:
+$$D (V_g - I R_{on} + V_D) = V_{batt} + V_D$$
+$$D = \frac{V_{batt} + V_D}{V_g - I R_{on} + V_D}$$
+Plugging in the given values:
+$$D = \frac{16 \text{ V} + 1 \text{ V}}{28 \text{ V} - (40 \text{ A} \times 0.035 \text{ } \Omega) + 1 \text{ V}}$$
+$$D = \frac{17}{28 - 1.4 + 1} = \frac{17}{27.6} \approx 0.616$$
+
+### 4. Switching Losses and Overall Efficiency
+
+The primary switching loss occurs during the turn-on of the upper transistor.
+
+**Given Switching Parameters:**
+*   Reverse recovery time of the diode: $t_{rr} = 200 \text{ ns}$
+*   Reverse recovery charge of the diode: $Q_{rr} = 25 \text{ } \mu\text{C}$
+*   Switching frequency: $f_s = 100 \text{ kHz}$
+
+**Switching Energy Loss Calculation:**
+The energy loss during turn-on is approximated by the formula:
+$$E_{sw} = V_g I t_{rr} + V_g Q_{rr}$$
+$$E_{sw} = (28 \text{ V} \times 40 \text{ A} \times 200 \times 10^{-9} \text{ s}) + (28 \text{ V} \times 25 \times 10^{-6} \text{ C})$$
+$$E_{sw} = 224 \times 10^{-6} \text{ J} + 700 \times 10^{-6} \text{ J} = 924 \times 10^{-6} \text{ J}$$
+
+**Switching Power Loss Calculation:**
+$$P_{sw} = E_{sw} \times f_s$$
+$$P_{sw} = (924 \times 10^{-6} \text{ J}) \times (100 \times 10^3 \text{ Hz}) = 92.4 \text{ W}$$
+
+**Conduction Power Loss Calculation:**
+$$P_{cond} = I^2 D R_{on} + I (1-D) V_D$$
+$$P_{cond} = (40 \text{ A})^2 \times 0.616 \times 0.035 \text{ } \Omega + 40 \text{ A} \times (1 - 0.616) \times 1 \text{ V}$$
+$$P_{cond} = 1600 \times 0.616 \times 0.035 + 40 \times 0.384$$
+$$P_{cond} = 34.496 \text{ W} + 15.36 \text{ W} \approx 49.9 \text{ W}$$
+
+**Output Power Calculation:**
+$$P_{out} = I \times V_{batt}$$
+$$P_{out} = 40 \text{ A} \times 16 \text{ V} = 640 \text{ W}$$
+
+**Total Loss Calculation:**
+$$P_{loss} = P_{sw} + P_{cond}$$
+$$P_{loss} = 92.4 \text{ W} + 49.9 \text{ W} = 142.3 \text{ W}$$
+
+**Overall Efficiency Calculation:**
+$$\eta = \frac{P_{out}}{P_{out} + P_{loss}}$$
+$$\eta = \frac{640 \text{ W}}{640 \text{ W} + 142.3 \text{ W}} = \frac{640}{782.3} \approx 0.8181$$
+$$\eta \approx 81.8\%$$
+
+### 5. Efficiency vs. Switching Frequency Analysis
+
+**Efficiency Function:**
+The efficiency $\eta$ as a function of switching frequency $f_s$ can be expressed as:
+$$\eta(f_s) = \frac{P_{out}}{P_{out} + P_{cond} + P_{sw}(f_s)}$$
+Where $P_{sw}(f_s) = E_{sw} \times f_s$.
+Substituting the values:
+$$\eta(f_s) = \frac{640 \text{ W}}{640 \text{ W} + 49.9 \text{ W} + (924 \times 10^{-6} \text{ J}) \times f_s}$$
+$$\eta(f_s) = \frac{640}{689.9 + (924 \times 10^{-6}) f_s}$$
+
+**Trend:**
+As the switching frequency $f_s$ increases, the switching power loss $P_{sw}$ increases linearly, while conduction losses and output power remain relatively constant. This leads to a decrease in overall efficiency as the switching frequency rises. The provided plot (not included in this text summary) illustrates this inverse relationship, typically showing a logarithmic scale for the frequency axis to visualize the trend over a wide range.

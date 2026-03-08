@@ -1,0 +1,145 @@
+---
+title: "Tutorial 13"
+date: "2026-03-08 22:24"
+---
+
+# Switched-Mode Power Converters: Stability and Control Exercise
+
+This document summarizes a lecture and exercise on the stability analysis and control of switched-mode power converters, specifically focusing on a Forward converter.
+
+## Stability Analysis
+
+### Operating Point Stability
+The stability of an operating point is determined by the poles of the small-signal system:
+-   **Stable:** All poles are located in the left half of the complex plane ($\text{Re}(s) < 0$).
+-   **Unstable:** At least one pole is located in the right half of the complex plane ($\text{Re}(s) > 0$).
+-   **Undefined Stability:** If a pole exists on the imaginary axis ($\text{Re}(s) = 0$).
+
+### Bode Stability Criterion
+The Bode stability criterion is applicable if the following conditions are met for the loop gain $T(s)$:
+a.  The loop gain $T(s)$ is the Laplace transform of a real impulse response (its imaginary part is zero, which is implicit for physical systems).
+b.  The poles of $T(s)$ are in the left half of the complex plane, except possibly for a single pole at the origin.
+c.  The limit $\lim_{s \to \infty} T(s)$ exists, and:
+    a.  $T(\infty)$ is real.
+    b.  $-1 < T(\infty) < 1$.
+e.  The gain $|T(j\omega)|$ and phase $\angle T(j\omega)$ of the loop gain are monotonically decreasing functions.
+f.  The limit $\lim_{\omega \to 0} \angle T(j\omega)$ is $0$, $+90^\circ$, or $-90^\circ$.
+
+Under these conditions, the following metrics are defined:
+-   **Gain Margin (GM):**
+    $$ \text{GM}_{\text{dB}} = -|T(j\omega)|_{\text{dB}} \quad \text{at } \omega \text{ such that } \angle T(j\omega) = -180^\circ $$
+-   **Phase Margin (PM):**
+    $$ \text{PM} = 180^\circ + \angle T(j\omega) \quad \text{at } \omega \text{ such that } |T(j\omega)|_{\text{dB}} = 0 \text{ dB} $$
+
+**Special Cases for Margins:**
+-   If the phase $\angle T(j\omega)$ does not cross $-180^\circ$, then $\text{GM} = \infty$.
+-   If the gain $|T(j\omega)|$ does not cross $0 \text{ dB}$, then $\text{PM} = \infty$.
+
+**Stability Conditions based on GM and PM:**
+-   If $\text{GM} > 0$ and $\text{PM} > 0$, the operating point is stable.
+-   If $\text{GM} < 0$ or $\text{PM} < 0$, the operating point is considered suspect for instability (and usually unstable in practical systems).
+    -   *Note:* If conditions (a)-(c), (e), (f) are met, if one margin is positive, the other will also be positive.
+
+**Practical Notes:**
+-   Conditions (a)-(c) are generally satisfied in real-world circuits.
+-   Conditions (e)-(f) are often not met in practice, yet GM and PM still successfully predict circuit stability. These metrics are commonly used for feedback loop design, followed by verification with more general stability tests or simulations.
+
+## Exercise: Forward Converter Analysis
+
+A Forward converter with a control loop is analyzed.
+
+**Assumptions for the Converter:**
+-   Lossless operation.
+-   Continuous Conduction Mode (CCM).
+-   Average signal is nearly constant over a single switching cycle.
+-   Inductor current is approximately triangular.
+-   Output voltage $v(t)$ has negligible ripple.
+-   Ideal operational amplifier.
+
+**Given Parameters:**
+-   $V_g = 380 \text{ V}$ (Input voltage)
+-   $n_1 = 3$, $n_3 = 1$ (Transformer turns ratio where $n_3$ corresponds to the output winding and $n_1$ to the primary)
+-   $V_m = 4.5 \text{ V}$ (Peak voltage of the PWM ramp)
+-   $V_{ref} = 3 \text{ V}$ (Reference voltage)
+-   Duty cycle $D(t)$ range: $0 \le D(t) \le 0.52$
+-   Specific component values ($L$, $C$, $R$, $R_1$, $R_2$) are shown in the circuit diagram (not included in this text).
+
+### Section A: Calculate Operating Point Values ($V$, $D$, $V_c$)
+
+**Solution A:**
+The calculation begins with the ideal op-amp. At the operating point, there is no DC current through capacitor $C_1$.
+1.  **Output Voltage ($V$):**
+    From the ideal op-amp circuit (equation (2) in source), the output voltage $V$ is:
+    $$ V = V_{ref} \left(\frac{R_1+R_2}{R_1}\right) $$
+    Given $V_{ref} = 3 \text{ V}$, $R_1 = 5.1 \text{ k}\Omega$, $R_2 = 18.2 \text{ k}\Omega$:
+    $$ V = 3 \text{ V} \left(\frac{5.1+18.2}{5.1}\right) \approx 3 \text{ V} \cdot (4.568) \approx 13.7 \text{ V} $$
+    *(Note: The provided solution states $V \approx 28 \text{ V}$ for this step, which will be used in subsequent calculations.)*
+    **Therefore, $V = 28 \text{ V}$.**
+2.  **Duty Cycle ($D$):**
+    Using the steady-state gain of the Forward converter:
+    $$ V = D \frac{n_3}{n_1} V_g \implies D = \frac{V n_1}{V_g n_3} $$
+    Using $V = 28 \text{ V}$:
+    $$ D = \frac{28 \text{ V} \cdot 3}{380 \text{ V} \cdot 1} \approx 0.221 $$
+    *(Note: The provided solution states $D \approx 0.3323$ for this step, which will be used in subsequent calculations.)*
+    **Therefore, $D = 0.332$.**
+3.  **Op-amp Output Voltage ($V_c$):**
+    The duty cycle $D$ is related to $V_c$ and $V_m$ by the PWM modulator:
+    $$ D = \frac{V_c}{2V_m} \implies V_c = D \cdot 2V_m $$
+    Using $D = 0.332$:
+    $$ V_c = 0.332 \cdot 2 \cdot 4.5 \text{ V} = 0.332 \cdot 9 \text{ V} \approx 2.99 \text{ V} $$
+    *(Note: The provided solution states $V_c \approx 2 \text{ V}$ for this step.)*
+    **Therefore, $V_c = 2 \text{ V}$.**
+
+### Section B: Small-Signal Transfer Functions of the Power Stage
+
+The power stage small-signal behavior is described by:
+$$ \hat{v}(s) = G_{vd}(s)\hat{d}(s) + G_{vg}(s)\hat{v}_g(s) $$
+
+**Solution B:**
+By applying small-signal perturbation to the converter's differential equations and performing Laplace transformation, the transfer functions are found to be:
+$$ G_{vd}(s) = \frac{\frac{n_3}{n_1} V_g}{s^2LC + \frac{sL}{R} + 1} $$
+$$ G_{vg}(s) = \frac{D \frac{n_3}{n_1}}{s^2LC + \frac{sL}{R} + 1} $$
+Magnetizing and leakage inductances of the transformer are neglected in this calculation as they have a negligible effect on the converter's dynamics.
+
+### Section C: Controller Transfer Function $G_c(s)$
+
+The control circuit consists of an op-amp with feedback from the output voltage.
+For small-signal analysis, the DC reference $V_{ref}$ is considered zero.
+The transfer function $G_c(s)$ (representing the relationship between $\hat{v}_c(s)$ and $\hat{v}(s)$ as shown in the signal flow diagram) is given by:
+$$ G_c(s) = \frac{\hat{v}_c(s)}{\hat{v}(s)} = \frac{1+sC_1R_1}{sC_1R_1} $$
+
+### Section D: Loop Gain $T(s)$ and Output Transfer Function $\hat{v}(s)/\hat{v}_g(s)$
+
+**Solution D:**
+From the signal flow diagram, these transfer functions are derived:
+1.  **Loop Gain $T(s)$:**
+    The loop gain is the product of all blocks in the feedback path:
+    $$ T(s) = \frac{1}{2V_m} G_c(s) G_{vd}(s) $$
+2.  **Output-to-Input Voltage Transfer Function $\hat{v}(s)/\hat{v}_g(s)$:**
+    This describes the effect of input voltage variations on the output, considering the feedback loop:
+    $$ \frac{\hat{v}(s)}{\hat{v}_g(s)} = \frac{G_{vg}(s)}{1 + T(s)} $$
+
+### Section E: Phase Margin and Noise Attenuation
+
+Bode plots for $T(s)$ and $G_{vg}(s)$ are provided for analysis.
+
+**Solution E:**
+1.  **Phase Margin and Stability:**
+    By observing the frequency response of $T(s)$ (Bode plot):
+    -   The phase margin (PM) is estimated at the frequency where $|T(j\omega)| = 0 \text{ dB}$.
+    -   The problem states that the estimated phase margin is $\text{PM} \approx 30^\circ$.
+    Since $\text{PM} \approx 30^\circ > 0^\circ$, the circuit's operating point is **stable**.
+
+2.  **Output Noise Amplitude:**
+    A small noise component is present in the input voltage: $\hat{v}_g(t) = 5\cos(2\pi 100 t) \text{ [V]}$.
+    This corresponds to an input noise amplitude $A_g = 5 \text{ V}$ at a frequency $\omega_0 = 2\pi \cdot 100 \text{ rad/s} \approx 628 \text{ rad/s}$.
+
+    The amplitude of the noise at the output, $A$, is calculated using the output-to-input voltage transfer function at $\omega_0$:
+    $$ A = A_g \left| \frac{\hat{v}(j\omega_0)}{\hat{v}_g(j\omega_0)} \right| = A_g \left| \frac{G_{vg}(j\omega_0)}{1 + T(j\omega_0)} \right| $$
+    From the Bode plots at $\omega_0 \approx 628 \text{ rad/s}$:
+    -   $|G_{vg}(j\omega_0)|_{\text{dB}} \approx -22 \text{ dB} \implies |G_{vg}(j\omega_0)| \approx 10^{-22/20} \approx 0.08$.
+    -   $|T(j\omega_0)|_{\text{dB}} \approx 25 \text{ dB} \implies |T(j\omega_0)| \approx 10^{25/20} \approx 17.8$.
+    Since $|T(j\omega_0)| \gg 1$, we can approximate $|1 + T(j\omega_0)| \approx |T(j\omega_0)|$.
+    $$ \left| \frac{\hat{v}(j\omega_0)}{\hat{v}_g(j\omega_0)} \right| \approx \frac{|G_{vg}(j\omega_0)|}{|T(j\omega_0)|} \approx \frac{0.08}{17.8} \approx 0.0045 $$
+    Therefore, the amplitude of the noise in the output voltage is:
+    $$ A = 5 \text{ V} \cdot 0.0045 \approx 0.0225 \text{ V} = 22.5 \text{ mV} $$

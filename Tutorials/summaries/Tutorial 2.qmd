@@ -1,0 +1,146 @@
+---
+title: "Tutorial 2"
+date: "2026-03-08 22:29"
+---
+
+### Summary of Switched-Mode Converter Practice - Buck Converter CCM Analysis
+
+This document summarizes the analysis of a Buck converter operating in Continuous Conduction Mode (CCM), demonstrating key principles for switched-mode power supply analysis.
+
+#### 1. Review of CCM Operating Assumptions
+
+In CCM, the following general assumptions apply to the system:
+
+*   **Steady State:** Voltages and currents are periodic waveforms with a period $T_s$. This defines the steady state of a switched-mode converter.
+*   **Cycle Division:** Each period $T_s$ is divided into two distinct parts, each with a specific switch state:
+    *   $DT_s$: Duration of the first part of the cycle.
+    *   $(1-D)T_s = D'T_s$: Duration of the second part of the cycle, where $D' = 1-D$.
+*   **Average Values:** The following relationships hold between instantaneous signals and their average values over a cycle:
+    *   $\frac{1}{T_s} \int_{0}^{T_s} x(\tau) d\tau = X$
+    *   $\frac{1}{DT_s} \int_{0}^{DT_s} x(\tau) d\tau \approx X$
+    *   $\frac{1}{D'T_s} \int_{DT_s}^{T_s} x(\tau) d\tau \approx X$
+
+#### 2. Principles of Analysis in CCM
+
+The core principles for analyzing converters in CCM are:
+
+*   **Passive Component Variables:** Each passive component (inductor or capacitor) is described by one average variable:
+    *   **Inductors:** Described by the average current over a cycle: $I = \frac{1}{T_s} \int_{0}^{T_s} i(\tau) d\tau$.
+    *   **Capacitors:** Described by the average voltage over a cycle: $V = \frac{1}{T_s} \int_{0}^{T_s} v(\tau) d\tau$.
+*   **Inductor Voltage Balance:** The average voltage across an inductor over a cycle is zero: $\frac{1}{T_s} \int_{0}^{T_s} v_L(\tau) d\tau = 0$.
+*   **Capacitor Current Balance:** The average current through a capacitor over a cycle is zero: $\frac{1}{T_s} \int_{0}^{T_s} i_C(\tau) d\tau = 0$.
+
+#### 3. Example: Buck Converter for Battery Charging
+
+The example analyzes a Buck converter used to transfer energy between two batteries, $V_a$ and $V_b$, with internal resistances $R_a$ and $R_b$. The transistors are represented as ideal switches. Capacitors $C_1$ and $C_2$ are assumed to be "very large," implying that the voltages $V_1$ and $V_2$ are approximately constant.
+*   **Given:** $V_a$, $V_b$, $T_s$, and $V_a > V_b$.
+*   **Operation:**
+    *   **Phase 1 (duration $DT_s$):** The top transistor conducts.
+    *   **Phase 2 (duration $D'T_s = (1-D)T_s$):** The bottom transistor conducts.
+
+##### Section A: Calculation of Steady-State Variables
+
+**Objective:** Calculate the average inductor current $I$, the currents $I_1$ and $I_2$, and the voltages $V_1$ and $V_2$ as functions of the duty cycle $D$.
+
+**Methodology:** Apply the CCM analysis principles to the circuit.
+*   **Inductor Voltage Balance:**
+    *   During $DT_s$, the voltage across the inductor is $V_1 - V_2$.
+    *   During $D'T_s$, the voltage across the inductor is $-V_2$.
+    *   Applying the inductor voltage balance principle: $D(V_1 - V_2) + (1-D)(-V_2) = 0 \implies V_2 = DV_1$.
+*   **Capacitor $C_1$ Current Balance:**
+    *   During $DT_s$, the current through $C_1$ is $I_1 - I$.
+    *   During $D'T_s$, the current through $C_1$ is $I_1$.
+    *   Applying the capacitor current balance principle: $D(I_1 - I) + (1-D)I_1 = 0 \implies I_1 = DI$.
+*   **Capacitor $C_2$ Current Balance:**
+    *   The current through $C_2$ is $i(t) - I_2$.
+    *   Applying the capacitor current balance principle: $\frac{1}{T_s} \int_0^{T_s} (i(t) - I_2) dt = 0 \implies I - I_2 = 0 \implies I_2 = I$.
+*   **Input/Output Terminal Equations:**
+    *   Battery $V_a$: $V_a - V_1 = I_1 R_a$.
+    *   Battery $V_b$: $V_b - V_2 = -I_2 R_b$ (the negative sign indicates current flowing into the battery $V_b$).
+
+**Solutions for Steady-State Variables:**
+Solving the system of five equations yields:
+*   $I = \frac{D V_a - V_b}{D^2 R_a + R_b}$
+*   $I_1 = DI = \frac{D(D V_a - V_b)}{D^2 R_a + R_b}$
+*   $I_2 = I = \frac{D V_a - V_b}{D^2 R_a + R_b}$
+*   $V_1 = V_a - I_1 R_a = V_a - \frac{D(D V_a - V_b)R_a}{D^2 R_a + R_b}$
+*   $V_2 = DV_1 = D \left( V_a - \frac{D(D V_a - V_b)R_a}{D^2 R_a + R_b} \right)$
+
+##### Section B: Power at Input and Output
+
+**Objective:** Calculate the input power $P_1$ and output power $P_2$.
+
+**Formulas:**
+*   Input power: $P_1 = V_1 I_1$
+*   Output power: $P_2 = V_2 I_2$
+
+**Solutions:**
+Substituting the derived expressions for currents and voltages:
+*   $P_1 = \frac{D(D V_a - V_b)(V_a R_b + D V_b R_a)}{(D^2 R_a + R_b)^2}$
+*   $P_2 = \frac{D(D V_a - V_b)(V_a R_b + D V_b R_a)}{(D^2 R_a + R_b)^2}$
+
+**Note:** The duty cycle $D$ can be used to control the direction and magnitude of energy flow between the batteries.
+
+##### Section C: Lossless Converter Demonstration
+
+**Objective:** Show that the converter is lossless.
+
+**Proof:**
+The converter is considered lossless because it is built from ideal components (ideal capacitors, inductors, and switches), which do not dissipate power. This is also confirmed by the derived equations in Section B, where $P_1 = P_2$.
+
+##### Section D: Condition for Energy Flow from Battery A to Battery B
+
+**Objective:** Determine the range of duty cycle $D$ for which energy flows from battery A ($V_a$) to battery B ($V_b$).
+
+**Condition:** For energy to flow from $V_a$ to $V_b$, the output power $P_2$ (or input power $P_1$) must be positive. This requires the average inductor current $I$ to be positive.
+From the expression for $I$: $I = \frac{D V_a - V_b}{D^2 R_a + R_b}$.
+Since $D^2 R_a + R_b$ is always positive, for $I > 0$, we must have $D V_a - V_b > 0$.
+Therefore, $D > \frac{V_b}{V_a}$.
+
+##### Section E: Charging Power and Efficiency
+
+**Objective:**
+1.  Derive the charging efficiency $\eta_{chg}$ as a function of charging power $P_{chg}$, assuming $R_a = 0$.
+2.  Sketch the function $\eta_{chg}(P_{chg})$.
+
+**Definitions:**
+*   Charging power: $P_{chg} = V_b I_2$.
+*   Charging efficiency: $\eta_{chg} = \frac{\text{Power delivered to } V_b}{\text{Input power}} = \frac{V_b I_2}{V_1 I_1}$.
+
+**Assumption:** For this section, assume $R_a = 0$.
+
+**Derivation:**
+With $R_a = 0$, the input terminal equation becomes $V_a - V_1 = 0 \implies V_1 = V_a$.
+Using previous results: $I_1 = DI$, $I_2 = I$, $I = \frac{D V_a - V_b}{R_b}$.
+Substitute these into the efficiency formula:
+$\eta_{chg} = \frac{V_b I_2}{V_1 I_1} = \frac{V_b I}{V_a (DI)} = \frac{V_b}{DV_a}$.
+
+To express $\eta_{chg}$ in terms of $P_{chg}$, we first express $D$ using $P_{chg}$:
+$P_{chg} = V_b I_2 = V_b I = V_b \left( \frac{D V_a - V_b}{R_b} \right)$
+$P_{chg} R_b = D V_a V_b - V_b^2$
+$D V_a V_b = P_{chg} R_b + V_b^2$
+$D = \frac{P_{chg} R_b + V_b^2}{V_a V_b}$
+
+Now substitute $D$ back into the efficiency expression:
+$\eta_{chg} = \frac{V_b}{D V_a} = \frac{V_b}{\left( \frac{P_{chg} R_b + V_b^2}{V_a V_b} \right) V_a} = \frac{V_b^2}{P_{chg} R_b + V_b^2}$
+This can also be written as $\eta_{chg} = \frac{1}{1 + \frac{P_{chg} R_b}{V_b^2}}$.
+
+**Plot of $\eta_{chg}(P_{chg})$:**
+The function shows that efficiency is inversely related to charging power.
+```
+      ^ \eta_{chg}
+      |
+    1.0 + . . . . . . . . . . . . . . .
+        |            .
+        |          .
+        |        .
+        |      .
+        |    .
+      0 +------------------------------> P_{chg}
+        0           V_b^2 / R_b (approx)
+```
+The efficiency starts at 1 (100%) when $P_{chg} = 0$ and decreases as $P_{chg}$ increases, asymptotically approaching 0.
+
+**Key Takeaways:**
+*   As the battery is charged with higher power, the charging efficiency decreases.
+*   It is possible to achieve efficiency close to 100% when the charging power approaches zero, implying an infinitely long charging time.

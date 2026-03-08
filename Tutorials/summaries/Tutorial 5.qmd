@@ -1,0 +1,100 @@
+---
+title: "Tutorial 5"
+date: "2026-03-08 22:32"
+---
+
+# Switched-Mode Converters: Analysis in Discontinuous Conduction Mode (DCM)
+
+This summary outlines the analysis of switched-mode converters operating in Discontinuous Conduction Mode (DCM), focusing on a Boost converter example.
+
+## 1. Introduction to Discontinuous Conduction Mode (DCM)
+
+### 1.1 Definition of DCM
+DCM occurs when the state of the switches in the converter (e.g., transistor and diode) is not directly controlled by the designer but depends on the current and voltage levels. In Boost and Buck converters, DCM is characterized by the inductor current dropping to zero during a portion of the switching cycle, causing the diode to stop conducting. This results in the switching cycle having three or more distinct operating states.
+
+### 1.2 Working Assumptions for DCM Analysis
+For analyzing converters in DCM, the following assumptions are made:
+*   **Steady State Operation:** Voltages and currents in the system are periodic with a switching period $T_s$. This implies:
+    *   The average voltage across an inductor over one cycle is zero.
+    *   The average current through a capacitor over one cycle is zero.
+*   **Average Value Relationships:** For any periodic signal $x(\tau)$, its average value $X$ over a cycle $T_s$ is given by:
+    $$ X = \frac{1}{T_s} \int_0^{T_s} x(\tau) d\tau $$
+*   **Capacitor Voltage Ripple (Small Ripple Assumption):** For capacitor voltages with small ripple, the instantaneous voltage can be approximated by its average value over certain intervals:
+    $$ v(t) \approx V $$
+    This allows replacing instantaneous capacitor voltages with their average values in integral calculations.
+
+### 1.3 General Methodology for DCM Analysis
+A common method for analyzing converters in DCM involves these steps:
+1.  **Inductor Voltage-Second Balance:** Write equations for the average voltage across each inductor being zero over a cycle.
+2.  **Average Voltage Substitution:** Replace voltages in these equations with their average values (similar to Continuous Conduction Mode - CCM).
+3.  **Capacitor Charge Balance:** Write equations for the average current through each capacitor being zero over a cycle.
+4.  **Direct Current Integration:** For currents in the capacitor charge balance equations, direct integration of their instantaneous waveforms must be performed, as they cannot be simply replaced by their average values (unlike voltages with small ripple). This step yields additional relationships between the average voltages and currents.
+
+## 2. Case Study: Boost Converter in DCM
+
+Consider a Boost converter with an input voltage $V_g$, output voltage $V$, and duty cycle $D_1$. The transistor conducts for a duration of $D_1 T_s$.
+
+### 2.1 Condition for DCM Operation
+
+For a Boost converter operating in CCM, the average inductor current $I_L$ and ripple current $\Delta I_L$ are given by:
+*   $I_L = \frac{V_g}{R(1 - D_1)^2}$
+*   $\Delta I_L = \frac{V_g D_1 T_s}{L}$
+
+The converter operates in DCM when the inductor current becomes negative during the cycle, meaning the diode stops conducting. This occurs when the minimum inductor current drops to zero or below. A commonly used equivalent condition is that the average inductor current is less than half of the peak-to-peak ripple:
+$$ I_L < \frac{\Delta I_L}{2} $$
+Substituting the CCM expressions:
+$$ \frac{V_g}{R(1 - D_1)^2} < \frac{V_g D_1 T_s}{2L} $$
+Simplifying, the condition for DCM is:
+$$ \frac{L}{R T_s} < \frac{D_1 (1 - D_1)^2}{2} $$
+This condition shows that DCM is more likely to occur with small inductance ($L$), large resistance ($R$), or small duty cycle ($D_1$). When the load resistance $R \to \infty$ (no load), the converter always operates in DCM.
+
+### 2.2 Derivation of Voltage Gain ($V/V_g$) in DCM
+
+In DCM, the Boost converter operates in three distinct modes during a switching cycle:
+1.  **Mode 1 ($0 < t < D_1 T_s$):** Transistor conducts. Inductor voltage $v_L = V_g$.
+2.  **Mode 2 ($D_1 T_s < t < (D_1 + D_2) T_s$):** Diode conducts. Inductor voltage $v_L = V_g - V$.
+3.  **Mode 3 ($(D_1 + D_2) T_s < t < T_s$):** Inductor current is zero. Both transistor and diode are off. Inductor voltage $v_L = 0$.
+
+We use the general methodology for DCM analysis:
+
+#### 2.2.1 Inductor Voltage-Second Balance
+The average voltage across the inductor over one cycle must be zero:
+$$ \frac{1}{T_s} \int_0^{T_s} v_L(t) dt = 0 $$
+$$ D_1 V_g + D_2 (V_g - V) + (1 - D_1 - D_2) \cdot 0 = 0 $$
+$$ D_1 V_g + D_2 V_g - D_2 V = 0 $$
+From this, we can express $D_2$ in terms of $V$ and $V_g$:
+$$ D_2 = D_1 \frac{V_g/V}{1 - V_g/V} $$
+
+#### 2.2.2 Capacitor Charge Balance
+The average current through the output capacitor must be zero. This means the average diode current $I_{D,avg}$ must equal the average load current $I_{out} = V/R$:
+$$ \frac{1}{T_s} \int_0^{T_s} i_C(t) dt = 0 \implies \frac{1}{T_s} \int_0^{T_s} i_D(t) dt = \frac{V}{R} $$
+To calculate the average diode current, we look at the inductor current waveform. The peak inductor current $i_{pk}$ (at $t=D_1 T_s$) is:
+$$ i_{pk} = \frac{V_g D_1 T_s}{L} $$
+The diode current $i_D(t)$ is a triangular pulse that starts from $i_{pk}$ and linearly decreases to zero during Mode 2. The duration of Mode 2 is $D_2 T_s$.
+The integral of the diode current over a cycle is the area of this triangle divided by $T_s$:
+$$ I_{D,avg} = \frac{1}{T_s} \left( \frac{1}{2} i_{pk} D_2 T_s \right) = \frac{1}{2} i_{pk} D_2 $$
+Substituting $i_{pk}$:
+$$ I_{D,avg} = \frac{1}{2} \left( \frac{V_g D_1 T_s}{L} \right) D_2 = \frac{V_g D_1 D_2 T_s}{2L} $$
+Equating this to $V/R$:
+$$ \frac{V_g D_1 D_2 T_s}{2L} = \frac{V}{R} $$
+
+#### 2.2.3 Solving for the Voltage Gain
+We have two equations and two unknowns ($V$ and $D_2$):
+1.  $D_1 V_g + D_2 (V_g - V) = 0$
+2.  $\frac{V_g D_1 D_2 T_s}{2L} = \frac{V}{R}$
+
+Substitute $D_2$ from the first equation into the second:
+$$ D_2 = D_1 \frac{V_g/V}{1 - V_g/V} $$
+$$ \frac{V_g D_1 T_s}{2L} \left( D_1 \frac{V_g/V}{1 - V_g/V} \right) = \frac{V}{R} $$
+Rearranging and simplifying, let $M = V/V_g$ be the voltage gain:
+$$ M^2 - M - \frac{D_1^2 T_s R}{2L} = 0 $$
+This is a quadratic equation for $M$. Solving for $M$:
+$$ M = \frac{1 \pm \sqrt{1 - 4(1)\left(-\frac{D_1^2 T_s R}{2L}\right)}}{2} $$
+$$ M = \frac{1 \pm \sqrt{1 + \frac{2 D_1^2 T_s R}{L}}}{2} $$
+Only the positive solution is physically meaningful, as the Boost converter output voltage is always greater than or equal to the input voltage ($V \ge V_g$, so $M \ge 1$):
+$$ \frac{V}{V_g} = \frac{1}{2} \left( 1 + \sqrt{1 + \frac{2 D_1^2 T_s R}{L}} \right) $$
+This voltage gain expression is valid only when the converter operates in DCM, under the condition previously derived: $L / (R T_s) < D_1 (1 - D_1)^2 / 2$.
+
+### 2.3 Important Considerations for Boost in DCM
+*   **No-Load Operation:** As $R \to \infty$, the term $\frac{2 D_1^2 T_s R}{L}$ in the voltage gain equation tends to infinity, leading to an theoretically infinite output voltage. This highlights a critical aspect of Boost converters: operating without a load can cause the output voltage to rise to dangerous levels.
+*   **Protection Systems:** Due to the potential for high output voltages in no-load or light-load DCM conditions, Boost converters often include protection systems to prevent overvoltage.

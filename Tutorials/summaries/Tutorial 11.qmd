@@ -1,0 +1,158 @@
+---
+title: "Tutorial 11"
+date: "2026-03-08 22:30"
+---
+
+# Basic Transformer Design for Switched-Mode Converters
+
+This document summarizes the basic design principles for "classic" transformers used in isolated switched-mode converters such as Forward or Full-bridge topologies.
+
+## Desired Transformer Properties
+
+Ideal transformers for switched-mode power supplies should exhibit the following characteristics:
+
+*   **Minimal Energy Storage**:
+    *   High magnetization inductance ($L_m$) is desired.
+    *   This leads to lower magnetization current ($i_m$) and thus minimal stored energy ($0.5 L_m i_m^2$).
+    *   Transformers are not designed for energy storage, so the core typically does not include an air gap.
+*   **Low Leakage Inductances**:
+    *   Leakage inductances are parasitic elements that cause losses.
+    *   They are given by $L_{leak} = L_i(1-k)$, where $L_i$ is self-inductance and $k$ is the coupling coefficient.
+    *   To minimize leakage, a high coupling coefficient ($k \approx 1$) between windings is essential.
+    *   For initial design, leakage inductances are often assumed to be zero ($k=1$).
+*   **Low Losses**:
+    *   **Magnetic Core Losses**:
+        *   Influenced by the magnetic material type and core volume.
+        *   Minimize by selecting a core material suitable for the operating frequency and reducing core size.
+    *   **Copper Losses (in Conductors)**:
+        *   Minimize by using conductors that are as short and thick as possible.
+        *   Litz wire is used to reduce skin effect and proximity effect losses at high frequencies.
+
+## Ideal Transformer Model with Magnetization Inductance
+
+Consider a simple transformer with two windings: $n_1$ (primary), $n_2$ (secondary), core cross-section area $A_c$, magnetic path length $l_m$, and permeability $\mu$.
+
+**Assumptions**:
+*   No magnetic fields outside the core.
+*   Leakage inductances are zero ($k=1$).
+*   Magnetic flux density $B$ is uniform throughout the core.
+
+**Governing Equations**:
+*   From Ampere's Law, the magnetic field strength $H(t)$ is related to the currents:
+    $$H(t)l_m = n_1 i_1(t) + n_2 i_2(t)$$
+*   From Faraday's Law, the voltages are related to the change in flux density:
+    $$v_1(t) = n_1 A_c \frac{dB(t)}{dt}$$
+    $$v_2(t) = n_2 A_c \frac{dB(t)}{dt}$$
+*   The **magnetization inductance** (referred to the primary side) is defined as:
+    $$L_m = \frac{\mu n_1^2 A_c}{l_m}$$
+*   These equations describe an ideal transformer with magnetization inductance (and no leakage inductance).
+
+## Magnetic Core Saturation
+
+A critical constraint in transformer design is to ensure the magnetic material does not enter saturation, meaning the magnetic flux density must remain below the saturation flux density: $B(t) \le B_{sat}$.
+
+Using Faraday's Law for the primary winding:
+$$v_1(t) = n_1 A_c \frac{dB(t)}{dt}$$
+Integrating both sides over a period where $v_1(t)$ is positive:
+$$\Delta B = \frac{1}{n_1 A_c} \int_{v_1(t)>0} v_1(t) dt = \frac{\lambda}{n_1 A_c}$$
+Where $\Delta B = B_{max} - B_{min}$ is the change in flux density over the cycle, and $\lambda$ is the volt-second product (integral of positive primary voltage).
+
+**Condition to Avoid Saturation**:
+$$\lambda \le n_1 A_c \Delta B_{max}$$
+
+**Typical Examples for $\Delta B_{max}$**:
+*   **Forward Converter**: The core flux swings from $B_{min} \approx 0$ to $B_{sat}$. Thus, $\Delta B_{max} \approx B_{sat}$.
+    *   Condition: $\lambda \le n_1 A_c B_{sat}$.
+*   **Full-bridge Converter**: The core flux swings symmetrically from $-B_{sat}$ to $B_{sat}$. Thus, $\Delta B_{max} = 2 B_{sat}$.
+    *   Condition: $\lambda \le n_1 A_c (2 B_{sat})$.
+
+## Basic Transformer Design Steps
+
+Given a specific magnetic core (with $A_c$), desired turns ratios ($n_1:n_2$, etc.), and primary voltage waveform $v_1(t)$:
+
+1.  **Calculate the Volt-Second Product ($\lambda$)**:
+    *   Integrate the positive portion of the primary voltage waveform:
+        $$\lambda = \int_{v_1(t)>0} v_1(t) dt$$
+2.  **Determine Minimum Primary Turns ($n_1$)**:
+    *   Select $n_1$ to prevent the magnetic material from entering saturation, using the condition derived above.
+    *   For a Forward converter:
+        $$n_1 \ge \frac{\lambda}{A_c B_{sat}}$$
+    *   For a Full-bridge converter:
+        $$n_1 \ge \frac{\lambda}{2 A_c B_{sat}}$$
+3.  **Determine Secondary Turns ($n_2, n_3, \dots$)**:
+    *   Calculate secondary turns based on the desired voltage ratios:
+        $$\frac{n_2}{n_1} = \frac{V_2}{V_1}, \quad \frac{n_3}{n_1} = \frac{V_3}{V_1}, \quad \dots$$
+
+**Design Consideration**:
+Choosing $n_1$ higher than its minimum value increases the magnetization inductance ($L_m = \mu n_1^2 A_c / l_m$), which reduces the magnetization current and core losses. However, a higher $n_1$ means longer and potentially thinner conductors, which can increase copper losses. A balance must be found.
+
+## Example: Forward Converter Transformer Design
+
+Consider a Forward converter with the following specifications:
+
+**Assumptions**:
+*   Lossless converter, ideal diodes and transistor.
+*   Operates in Continuous Conduction Mode (CCM).
+*   Large output capacitor, leading to a constant output voltage $V_o$.
+*   Negligible external magnetic fields and full coupling between windings.
+
+**Converter Data**:
+*   Input Voltage $V_g = 48 \text{ V}$
+*   Switching Frequency $f = 200 \text{ kHz}$
+*   Output Voltage $V_D = 3.3 \text{ V}$
+*   Duty Cycle $D = 0.252$
+
+**Magnetic Core Data**:
+*   Cross-section Area $A_c = 0.41 \text{ cm}^2$
+*   Saturation Flux Density $B_{sat} = 0.14 \text{ T}$
+
+### Part A: Calculate $n_3/n_1$
+
+The voltage gain for a Forward converter is given by:
+$$\frac{V_D}{V_g} = D \frac{n_3}{n_1}$$
+Rearranging for the turns ratio:
+$$\frac{n_3}{n_1} = \frac{V_D}{D V_g} = \frac{3.3 \text{ V}}{0.252 \times 48 \text{ V}} = 0.2728$$
+
+### Part B: Calculate $n_2/n_1$ for Maximum Transistor Voltage of $72 \text{ V}$
+
+The voltage across the main switch ($V_Q$) in a Forward converter is:
+*   During ON state: $V_Q = 0 \text{ V}$
+*   During OFF state (reset phase, diode $D_1$ conducts): $V_Q = V_g + V_g \frac{n_1}{n_2}$
+*   During OFF state (magnetizing current is zero): $V_Q = V_g$
+
+The maximum voltage across the transistor is $V_{Q,max} = V_g \left(1 + \frac{n_1}{n_2}\right)$.
+Given $V_{Q,max} = 72 \text{ V}$:
+$$72 \text{ V} = 48 \text{ V} \left(1 + \frac{n_1}{n_2}\right)$$
+$$1 + \frac{n_1}{n_2} = \frac{72}{48} = 1.5$$
+$$\frac{n_1}{n_2} = 0.5 \implies \frac{n_2}{n_1} = 2$$
+
+### Part C: Calculate Maximum Duty Cycle ($D_{max}$)
+
+The duty cycle in a Forward converter is limited by the time required to reset the magnetizing flux. The maximum duty cycle is given by:
+$$D_{max} = \frac{1}{1 + n_1/n_2}$$
+Using the calculated $n_1/n_2 = 0.5$:
+$$D_{max} = \frac{1}{1 + 0.5} = \frac{1}{1.5} = \frac{2}{3} \approx 0.667$$
+
+### Part D: Determine Minimum Primary Turns ($n_1$) to Avoid Saturation
+
+For a Forward converter, the condition to avoid saturation is $n_1 \ge \frac{\lambda}{A_c B_{sat}}$.
+
+1.  **Calculate the Volt-Second Product ($\lambda$)**:
+    *   $\lambda = \int_{v_1(t)>0} v_1(t) dt = V_g D T$
+    *   Switching period $T = 1/f = 1/(200 \text{ kHz}) = 5 \text{ } \mu \text{s}$
+    *   $\lambda = 48 \text{ V} \times 0.252 \times 5 \text{ } \mu \text{s} = 60.48 \text{ } \mu \text{Vs}$
+
+2.  **Calculate Minimum $n_1$**:
+    *   Convert $A_c$ to $\text{m}^2$: $A_c = 0.41 \text{ cm}^2 = 0.41 \times 10^{-4} \text{ m}^2$
+    *   $n_1 \ge \frac{60.48 \times 10^{-6} \text{ Vs}}{0.41 \times 10^{-4} \text{ m}^2 \times 0.14 \text{ T}}$
+    *   $n_1 \ge \frac{60.48 \times 10^{-6}}{5.74 \times 10^{-6}} \approx 10.536$
+    *   Rounding up to the nearest integer, the minimum number of primary turns is $n_1 = 11$.
+
+### Part E: Calculate $n_1, n_2, n_3$
+
+Using the results from the previous parts:
+*   $n_1 = 11$ (from Part D)
+*   $\frac{n_2}{n_1} = 2 \implies n_2 = 2 \times n_1 = 2 \times 11 = 22$ (from Part B)
+*   $\frac{n_3}{n_1} = 0.2728 \implies n_3 = 0.2728 \times n_1 = 0.2728 \times 11 \approx 3.0008 \approx 3$ (from Part A)
+
+Therefore, the transformer turns are $n_1 = 11$, $n_2 = 22$, and $n_3 = 3$.

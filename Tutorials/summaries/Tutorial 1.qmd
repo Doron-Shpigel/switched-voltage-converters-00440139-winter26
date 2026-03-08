@@ -1,0 +1,174 @@
+---
+title: "Tutorial 1"
+date: "2026-03-08 22:27"
+---
+
+# Switched-Mode Power Converters: Review of Linear Circuit Analysis in Time Domain
+
+This practice session reviews the fundamental principles of analyzing linear circuits in the time domain.
+
+## Basic Component Equations
+
+The following table summarizes the voltage-current relationships for basic components in both time and Laplace (frequency) domains:
+
+| Component | Time Domain | Laplace Domain |
+| :-------- | :---------- | :------------- |
+| Resistor  | $v(t) = R i(t)$ | $V(s) = R I(s)$ |
+| Capacitor | $i(t) = C \frac{dv(t)}{dt}$ | $V(s) = \frac{1}{sC} I(s)$ |
+| Inductor  | $v(t) = L \frac{di(t)}{dt}$ | $V(s) = sL I(s)$ |
+
+*Note: $s$ is the Laplace variable.*
+
+## Power
+
+The instantaneous power for each component:
+
+*   **Resistor:** $p(t) = v(t) i(t) = i^2(t) R = \frac{v^2(t)}{R}$
+*   **Capacitor:** $p(t) = v(t) i(t) = C v(t) \frac{dv(t)}{dt}$
+*   **Inductor:** $p(t) = v(t) i(t) = L i(t) \frac{di(t)}{dt}$
+
+## Stored Energy
+
+The energy stored in reactive components:
+
+*   **Resistor:** 0
+*   **Capacitor:** $E(t) = \frac{1}{2} C v^2(t)$
+*   **Inductor:** $E(t) = \frac{1}{2} L i^2(t)$
+
+## Solving Circuits in the Time Domain
+
+Linear circuits can contain:
+*   Resistors, capacitors, and inductors.
+*   Constant voltage and current sources (DC sources).
+*   Time-varying voltage and current sources (AC sources).
+
+### Case A: Initial Conditions Not Given
+
+When initial conditions at $t=0$ are not provided, they are determined by the circuit's DC operating point. The total circuit response is the sum of two parts:
+
+1.  **Response to DC Sources (Operating Point):**
+    *   Set AC sources to zero (voltage sources become short circuits, current sources become open circuits).
+    *   Short inductors.
+    *   Open capacitors.
+    *   Solve the resulting DC circuit to find voltages and currents at the operating point.
+
+2.  **Response to AC Sources:** (For each AC source separately)
+    *   Set DC sources to zero.
+    *   Set other AC sources to zero.
+    *   Calculate the circuit's transfer function in the Laplace domain.
+    *   Multiply the transfer function by the Laplace transform of the chosen AC signal.
+    *   Use inverse Laplace transform to find the response in the time domain.
+
+### Case B: Initial Conditions Given
+
+When initial conditions at $t=0$ are given, the total circuit response is the sum of:
+
+1.  **Zero State Response (ZSR):** The response of the circuit to the AC sources, assuming zero initial conditions. (For each AC source separately)
+    *   Set initial conditions to zero.
+    *   Set DC sources to zero.
+    *   Set other AC sources to zero.
+    *   Calculate the circuit's transfer function in the Laplace domain.
+    *   Multiply the transfer function by the Laplace transform of the chosen AC signal.
+    *   Use inverse Laplace transform to find the response in the time domain.
+
+2.  **Zero Input Response (ZIR):** The response of the circuit to the initial conditions, assuming zero external inputs (AC sources).
+    *   Set AC sources to zero.
+    *   Write the circuit's differential equations (including DC sources) and find an explicit solution that matches the given initial conditions.
+
+---
+
+## Example 1: RLC Circuit with Current Step Input
+
+**Circuit Description:** A parallel RLC circuit with a current source $i_{in}(t)$, an inductor $L$, a capacitor $C$, and a DC voltage source $V_{dc}$ in series with the capacitor. The output voltage $v(t)$ is across the parallel LC combination.
+
+**Problem Statement:**
+*   No initial conditions are given.
+*   The current source is $i_{in}(t) = u(t)$, where $u(t)$ is a step function occurring at $t=0$.
+$$ i_{in}(t) = \begin{cases} 0 & t < 0 \\ 1 & t \ge 0 \end{cases} $$
+*   Calculate the voltage $v(t)$.
+
+**Solution:**
+
+1.  **DC Response (Operating Point):**
+    *   Set AC source $i_{in}(t)$ to zero (open circuit).
+    *   Open the capacitor $C$.
+    *   Short the inductor $L$.
+    *   The voltage across the open capacitor is $V_{dc}$.
+    $$ v_{dc}(t) = V_{dc} $$
+
+2.  **AC Response:**
+    *   Set DC source $V_{dc}$ to zero (short circuit).
+    *   Convert the circuit to the Laplace domain: $i_{in}(s)$, $sL$, $1/(sC)$.
+    *   Write equations:
+        $$ V(s) = \left( I_{in}(s) - I(s) \right) \frac{1}{sC} $$
+        $$ V(s) = -I(s) sL $$
+    *   Substitute to find $V(s)$:
+        $$ V(s) = \frac{I_{in}(s)}{sC} - \frac{V(s)}{sL} \frac{1}{sC} $$
+        $$ V(s) \left( 1 + \frac{1}{s^2 LC} \right) = \frac{I_{in}(s)}{sC} $$
+        $$ V(s) \left( \frac{s^2 LC + 1}{s^2 LC} \right) = \frac{I_{in}(s)}{sC} $$
+        $$ V(s) = I_{in}(s) \frac{sL}{s^2 LC + 1} $$
+    *   For a step input $i_{in}(t) = u(t)$, $I_{in}(s) = \frac{1}{s}$.
+    *   So, $V(s) = \frac{1}{s} \frac{sL}{s^2 LC + 1} = \frac{L}{s^2 LC + 1}$.
+    *   Define the resonant frequency $\omega_0 = \frac{1}{\sqrt{LC}}$. Then $s^2 LC + 1 = s^2 \frac{1}{\omega_0^2} + 1 = \frac{s^2 + \omega_0^2}{\omega_0^2}$.
+    *   Thus, $V(s) = \frac{L \omega_0^2}{s^2 + \omega_0^2} = \frac{L (1/LC)}{s^2 + \omega_0^2} = \frac{1}{C} \frac{\omega_0}{s^2 + \omega_0^2}$.
+    *   Using the inverse Laplace transform $\mathcal{L}^{-1} \left\{ \frac{\omega_0}{s^2 + \omega_0^2} \right\} = \sin(\omega_0 t) u(t)$, we get:
+    $$ v_{ac}(t) = \frac{1}{C} \sin(\omega_0 t) u(t) $$
+
+3.  **Total Response:** Sum of DC and AC responses.
+    $$ v(t) = V_{dc} + \frac{1}{C} \sin(\omega_0 t) u(t) $$
+
+---
+
+## Example 2: Inductor, Resistor, Diode Circuit
+
+**Circuit Description:** A series circuit with a DC voltage source $V_{dc}$, a switch, an inductor $L$, a resistor $R$, and a diode $D$. The current $i(t)$ flows through $L$ and $R$. $i_d(t)$ is the diode current, and $v_d(t)$ is the diode voltage.
+
+**Diode Model:**
+*   **Conduction:** $i_d(t) > 0$, $v_d(t) = V_{on}$ (a positive constant).
+*   **Cutoff:** $i_d(t) = 0$, $v_d(t) < V_{on}$.
+
+**Problem Statement:**
+*   Initially, the switch is closed (conducting).
+*   At time $t_s = 10$, the switch opens and stops conducting.
+*   Calculate the inductor current $i(t)$ as a function of time.
+
+**Solution:**
+
+1.  **Case 1: Switch is Conducting ($t \le t_s$)**
+    *   The circuit is a simple series $V_{dc}$, $L$, $R$, with the diode.
+    *   Since no AC sources or initial conditions are given, we find the DC operating point.
+    *   Short the inductor $L$.
+    *   If the diode were conducting, $v_d = V_{on}$. Then $i = (V_{dc} - V_{on})/R$.
+    *   However, the problem states that the switch allows current, and by shortening L, $v_d$ would be 0 or negative, implying the diode is not conducting in steady-state with the switch closed. The voltage across the (shorted) inductor is 0, so $v_d = -iR$. For the diode to be OFF, $v_d < V_{on}$.
+    *   The provided solution states that the diode is not conducting and the current is $i(t) = V_{dc}/R$. This implies the diode is reverse-biased or simply ignored in this phase as the switch provides a path. Assuming the original circuit intended the diode to be in parallel with the switch and resistor or to provide a path after the switch opens. Let's re-interpret from the given solution steps.
+    *   The given solution implies the diode is initially reverse-biased or disconnected, and the current flows through $R$ and $L$ (shorted in DC steady state) from $V_{dc}$. Thus, at $t=t_s$:
+    $$ i(t_s) = \frac{V_{dc}}{R} $$
+
+2.  **Case 2: Switch Opens ($t > t_s$)**
+    *   When the switch opens, the current $i(t)$ (which was $V_{dc}/R$) must flow through the diode. The diode instantly turns ON ($i_d(t) > 0$), and $v_d(t) = V_{on}$.
+    *   The circuit becomes a series $V_{dc}$, $L$, $R$, and the conducting diode ($V_{on}$ source).
+    *   The differential equation for $i(t)$ is:
+        $$ V_{dc} - i(t)R - L\frac{di(t)}{dt} - V_{on} = 0 $$
+        $$ L\frac{di(t)}{dt} = (V_{dc} - V_{on}) - i(t)R $$
+    *   This is a first-order differential equation. The general solution is:
+        $$ i(t) = \frac{V_{dc} - V_{on}}{R} + K e^{-\frac{R}{L}(t-t_s)} $$
+    *   We apply the initial condition $i(t_s) = \frac{V_{dc}}{R}$:
+        $$ \frac{V_{dc}}{R} = \frac{V_{dc} - V_{on}}{R} + K e^0 $$
+        $$ K = \frac{V_{dc}}{R} - \frac{V_{dc} - V_{on}}{R} = \frac{V_{on}}{R} $$
+    *   So, for $t > t_s$:
+        $$ i(t) = \frac{V_{dc} - V_{on}}{R} + \frac{V_{on}}{R} e^{-\frac{R}{L}(t-t_s)} $$
+    *   This solution holds as long as $i(t) > 0$ (diode is conducting).
+
+3.  **Diode Turns OFF:**
+    *   The diode will turn OFF when $i(t)$ drops to 0. Let $t_{off}$ be the time when this happens.
+        $$ 0 = \frac{V_{dc} - V_{on}}{R} + \frac{V_{on}}{R} e^{-\frac{R}{L}(t_{off}-t_s)} $$
+        $$ -\frac{V_{dc} - V_{on}}{V_{on}} = e^{-\frac{R}{L}(t_{off}-t_s)} $$
+        $$ \ln\left( \frac{V_{on}}{V_{on} - V_{dc}} \right) = -\frac{R}{L}(t_{off}-t_s) $$
+        $$ t_{off} = t_s - \frac{L}{R} \ln\left( \frac{V_{on}}{V_{on} - V_{dc}} \right) $$
+    *   If $V_{dc} \ge V_{on}$, the current will never become zero, as the steady-state value is positive or zero. Assuming $V_{dc} < V_{on}$ for the current to decay to zero.
+    *   If the current becomes 0, it stays 0 for $t \ge t_{off}$, because the diode prevents negative current.
+
+**Summary of Current $i(t)$:**
+
+$$ i(t) = \begin{cases} \frac{V_{dc}}{R} & t \le t_s \\ \frac{V_{dc} - V_{on}}{R} + \frac{V_{on}}{R} e^{-\frac{R}{L}(t-t_s)} & t_s < t < t_{off} \\ 0 & t \ge t_{off} \end{cases} $$
+where $t_{off} = t_s - \frac{L}{R} \ln\left( \frac{V_{on}}{V_{on} - V_{dc}} \right)$ (assuming $V_{on} > V_{dc}$).

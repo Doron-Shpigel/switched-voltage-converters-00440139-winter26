@@ -2,8 +2,33 @@
 title: "Tutorials"
 ---
 
-## Tutorial Sessions
+## Course Tutorials
 
-This section contains all tutorial materials and exercises.
+Lecture summaries and source PDFs:
 
-Tutorial materials will be added here throughout the semester.
+- [Tutorial 1.pdf](Tutorial 1.pdf)  
+  → [Summary](summaries/Tutorial 1.qmd)
+- [Tutorial 10.pdf](Tutorial 10.pdf)  
+  → [Summary](summaries/Tutorial 10.qmd)
+- [Tutorial 11.pdf](Tutorial 11.pdf)  
+  → [Summary](summaries/Tutorial 11.qmd)
+- [Tutorial 12.pdf](Tutorial 12.pdf)  
+  → [Summary](summaries/Tutorial 12.qmd)
+- [Tutorial 13.pdf](Tutorial 13.pdf)  
+  → [Summary](summaries/Tutorial 13.qmd)
+- [Tutorial 2.pdf](Tutorial 2.pdf)  
+  → [Summary](summaries/Tutorial 2.qmd)
+- [Tutorial 3.pdf](Tutorial 3.pdf)  
+  → [Summary](summaries/Tutorial 3.qmd)
+- [Tutorial 4.pdf](Tutorial 4.pdf)  
+  → [Summary](summaries/Tutorial 4.qmd)
+- [Tutorial 5.pdf](Tutorial 5.pdf)  
+  → [Summary](summaries/Tutorial 5.qmd)
+- [Tutorial 6.pdf](Tutorial 6.pdf)  
+  → [Summary](summaries/Tutorial 6.qmd)
+- [Tutorial 7.pdf](Tutorial 7.pdf)  
+  → [Summary](summaries/Tutorial 7.qmd)
+- [Tutorial 8.pdf](Tutorial 8.pdf)  
+  → [Summary](summaries/Tutorial 8.qmd)
+- [Tutorial 9.pdf](Tutorial 9.pdf)  
+  → [Summary](summaries/Tutorial 9.qmd)

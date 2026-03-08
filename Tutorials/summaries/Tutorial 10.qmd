@@ -1,0 +1,217 @@
+---
+title: "Tutorial 10"
+date: "2026-03-08 22:31"
+---
+
+# Switched-Mode Converter Design: Inductor and Flyback Transformer
+
+This document summarizes the basic design principles for inductors and Flyback transformers in switched-mode power converters, followed by a detailed design example.
+
+## Basic Inductor Design
+
+Designing a simple inductor involves selecting appropriate geometric parameters to meet desired electrical specifications.
+
+### Definitions and Parameters
+
+**Design Goals (Given):**
+* $L$: Desired inductance
+* $R$: Desired series resistance
+* $I_{max}$: Maximum current in the inductor
+
+**Known Parameters:**
+* $\rho$: Resistivity of the conductor material
+* $\mu_0$: Permeability of free space ($\mu_0 = 4\pi \times 10^{-7}$ Vs/Am)
+* $K_u \approx 0.5$: Window utilization factor
+* $B_{max}$: Maximum magnetic flux density in the core
+
+**Geometric Parameters (To be determined):**
+* $n$: Number of turns
+* $A_c$: Cross-sectional area of the core
+* $l_m$: Mean magnetic path length of the core
+* $l_g$: Air gap length
+* $A_W$: Core window area
+* $A_w$: Conductor cross-sectional area
+* MLT: Mean Length per Turn
+
+**Geometric Constant of the Core:**
+The core's effective "size" is characterized by the geometric constant $K_g$:
+$K_g = \frac{A_c A_W}{MLT}$ (Equation 1)
+
+### Design Steps
+
+1.  **Select a suitable core:**
+    Choose a core based on the constraint:
+    $L I_{max}^2 \rho \ge \frac{K_g B_{max}^2 R K_u}{2}$
+    Record core data ($A_c, A_W, MLT$).
+
+2.  **Determine the air gap length ($l_g$):**
+    $l_g = \frac{\mu_0 n^2 A_c}{L}$ (Equation 2)
+
+3.  **Determine the number of turns ($n$):**
+    $n = \frac{L I_{max}}{B_{max} A_c}$ (Equation 3)
+    (Round the result to an integer).
+
+4.  **Choose the wire thickness ($A_w$):**
+    $A_w \le \frac{K_u A_W}{n}$ (Equation 4)
+
+5.  **Calculate the approximate actual resistance of the inductor ($R$):**
+    $R = \frac{\rho n \cdot MLT}{A_w}$ (Equation 5)
+
+## Basic Flyback Transformer Design
+
+A Flyback transformer is not a typical ideal transformer; it functions more like two inductors sharing a common core. Each winding conducts separately during different parts of the cycle, with minimal interaction between their magnetic fields.
+
+### Key Distinction from Inductor Design
+
+The design process for a Flyback transformer is similar to that of a single inductor, but with a critical difference in the **window area ($A_W$)** due to the need to accommodate two windings. Typically, the window area is split roughly equally between the primary and secondary windings to optimize for conduction losses.
+
+### Design Method
+
+1.  **Design the primary winding:**
+    Use the inductor design method outlined above. For this step, use half of the core's specified $A_W$ (window area) from the datasheet. Consequently, the geometric constant $K_g$ will also be halved.
+    *Example: If $K_g = 1.2 \times 10^5 \text{ cm}^5$ in the datasheet, use $K_g = 0.6 \times 10^5 \text{ cm}^5$ for the primary winding design.*
+
+2.  **Determine the number of turns for the secondary winding ($n_2$):**
+    Use the desired turns ratio ($n'$) based on the primary winding's turns ($n_1$):
+    $n_2 = n' n_1$
+
+3.  **Determine the wire thickness for the secondary winding ($A_{w,2}$):**
+    Ensure the secondary winding fits into its half of the window:
+    $A_{w,2} \le \frac{K_u A_W}{n_2}$ (Equation 6)
+    (Again, use half of the total $A_W$ for a single winding's calculation).
+
+## Exercise: Flyback Converter Design Example
+
+**Scenario:** Flyback converter with magnetizing inductance and series resistances.
+**Assumptions:**
+* Operates in Continuous Conduction Mode (CCM).
+* Output capacitance is very large, output voltage ($V_O$) is constant.
+* Leakage inductances are negligible.
+
+**Given Data:**
+* $V_g = 320 \text{ V}$
+* $V_O = 15 \text{ V}$
+* $P_O = 30 \text{ W}$
+* $D = 0.5$ (Duty Cycle)
+* $L_m = 20 \text{ mH}$ (Magnetizing Inductance)
+* $f_s = 100 \text{ kHz}$ (Switching Frequency)
+
+### Part A: Ideal Converter Calculations
+
+**Assumptions:** Lossless converter.
+
+**Calculations:**
+
+*   **Turns Ratio ($n'$):**
+    For an ideal Flyback converter in CCM: $V_O = n' \frac{D}{1-D} V_g$.
+    $n' = \frac{V_O (1-D)}{V_g D} = \frac{15 \text{ V} \times (1-0.5)}{320 \text{ V} \times 0.5} = 0.0469$
+
+*   **Average Current in Magnetizing Inductance ($\overline{I}$):**
+    $\overline{I} = \frac{n' P_O}{D V_O} = \frac{0.0469 \times 30 \text{ W}}{0.5 \times 15 \text{ V}} = 0.1875 \text{ A}$
+
+*   **Current Ripple ($\Delta i_m$):**
+    $\Delta i_m = \frac{V_g D}{L_m f_s} = \frac{320 \text{ V} \times 0.5}{20 \text{ mH} \times 100 \text{ kHz}} = 0.08 \text{ A}$
+
+*   **Maximum Current in Magnetizing Inductance ($I_{max}$):**
+    $I_{max} = \overline{I} + \frac{\Delta i_m}{2} = 0.1875 \text{ A} + \frac{0.08 \text{ A}}{2} = 0.2275 \text{ A}$
+
+**Additional Given Parameters:**
+* $\rho = 1.72 \times 10^{-8} \text{ } \Omega \text{m}$ (Resistivity of copper)
+* $\mu_0 = 4\pi \times 10^{-7} \text{ Vs/Am}$ (Permeability of free space)
+* $K_u = 0.5$ (Window utilization factor)
+* $B_{max} = 0.25 \text{ T}$ (Maximum magnetic flux density in the core)
+
+### Part B: Core Selection and Efficiency Analysis
+
+**Goal:** Complete the table for different primary winding resistances ($R_1$).
+**Assumptions:**
+* Window area for both windings is equal.
+* For efficiency calculation: use ideal values from Part A, assume $I_{RMS} \approx \overline{I}$, and consider only conduction losses.
+
+**Relationship between Winding Resistances:**
+The resistances of the primary ($R_1$) and secondary ($R_2$) windings are related by:
+$R_2 = n'^2 R_1$
+
+**Calculated $R_2$ Values:**
+
+| $R_1$            | $R_2 = n'^2 R_1 = (0.0469)^2 R_1$ |
+| :--------------- | :--------------------------------- |
+| $60 \text{ } \Omega$  | $0.1318 \text{ } \Omega$              |
+| $30 \text{ } \Omega$  | $65.9 \text{ m} \Omega$            |
+| $5 \text{ } \Omega$   | $11 \text{ m} \Omega$              |
+| $2 \text{ } \Omega$   | $4.4 \text{ m} \Omega$             |
+
+**Efficiency ($\eta$) Calculation:**
+Total conduction losses ($P_{cond}$) are sum of primary and secondary losses.
+$P_{cond,1} = I_{RMS,1}^2 R_1 D \approx \overline{I}^2 R_1 D$
+$P_{cond,2} = I_{RMS,2}^2 R_2 (1-D) \approx (\overline{I}/n')^2 R_2 (1-D)$
+Using $R_2 = n'^2 R_1$, we get $P_{cond,2} = (\overline{I}/n')^2 n'^2 R_1 (1-D) = \overline{I}^2 R_1 (1-D)$.
+Total losses: $P_{cond} = P_{cond,1} + P_{cond,2} = \overline{I}^2 R_1 D + \overline{I}^2 R_1 (1-D) = \overline{I}^2 R_1$.
+Efficiency: $\eta = \frac{P_O}{P_O + P_{cond}} = \frac{P_O}{P_O + \overline{I}^2 R_1}$.
+
+**Calculated Efficiencies:**
+
+| $R_1$            | $P_{cond} = (0.1875 \text{ A})^2 R_1$ | $\eta = \frac{30 \text{ W}}{30 \text{ W} + P_{cond}}$ |
+| :--------------- | :------------------------------------ | :--------------------------------------- |
+| $60 \text{ } \Omega$  | $2.109 \text{ W}$                     | $93.4 \text{ %}$                         |
+| $30 \text{ } \Omega$  | $1.055 \text{ W}$                     | $96.6 \text{ %}$                         |
+| $5 \text{ } \Omega$   | $0.176 \text{ W}$                     | $99.4 \text{ %}$                         |
+| $2 \text{ } \Omega$   | $0.070 \text{ W}$                     | $99.8 \text{ %}$                         |
+
+**Core Selection:**
+The minimum required geometric constant $K_g$ for the core is:
+$K_{g,min} = \frac{2 L_m I_{max}^2 \rho}{B_{max}^2 R_1 K_u}$ (Note: factor of 2 accounts for two windings sharing the core).
+
+Let's calculate $K_{g,min}$ for each $R_1$ value:
+* $L_m = 20 \times 10^{-3} \text{ H}$
+* $I_{max} = 0.2275 \text{ A}$
+* $\rho = 1.72 \times 10^{-8} \text{ } \Omega \text{m}$
+* $B_{max} = 0.25 \text{ T}$
+* $K_u = 0.5$
+
+$K_{g,min} = \frac{2 \times (20 \times 10^{-3} \text{ H}) \times (0.2275 \text{ A})^2 \times (1.72 \times 10^{-8} \text{ } \Omega \text{m})}{(0.25 \text{ T})^2 \times R_1 \times 0.5}$
+$K_{g,min} = \frac{7.155 \times 10^{-13}}{R_1}$ (in $\text{m}^5$)
+
+To convert to $\text{cm}^5$, multiply by $(100)^5 = 10^{10}$:
+$K_{g,min} = \frac{7.155 \times 10^{-13}}{R_1} \times 10^{10} = \frac{7.155 \times 10^{-3}}{R_1}$ (in $\text{cm}^5$)
+
+**Calculated $K_{g,min}$ and Smallest Suitable Core:**
+
+| $R_1$            | $K_{g,min} [\text{cm}^5]$               | Smallest Core (from list) | Datasheet $K_g [\text{cm}^5]$ |
+| :--------------- | :-------------------------------------- | :------------------------ | :--------------------------- |
+| $60 \text{ } \Omega$  | $1.19 \times 10^{-4}$ ($1.19 \times 10^{-4}$) | EE19                      | $31.9 \times 10^{-4}$        |
+| $30 \text{ } \Omega$  | $2.38 \times 10^{-4}$ ($2.38 \times 10^{-4}$) | EE22                      | $33.8 \times 10^{-4}$        |
+| $5 \text{ } \Omega$   | $1.43 \times 10^{-3}$ ($1.43 \times 10^{-3}$) | EE30                      | $22.8 \times 10^{-3}$        |
+| $2 \text{ } \Omega$   | $3.57 \times 10^{-3}$ ($3.57 \times 10^{-3}$) | EE40                      | $57.1 \times 10^{-3}$        |
+
+*Note: The original document's $K_g$ values for cores are given as $31.9 \times 10^{-4} \text{ cm}^5$, $33.8 \times 10^{-4} \text{ cm}^5$, $22.8 \times 10^{-3} \text{ cm}^5$, $57.1 \times 10^{-3} \text{ cm}^5$ for EE19, EE22, EE30, EE40 respectively.*
+
+**Full Table Summary:**
+
+| Smallest Magnetic Core | Efficiency ($\eta$) | $R_2$                | $R_1$            |
+| :--------------------- | :------------------ | :------------------- | :--------------- |
+| EE19                   | $93.4 \text{ %}$    | $0.1318 \text{ } \Omega$ | $60 \text{ } \Omega$  |
+| EE22                   | $96.6 \text{ %}$    | $65.9 \text{ m} \Omega$ | $30 \text{ } \Omega$  |
+| EE30                   | $99.4 \text{ %}$    | $11 \text{ m} \Omega$  | $5 \text{ } \Omega$   |
+| EE40                   | $99.8 \text{ %}$    | $4.4 \text{ m} \Omega$ | $2 \text{ } \Omega$   |
+
+**Observation:** Larger cores lead to higher efficiency.
+
+### Part C: Determining Number of Turns
+
+**Goal:** For an efficiency of at least $96 \text{ %}$, determine the primary ($n_1$) and secondary ($n_2$) turns, rounded to integers.
+
+**Core Selection:**
+From the table, an efficiency of $96.6 \text{ %}$ is achieved with $R_1 = 30 \text{ } \Omega$, corresponding to the EE22 core.
+For EE22, the cross-sectional area $A_c = 0.41 \text{ cm}^2 = 0.41 \times 10^{-4} \text{ m}^2$.
+
+**Primary Turns ($n_1$):**
+Using Equation (3) for the primary winding ($L_m$, $I_{max}$):
+$n_1 = \frac{L_m I_{max}}{B_{max} A_c} = \frac{20 \times 10^{-3} \text{ H} \times 0.2275 \text{ A}}{0.25 \text{ T} \times (0.41 \times 10^{-4} \text{ m}^2)}$
+$n_1 \approx 443.9$
+Rounding to the nearest integer: $n_1 = 444$ turns.
+
+**Secondary Turns ($n_2$):**
+Using the turns ratio $n'$:
+$n_2 = n' n_1 = 0.0469 \times 444 \approx 20.82$
+Rounding to the nearest integer: $n_2 = 21$ turns.
