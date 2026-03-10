@@ -22,7 +22,7 @@ with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
     #create capacitor
         C ._1 ._2; down, l= C, size=2
     #create resistor
-        R ._1 ._2; down, l= R, size=2, v={$+\quad V\quad -$}
+        R ._1 ._2; down, l= R, size=2, v=V
     #create transistor-NMOS
         M ._D ._G ._S nmos; up, l= Q1, size=2
     #create connections:
@@ -54,4 +54,86 @@ with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
 
 ## Question A:
 
-Find the 
+What is the condition for the converter to operate in DCM mode? 
+
+::: {.callout-note}
+## The work principles of the converter for DCM mode are as follows:
+
+* The voltages and currents in the system are periodic waves with period $T_{s}$, as result of that:
+    * The average voltage across the inductor in one period is zero.
+    * The average current through the capacitor in one period is zero.
+* The following connections between the the temporal waveforms and their average over period for all waves (voltages and currents):
+    $$ \int_{0}^{T_{s}} x\left(\tau \right)d\tau = T_{s} \cdot X = \int_{0}^{T_{s}}X d\tau$$
+
+    in addition to that, for capacitor voltages (assuming small ripple):
+
+    $$
+    \begin{gathered}
+    \int_{0}^{D_{1}T_{s}} v\left(\tau\right)d\tau \approx D_{1}T_{s} \cdot V \\
+    \int_{D_{1}T_{s}}^{\left(D_{1}+D_{2}\right)}v\left(\tau\right)d\tau \approx D_{2}T_{s} \cdot V \\
+    \int_{D_{2}T_{s}}^{\left(D_{2}+D_{3}\right)T_{s}} v\left(\tau\right)d\tau \approx D_{3}T_{s} \cdot V
+    \end{gathered}
+    $$
+
+:::
+
+First, I'll analyze the converter in CCM mode, for that, I'll represent an equivalent schematic with transformer:
+
+```{python}
+#|echo: false 
+#|output: true
+from contextlib import redirect_stdout, redirect_stderr
+import io
+import warnings
+import logging
+from lcapy import *
+
+# warnings.filterwarnings('ignore')
+# logging.getLogger('lcapy').setLevel(logging.ERROR)
+
+# with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+EquivalentCircuit_P2 = Circuit(r"""
+    # Input side (primary)
+        Vg ._plus  ._minus {V_g}; down, size=2, i=i_{g}
+    #create inductor
+        # L ._1 ._2; down, l= L, size=2, i>^=i(t)
+    #create inductor
+        L ._1 ._2 {R_L}; down, size=1.5, i>^=i_{L}, v=V_{L}
+    # create Transformer (secondary:primary)
+        # TF1 ._sec1 ._sec2 ._prime1 ._prime2; right, size=2, l={1:1}
+    #create Resistor (load resistor)
+        # Rload ._1 ._2 ; down, size=1.5, v=V, l=R
+    #create capacitor
+        # C ._1 ._2; down, l= C, size=1.5, , i=i_{C}
+    #create diode
+        # D ._A ._K; right, l= D, size=2
+    #create transistor-NMOS
+        # M ._D ._G ._S nmos; right, l= Q1, size=2
+    #create annotations:
+        #resistor voltage
+        # A1 (Rload._1); l={-}, anchor=west
+        # A2 (Rload._2); l={+}, anchor=west
+        # A3 (L._1); l={+}, anchor=west
+        # A4 (L._2); l={-}, anchor=west
+    #create connections:
+    #input side:
+        # connect voltage source to inductor
+        W Vg._plus L._1; right, size=1
+        # connect inductor to primary(dot) transformer
+        # W L._1 TF1._prime1; right, size=1
+        #connect inductor to to primary(out) transformer
+        # W L._2 TF1._prime2;
+        # connect primary(out) transformer to nmos source
+        # W TF1._prime2 M._S; down, size=1
+        # connect voltage source to transistor drain
+        # W Vg._minus M._D; right 
+    # Output side (secondary)
+        # connect secondary(dot) transformer to resistor
+        # W TF1._sec1 Rload._1; right size=1
+        #connect  secondary(out) transformer to resistor
+        # W TF1._sec2 Rload._2;
+    #     W Rload._2 sec2; right, size=1
+        ;autoground=false, draw_nodes=connections, label_ids=false, label_nodes=alpha""")
+EquivalentCircuit_P2.draw(debug=True)
+```
+
