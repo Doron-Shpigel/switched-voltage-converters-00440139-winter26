@@ -14,17 +14,20 @@ Designing a simple inductor involves selecting appropriate geometric parameters 
 ### Definitions and Parameters
 
 **Design Goals (Given):**
+
 * $L$: Desired inductance
 * $R$: Desired series resistance
 * $I_{max}$: Maximum current in the inductor
 
 **Known Parameters:**
+
 * $\rho$: Resistivity of the conductor material
 * $\mu_0$: Permeability of free space ($\mu_0 = 4\pi \times 10^{-7}$ Vs/Am)
 * $K_u \approx 0.5$: Window utilization factor
 * $B_{max}$: Maximum magnetic flux density in the core
 
 **Geometric Parameters (To be determined):**
+
 * $n$: Number of turns
 * $A_c$: Cross-sectional area of the core
 * $l_m$: Mean magnetic path length of the core
@@ -84,11 +87,13 @@ The design process for a Flyback transformer is similar to that of a single indu
 
 **Scenario:** Flyback converter with magnetizing inductance and series resistances.
 **Assumptions:**
+
 * Operates in Continuous Conduction Mode (CCM).
 * Output capacitance is very large, output voltage ($V_O$) is constant.
 * Leakage inductances are negligible.
 
 **Given Data:**
+
 * $V_g = 320 \text{ V}$
 * $V_O = 15 \text{ V}$
 * $P_O = 30 \text{ W}$
@@ -124,11 +129,14 @@ The design process for a Flyback transformer is similar to that of a single indu
 ### Part B: Core Selection and Efficiency Analysis
 
 **Goal:** Complete the table for different primary winding resistances ($R_1$).
+
 **Assumptions:**
+
 * Window area for both windings is equal.
 * For efficiency calculation: use ideal values from Part A, assume $I_{RMS} \approx \overline{I}$, and consider only conduction losses.
 
 **Relationship between Winding Resistances:**
+
 The resistances of the primary ($R_1$) and secondary ($R_2$) windings are related by:
 $R_2 = n'^2 R_1$
 
@@ -142,6 +150,7 @@ $R_2 = n'^2 R_1$
 | $2 \text{ } \Omega$   | $4.4 \text{ m} \Omega$             |
 
 **Efficiency ($\eta$) Calculation:**
+
 Total conduction losses ($P_{cond}$) are sum of primary and secondary losses.
 $P_{cond,1} = I_{RMS,1}^2 R_1 D \approx \overline{I}^2 R_1 D$
 $P_{cond,2} = I_{RMS,2}^2 R_2 (1-D) \approx (\overline{I}/n')^2 R_2 (1-D)$
@@ -153,16 +162,18 @@ Efficiency: $\eta = \frac{P_O}{P_O + P_{cond}} = \frac{P_O}{P_O + \overline{I}^2
 
 | $R_1$            | $P_{cond} = (0.1875 \text{ A})^2 R_1$ | $\eta = \frac{30 \text{ W}}{30 \text{ W} + P_{cond}}$ |
 | :--------------- | :------------------------------------ | :--------------------------------------- |
-| $60 \text{ } \Omega$  | $2.109 \text{ W}$                     | $93.4 \text{ %}$                         |
-| $30 \text{ } \Omega$  | $1.055 \text{ W}$                     | $96.6 \text{ %}$                         |
-| $5 \text{ } \Omega$   | $0.176 \text{ W}$                     | $99.4 \text{ %}$                         |
-| $2 \text{ } \Omega$   | $0.070 \text{ W}$                     | $99.8 \text{ %}$                         |
+| $60 \text{ } \Omega$  | $2.109 \text{ W}$                     | $93.4 \text{ \%}$                         |
+| $30 \text{ } \Omega$  | $1.055 \text{ W}$                     | $96.6 \text{ \%}$                         |
+| $5 \text{ } \Omega$   | $0.176 \text{ W}$                     | $99.4 \text{ \%}$                         |
+| $2 \text{ } \Omega$   | $0.070 \text{ W}$                     | $99.8 \text{ \%}$                         |
 
 **Core Selection:**
+
 The minimum required geometric constant $K_g$ for the core is:
 $K_{g,min} = \frac{2 L_m I_{max}^2 \rho}{B_{max}^2 R_1 K_u}$ (Note: factor of 2 accounts for two windings sharing the core).
 
 Let's calculate $K_{g,min}$ for each $R_1$ value:
+
 * $L_m = 20 \times 10^{-3} \text{ H}$
 * $I_{max} = 0.2275 \text{ A}$
 * $\rho = 1.72 \times 10^{-8} \text{ } \Omega \text{m}$
@@ -190,28 +201,32 @@ $K_{g,min} = \frac{7.155 \times 10^{-13}}{R_1} \times 10^{10} = \frac{7.155 \tim
 
 | Smallest Magnetic Core | Efficiency ($\eta$) | $R_2$                | $R_1$            |
 | :--------------------- | :------------------ | :------------------- | :--------------- |
-| EE19                   | $93.4 \text{ %}$    | $0.1318 \text{ } \Omega$ | $60 \text{ } \Omega$  |
-| EE22                   | $96.6 \text{ %}$    | $65.9 \text{ m} \Omega$ | $30 \text{ } \Omega$  |
-| EE30                   | $99.4 \text{ %}$    | $11 \text{ m} \Omega$  | $5 \text{ } \Omega$   |
-| EE40                   | $99.8 \text{ %}$    | $4.4 \text{ m} \Omega$ | $2 \text{ } \Omega$   |
+| EE19                   | $93.4 \text{ \%}$    | $0.1318 \text{ } \Omega$ | $60 \text{ } \Omega$  |
+| EE22                   | $96.6 \text{ \%}$    | $65.9 \text{ m} \Omega$ | $30 \text{ } \Omega$  |
+| EE30                   | $99.4 \text{ \%}$    | $11 \text{ m} \Omega$  | $5 \text{ } \Omega$   |
+| EE40                   | $99.8 \text{ \%}$    | $4.4 \text{ m} \Omega$ | $2 \text{ } \Omega$   |
 
 **Observation:** Larger cores lead to higher efficiency.
 
 ### Part C: Determining Number of Turns
 
-**Goal:** For an efficiency of at least $96 \text{ %}$, determine the primary ($n_1$) and secondary ($n_2$) turns, rounded to integers.
+**Goal:** 
+For an efficiency of at least $96 \text{ \%}$, determine the primary ($n_1$) and secondary ($n_2$) turns, rounded to integers.
 
 **Core Selection:**
-From the table, an efficiency of $96.6 \text{ %}$ is achieved with $R_1 = 30 \text{ } \Omega$, corresponding to the EE22 core.
+
+From the table, an efficiency of $96.6 \text{ \%}$ is achieved with $R_1 = 30 \text{ } \Omega$, corresponding to the EE22 core.
 For EE22, the cross-sectional area $A_c = 0.41 \text{ cm}^2 = 0.41 \times 10^{-4} \text{ m}^2$.
 
 **Primary Turns ($n_1$):**
+
 Using Equation (3) for the primary winding ($L_m$, $I_{max}$):
 $n_1 = \frac{L_m I_{max}}{B_{max} A_c} = \frac{20 \times 10^{-3} \text{ H} \times 0.2275 \text{ A}}{0.25 \text{ T} \times (0.41 \times 10^{-4} \text{ m}^2)}$
 $n_1 \approx 443.9$
 Rounding to the nearest integer: $n_1 = 444$ turns.
 
 **Secondary Turns ($n_2$):**
+
 Using the turns ratio $n'$:
 $n_2 = n' n_1 = 0.0469 \times 444 \approx 20.82$
 Rounding to the nearest integer: $n_2 = 21$ turns.
