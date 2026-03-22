@@ -15,6 +15,7 @@ format:
         \usepackage{amsmath}
         \usepackage{amssymb}
         \usepackage{amsthm}
+        \usepackage{cancel}
   html:
     theme: cosmo
     css: styles.css
