@@ -76,14 +76,14 @@ V_L = V_g - (-V) - V_L = V_g + V - I R_L
 $$
 
 Since the average voltage across the inductor over a full switching period is zero, I can write:
-$$\begin{gather*}
+$$\begin{gathered}
 D\left(V_g - V - I R_L \right) + D'\left(V_g + V - I R_L \right) = 0 \\
 D\left(V_g - V - I R_L \right) + \left(1-D\right)\left(V_g + V - I R_L \right) = 0 \\
 D\left(V_g - V - I R_L \right) - D\left(V_g + V - I R_L \right) + V_g +V - I R_L = 0 \\
 D\left(\cancel{V_g} - V \cancel{- I R_L} \right) + D\left(\cancel{- V_g}- V \cancel{+ I R_L} \right) + V_g + V - I R_L = 0 \\
 -2DV+ V_g + V - I R_L = 0\\
--2D+1 = -2D + D' + D = D' - D \rightarrow V_g + \left( D' - D\right) V - I R_L = 0 \tag{1}
-\end{gather*}
+-2D+1 = -2D + D' + D = D' - D \rightarrow V_g + \left( D' - D\right) V - I R_L = 0 \qquad\text{(1)}
+\end{gathered}
 $$
 
 When the switches change their state, the current through the capacitor changes it's direction. Using KCL, I can express the average current through the capacitor at each mode, as follows: In mode 1: 
@@ -97,7 +97,7 @@ I_{C_\text{mode 2}} = -I - I_R = -I - \frac{V}{R}
 $$
 
 Because the average current through the capacitor over a full switching period is zero, I can write:
-$$\begin{gather*}
+$$\begin{gathered}
 D\cdot I_{C_\text{mode 1}} + D' \cdot I_{C_\text{mode 2}} = 0 \\
 D\left( I - \frac{V}{R} \right) + D'\left( -I - \frac{V}{R} \right) = 0\\
 D\left( I - \frac{V}{R} \right) + \left( 1-D \right)\left( -I - \frac{V}{R} \right) = 0 \\
@@ -106,18 +106,18 @@ D\left( I \cancel{- \frac{V}{R}} \right) + D\left( I \cancel{+ \frac{V}{R}} \rig
 DI + DI - I - \frac{V}{R} = 0 \\
 DI -(1-D)I= \frac{V}{R} \\
 I = \frac{V}{R\left( D-D' \right)} \tag{2}
-\end{gather*}
+\end{gathered}
 $$
 
 Now, I can substitute equation (2) into equation (1), to find expression for $V/V_g$:
-$$\begin{gather*}
+$$\begin{gathered}
 V_g + \left( D' - D\right) V - R_L \cdot \frac{V}{R\left( D-D' \right)} = 0\\
 V_g = R_L \cdot \frac{V}{R\left( D-D' \right)} - \left( D' - D\right) V \\
 V_g = R_L \cdot \frac{V}{R\left( D-D' \right)} + \left( D - D' \right) V \\
 V_g = V \cdot \left(D-D'\right) \cdot \left( 1 + \frac{R_L}{R\left( D-D' \right)^2} \right) \\
 \frac{V}{V_g} = \frac{1}{\left(D-D'\right)} \cdot \frac{1}{1 + \frac{R_L}{R}\cdot \frac{1}{\left( D-D' \right)^2}}\\
 \frac{V}{V_g} = \frac{1}{2D -1}\cdot \frac{1}{1 + \frac{R_L}{R}\cdot \frac{1}{\left( 2D -1 \right)^2}}
-\end{gather*}
+\end{gathered}
 $$
 
 ## Question B:
@@ -163,11 +163,11 @@ $$
 
 Now, I can express the efficiency as:
 
-$$\begin{gather*}
+$$\begin{gathered}
 \eta=\frac{P_{out}}{P_{in}} = \frac{V^2}{R}\cdot \frac{1}{V_g \cdot I}=\frac{V}{RI}\cdot \frac{V}{V_g}\\
 \eta = \frac{\cancel{V}}{\cancel{R} \cdot \frac{\cancel{V}}{\cancel{R}\cancel{\left( D-D' \right)}}}\cdot \frac{1}{\cancel{\left(D-D'\right)}} \cdot \frac{1}{1 + \frac{R_L}{R}\cdot \frac{1}{\left( D-D' \right)^2}}\\
 \eta = \frac{1}{1 + \frac{R_L}{R}\cdot \frac{1}{\left( D-D' \right)^2}}
-\end{gather*}
+\end{gathered}
 $$
 
 ## Question D:
@@ -186,7 +186,7 @@ $$
 I = \frac{V}{R\left( D-D' \right)} \leftrightarrow I\cdot\left( D-D' \right) = \frac{V}{R}
 $$
 
-$I$ is the current on the input side, but $V$ and $R$ represent the values on the output side. Therefore, I can label $ \frac{V}{R}=I_{load}$ and I get this ratio of currents between the input and the output side:
+$I$ is the current on the input side, but $V$ and $R$ represent the values on the output side. Therefore, I can label $\frac{V}{R}=I_{load}$ and I get this ratio of currents between the input and the output side:
 
 $$ 
 I\cdot\left( D-D' \right) = I_{load}
