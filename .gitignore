@@ -14,6 +14,7 @@
 
 # User-specific folders
 /books/
+/.vscode/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
