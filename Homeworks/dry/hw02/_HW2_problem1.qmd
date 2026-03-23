@@ -54,7 +54,7 @@ with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
         W 0 0_0; right
         W 0_0 SW2._NC; steps=-|, free
         ; autoground=false, draw_nodes=connections, label_ids=false, label_nodes=alpha, european voltages""")
-    Converter_P1.draw()
+    Converter_P1.draw(svg=True)
 ```
 
 -   The inductor has ohmic resistance $R_L$.
@@ -233,5 +233,5 @@ with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
         W TF1._sec2 Rload._2;
     #     W Rload._2 sec2; right, size=1
         ;autoground=false, draw_nodes=connections, label_ids=false, label_nodes=alpha, european voltages""")
-    EquivalentCircuit_P1.draw()
+    EquivalentCircuit_P1.draw(svg=True)
 ```
