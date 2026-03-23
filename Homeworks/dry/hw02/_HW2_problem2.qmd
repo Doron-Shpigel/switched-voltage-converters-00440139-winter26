@@ -2,7 +2,10 @@ The following circuit is converter type BUCK-BOOST running in DCM mode.
 
 ```{python}
 #|echo: false 
+#|warning: true
+#|error: true
 #|output: true
+#|include: true
 from contextlib import redirect_stdout, redirect_stderr
 import io
 import warnings
@@ -44,7 +47,7 @@ with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
         #ground resistor
         W C._2 R._2; right
         ; autoground=false, draw_nodes=connections, label_ids=false, label_nodes=alpha, european voltages""")
-    converter_P2.draw()
+converter_P2.draw(svg=True)
 ```
 
 -   All the elements are ideal.
@@ -79,5 +82,35 @@ What is the condition for the converter to operate in DCM mode?
 
 First, I'll analyze the converter in CCM mode, for that, I'll represent an equivalent schematic with transformer:
 
-![Equivalent circuit with transformer](../../../LTSpiceStyler/Q2_equivalent.svg)
+![Equivalent circuit with transformer](./LTSpiceStyler/Q2_equivalent.svg)
+
+In steady state, [When the transistor is ON]{.underline}, the voltage across the inductor is:
+$$
+v_{L} = V_{g}
+$$
+
+No current flows through the primary side of the transformer, because, if it did it would flow into the dot at the primary side, and thus current would flow out of the dot at the secondary side, which is not possible because the diode blocks current in that direction, therefore, the current through the inductor $\left(I_{L}\right)$ equals the source current:
+$$
+i_{g} = I_{L}
+$$
+
+However, there is current flowing between the capacitor and the resistor, since the capacitor is discharging through the resistor,and accoording to the sign convention, the current flows clock wise, in opposite direction of the current label:
+$$
+i_{C} = -\frac{V}{R}
+$$
+
+[When the transistor is OFF]{.underline}, Because the inductor current is continuous, the inductor current loop is now through the the primary side of the transformer, and from the continuity of the current, the current flows in counter clock wise direction, or, outside the dot at the primary side, this results the current to flow into the dot at the secondary side (now the diode is forward biased), and close a current loop with a clock wise direction, the current across the capacitor is the sum of the current through the resistor and the inductor current:
+$$
+i_{C} = I_{L}  - \frac{V}{R}
+$$
+
+In the primary side, the current loop of the source is disconnected:
+$$
+i_{g} = 0
+$$
+
+And because of the dot convention, the voltage across the inductor is inverted with respect to the output voltage:
+$$
+v_{L} = -V
+$$
 
