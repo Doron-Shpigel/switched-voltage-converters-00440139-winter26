@@ -57,60 +57,64 @@ converter_P2.draw(svg=True)
 
 ## Question A:
 
-What is the condition for the converter to operate in DCM mode? 
+What is the condition for the converter to operate in DCM mode?
 
-::: {.callout-note}
-## The work principles of the converter for DCM mode are as follows:
+::: callout-note
+### The work principles of the converter for DCM mode are as follows:
 
-* The voltages and currents in the system are periodic waves with period $T_{s}$, as result of that:
-    * The average voltage across the inductor in one period is zero.
-    * The average current through the capacitor in one period is zero.
-* The following connections between the the temporal waveforms and their average over period for all waves (voltages and currents):
-    $$ \int_{0}^{T_{s}} x\left(\tau \right)d\tau = T_{s} \cdot X = \int_{0}^{T_{s}}X d\tau$$
+-   The voltages and currents in the system are periodic waves with period $T_{s}$, as result of that:
+
+    -   The average voltage across the inductor in one period is zero.
+    -   The average current through the capacitor in one period is zero.
+
+-   The following connections between the temporal waveforms and their average over period for all waves (voltages and currents): $$ \int_{0}^{T_{s}} x\left(\tau \right)d\tau = T_{s} \cdot X = \int_{0}^{T_{s}}X d\tau$$
 
     in addition to that, for capacitor voltages (assuming small ripple):
 
     $$
-    \begin{gathered}
-    \int_{0}^{D_{1}T_{s}} v\left(\tau\right)d\tau \approx D_{1}T_{s} \cdot V \\
-    \int_{D_{1}T_{s}}^{\left(D_{1}+D_{2}\right)}v\left(\tau\right)d\tau \approx D_{2}T_{s} \cdot V \\
-    \int_{D_{2}T_{s}}^{\left(D_{2}+D_{3}\right)T_{s}} v\left(\tau\right)d\tau \approx D_{3}T_{s} \cdot V
-    \end{gathered}
-    $$
-
+      \begin{gathered}
+      \int_{0}^{D_{1}T_{s}} v\left(\tau\right)d\tau \approx D_{1}T_{s} \cdot V \\
+      \int_{D_{1}T_{s}}^{\left(D_{1}+D_{2}\right)}v\left(\tau\right)d\tau \approx D_{2}T_{s} \cdot V \\
+      \int_{D_{2}T_{s}}^{\left(D_{2}+D_{3}\right)T_{s}} v\left(\tau\right)d\tau \approx D_{3}T_{s} \cdot V
+      \end{gathered}
+      $$
 :::
 
-First, I'll analyze the converter in CCM mode, for that, I'll represent an equivalent schematic with transformer:
+First, I'll analyze the converter as it was operating in CCM mode, which will results into having equation for the average current through the inductor, $I$, and the equation of the current ripple through the inductor, $\Delta i$, having those two equations will allow me the derive the condition for operation in DCM mode by solving the inequality: $I \lt \Delta I \implies\text{DCM mode}$.
 
-![Equivalent circuit with transformer](./LTSpiceStyler/Q2_equivalent.svg)
+### $\underline{\text{phase 1, }0 \lt t \lt D_{1}T_{s}\text{:}}$
 
-In steady state, [When the transistor is ON]{.underline}, the voltage across the inductor is:
-$$
-v_{L} = V_{g}
-$$
+The switch is ON, the inductor is connected directly to the voltage source:
 
-No current flows through the primary side of the transformer, because, if it did it would flow into the dot at the primary side, and thus current would flow out of the dot at the secondary side, which is not possible because the diode blocks current in that direction, therefore, the current through the inductor $\left(I_{L}\right)$ equals the source current:
-$$
-i_{g} = I_{L}
-$$
+$$v_L\left(t\right)=V_g$$
 
-However, there is current flowing between the capacitor and the resistor, since the capacitor is discharging through the resistor,and accoording to the sign convention, the current flows clock wise, in opposite direction of the current label:
+The diode is reverse biased because the voltage source is connected to the cathode while the output voltage, which in buck boost is negative is connected to the diode's anode, therefor, there is no current loop between the capacitor and the voltage source, but also, [there is no current loop between the capacitor and the inductor]{.mark}. however, in CCM, the output voltage across the load resistor is constant (Small-Ripple Voltage approximation), and applying KCL on the output node (negative voltage) result into current loop between the load resistor and the capacitor, with the sign convention where positive capacitor current flows from the output node to ground:
+
 $$
-i_{C} = -\frac{V}{R}
+i_{C}\left(t\right)=-\frac{v\left(t\right)}{R}\approx -\frac{V}{R}
 $$
 
-[When the transistor is OFF]{.underline}, Because the inductor current is continuous, the inductor current loop is now through the the primary side of the transformer, and from the continuity of the current, the current flows in counter clock wise direction, or, outside the dot at the primary side, this results the current to flow into the dot at the secondary side (now the diode is forward biased), and close a current loop with a clock wise direction, the current across the capacitor is the sum of the current through the resistor and the inductor current:
+### $\underline{\text{phase 2, }D_{1}T_{s} \le t \lt T_{s}\text{:}}$
+
+The switch is OFF, the inductor is now connected to the voltage output (diode voltage drop assumed to be neglect):
+
 $$
-i_{C} = I_{L}  - \frac{V}{R}
+v_{L}\left(t\right)=v\left(t\right)\approx V
 $$
 
-In the primary side, the current loop of the source is disconnected:
+because current must be continues, the current which flowed through the inductor, $i_{L}\left(t\right)$ maintain it's direction (top to bottom), this results to current loop (counter-clockwise) between the inductor and the capacitor, applying KCL at the output node, and summarize the total currents leaving that node, I get that:
+
 $$
-i_{g} = 0
+i_{C}\left(t\right)=-i_{L}\left(t\right)-\frac{v\left(t\right)}{R}\approx -I-\frac{V}{R}
 $$
 
-And because of the dot convention, the voltage across the inductor is inverted with respect to the output voltage:
-$$
-v_{L} = -V
-$$
+### Inductor Volt-Second Balance
 
+The average voltage across the inductor in one period is zero:
+
+$$\begin{aligned}
+0&=\int_{0}^{T_{s}}v_{L}\left(t\right)d\tau=\int_{0}^{D_{1}T_{s}}v_{L}\left(t\right)d\tau+\int_{D_{1}T_{s}}^{T_{s}}v_{L}\left(t\right)d\tau\\
+&=V_{g}D_{1}T_{s}+VD_{1}'T_{s}\Longleftrightarrow V_{g}D_{1}+VD_{1}'=0\\
+&\Rightarrow \boxed{V=-\frac{D_{1}}{D_{1}'}V_{g}}&
+\end{aligned}
+$$
