@@ -118,3 +118,51 @@ $$\begin{aligned}
 &\Rightarrow \boxed{V=-\frac{D_{1}}{D_{1}'}V_{g}}&
 \end{aligned}
 $$
+
+::: {.callout-note appearance="minimal"}
+#### Reminder:
+
+$V$ is the average output voltage, and $V_g$ is the source voltage.
+:::
+
+### Capacitor Charge (Amp-Second) Balance
+
+The average current through the capacitor in one period is zero:
+
+$$\begin{aligned}
+0&=\int_{0}^{T_{s}}i_{C}\left(t\right)d\tau=\int_{0}^{D_{1}T_{s}}i_{C}\left(t\right)d\tau+\int_{D_{1}T_{s}}^{T_{s}}i_{C}\left(t\right)d\tau\\
+&= -\frac{V}{R}D_{1}T_{s}+\left(-I-\frac{V}{R}\right)D_{1}'T_{s}\\
+\Longleftrightarrow 0&=-\frac{V}{R}D_{1}+\left(-I-\frac{V}{R}\right)D_{1}'
+=-\frac{V}{R}D_{1}-ID_{1}'-\frac{V}{R}D_{1}'\\&=-ID_{1}'-\frac{V}{R}\left(D_{1}+D_{1}'\right)=-ID_{1}'-\frac{V}{R}\\
+&\Rightarrow \boxed{I=-\frac{V}{RD_{1}'}}&
+\end{aligned}
+$$
+
+::: {.callout-note appearance="minimal"}
+#### Reminder:
+
+$I$ is the average inductor current.
+:::
+
+### Inductor Current Ripple in CCM
+
+The inductor current ripple, denoted as $\Delta i$ (where the total[ peak-to-peak ripple is strictly defined as $2\Delta i$]{.mark}), is essential to find the boundary between CCM and DCM. To find the current ripple I will analyze the rate of change of the inductor current, from Farady's law of induction, the rate of change (aka slope) of the inductor current is proportional to the applied voltage:
+
+$$
+\frac{d i_{L}\left(t \right)}{dt}=\frac{v_{L}\left(t\right)}{L}
+$$
+
+In phase 1, $v_{L}\left(t\right)=V_{g}$. therefore, the slope of the inductor current is constant and positive:
+
+$$
+\frac{d i_{L}\left(t\right)}{dt} = \frac{V_{g}}{L}
+$$
+
+because $i_{L}\left(D_{1}T_{s}\right)-i_{L}\left(0\right)=I+\Delta i  -\left(I - \Delta i\right)= 2\Delta i$, I can substitute this into a slop line equation and get $\Delta i$:
+
+$$\begin{gathered}
+m = \frac{\Delta y}{\Delta x} = \frac{\text{vertical change} }{\text{horizontal change} }\\
+\Rightarrow \frac{V_{g}}{L}=\frac{2\Delta i}{D_{1}T_{s}}\\
+\rightarrow\boxed{\Delta i=\frac{V_{g}D_{1}T_{s}}{2L}}
+\end{gathered}
+$$
