@@ -3,19 +3,21 @@
 
 format:
   pdf:
-    documentclass: article
+    documentclass: scrartcl
     papersize: a4
     toc: true
     number-sections: true
     geometry:
       - margin=1in
-    keep-tex: true
+    keep-tex: false
     include-in-header:
       text: |
         \usepackage{amsmath}
         \usepackage{amssymb}
         \usepackage{amsthm}
         \usepackage{cancel}
+        \newcommand{\lt}{\ensuremath <}
+        \newcommand{\gt}{\ensuremath >}
   html:
     theme: cosmo
     css: styles.css
