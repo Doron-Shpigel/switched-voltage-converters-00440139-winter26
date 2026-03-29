@@ -180,7 +180,7 @@ $$ {#eq-Q2A-delta-i}
 ### DCM mode condition
 
 ::: {.callout-note appearance="minimal"}
-## Reminder:
+#### Reminder:
 
 $$
 I \lt \Delta I \Longrightarrow\text{DCM mode}
