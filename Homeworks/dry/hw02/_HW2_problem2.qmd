@@ -80,7 +80,7 @@ What is the condition for the converter to operate in DCM mode?
       $$
 :::
 
-First, I'll analyze the converter as it was operating in CCM mode, which will results into having equation for the average current through the inductor, $I$, and the equation of the current ripple through the inductor, $\Delta i$, having those two equations will allow me the derive the condition for operation in DCM mode by solving the inequality: $I \lt \Delta I \implies\text{DCM mode}$.
+First, I'll analyze the converter as it was operating in CCM mode, which will results into having equation for the average current through the inductor, $I$, and the equation of the current ripple through the inductor, $\Delta i$, having those two equations will allow me the derive the condition for operation in DCM mode by solving the inequality: $I \lt \Delta I \Longrightarrow\text{DCM mode}$.
 
 ### $\underline{\text{phase 1, }0 \lt t \lt D_{1}T_{s}\text{:}}$
 
@@ -114,10 +114,13 @@ The average voltage across the inductor in one period is zero:
 
 $$\begin{aligned}
 0&=\int_{0}^{T_{s}}v_{L}\left(t\right)d\tau=\int_{0}^{D_{1}T_{s}}v_{L}\left(t\right)d\tau+\int_{D_{1}T_{s}}^{T_{s}}v_{L}\left(t\right)d\tau\\
-&=V_{g}D_{1}T_{s}+VD_{1}'T_{s}\Longleftrightarrow V_{g}D_{1}+VD_{1}'=0\\
-&\Rightarrow \boxed{V=-\frac{D_{1}}{D_{1}'}V_{g}}&
+&=V_{g}D_{1}T_{s}+VD_{1}'T_{s}\Longleftrightarrow V_{g}D_{1}+VD_{1}'=0
 \end{aligned}
 $$
+
+$$
+\Rightarrow \boxed{V=-\frac{D_{1}}{D_{1}'}V_{g}}
+$$ {#eq-Q2A-input-output-voltage}
 
 ::: {.callout-note appearance="minimal"}
 #### Reminder:
@@ -133,10 +136,13 @@ $$\begin{aligned}
 0&=\int_{0}^{T_{s}}i_{C}\left(t\right)d\tau=\int_{0}^{D_{1}T_{s}}i_{C}\left(t\right)d\tau+\int_{D_{1}T_{s}}^{T_{s}}i_{C}\left(t\right)d\tau\\
 &= -\frac{V}{R}D_{1}T_{s}+\left(-I-\frac{V}{R}\right)D_{1}'T_{s}\\
 \Longleftrightarrow 0&=-\frac{V}{R}D_{1}+\left(-I-\frac{V}{R}\right)D_{1}'
-=-\frac{V}{R}D_{1}-ID_{1}'-\frac{V}{R}D_{1}'\\&=-ID_{1}'-\frac{V}{R}\left(D_{1}+D_{1}'\right)=-ID_{1}'-\frac{V}{R}\\
-&\Rightarrow \boxed{I=-\frac{V}{RD_{1}'}}&
+=-\frac{V}{R}D_{1}-ID_{1}'-\frac{V}{R}D_{1}'\\&=-ID_{1}'-\frac{V}{R}\left(D_{1}+D_{1}'\right)=-ID_{1}'-\frac{V}{R}\
 \end{aligned}
 $$
+
+$$
+\Rightarrow \boxed{I=-\frac{V}{RD_{1}'}}
+$$ {#eq-Q2A-average-inductor-current}
 
 ::: {.callout-note appearance="minimal"}
 #### Reminder:
@@ -146,7 +152,7 @@ $I$ is the average inductor current.
 
 ### Inductor Current Ripple in CCM
 
-The inductor current ripple, denoted as $\Delta i$ (where the total[ peak-to-peak ripple is strictly defined as $2\Delta i$]{.mark}), is essential to find the boundary between CCM and DCM. To find the current ripple I will analyze the rate of change of the inductor current, from Farady's law of induction, the rate of change (aka slope) of the inductor current is proportional to the applied voltage:
+The inductor current ripple, denoted as $\Delta i$ (where the total [peak-to-peak ripple is strictly defined as $2\Delta i$]{.mark}), is essential to find the boundary between CCM and DCM. To find the current ripple I will analyze the rate of change of the inductor current, from Farady's law of induction, the rate of change (aka slope) of the inductor current is proportional to the applied voltage:
 
 $$
 \frac{d i_{L}\left(t \right)}{dt}=\frac{v_{L}\left(t\right)}{L}
@@ -160,9 +166,55 @@ $$
 
 because $i_{L}\left(D_{1}T_{s}\right)-i_{L}\left(0\right)=I+\Delta i  -\left(I - \Delta i\right)= 2\Delta i$, I can substitute this into a slop line equation and get $\Delta i$:
 
-$$\begin{gathered}
+$$
+\begin{gathered}
 m = \frac{\Delta y}{\Delta x} = \frac{\text{vertical change} }{\text{horizontal change} }\\
-\Rightarrow \frac{V_{g}}{L}=\frac{2\Delta i}{D_{1}T_{s}}\\
-\rightarrow\boxed{\Delta i=\frac{V_{g}D_{1}T_{s}}{2L}}
+\rightarrow \frac{V_{g}}{L}=\frac{2\Delta i}{D_{1}T_{s}}\\
 \end{gathered}
 $$
+
+$$
+\Rightarrow\boxed{\Delta i=\frac{V_{g}D_{1}T_{s}}{2L}}
+$$ {#eq-Q2A-delta-i}
+
+### DCM mode condition
+
+::: {.callout-note appearance="minimal"}
+## Reminder:
+
+$$
+I \lt \Delta I \Longrightarrow\text{DCM mode}
+$$
+:::
+
+first I'll plug in $I$ and $\Delta I$ I found on equations [-@eq-Q2A-average-inductor-current] and [-@eq-Q2A-delta-i]:
+
+$$
+I=-\frac{V}{RD_{1}'}\lt \Delta i=\frac{V_{g}D_{1}T_{s}}{2L}
+$$
+
+In the left hand side the I can express the output voltage, $V$ , as function of the input voltage, $V_{g}$ , by plug in [@eq-Q2A-input-output-voltage], this will result the following Inequality:
+
+$$
+I=-\frac{V}{RD_{1}'}=-\frac{-\frac{D_{1}}{D_{1}'}V_{g}}{RD_{1}'}=\frac{D_{1}V_{g}}{R\left(D_{1}'\right)^{2}} \lt \frac{V_{g}D_{1}T_{s}}{2L}
+$$
+
+reordering that inequality:
+
+$$
+\begin{gathered}
+\frac{\cancel{D_{1}V_{g}}}{R\left(D_{1}'\right)^{2}} \lt \frac{\cancel{V_{g}D_{1}}T_{s}}{2L}\\
+\frac{1}{R\left(D_{1}'\right)^{2}} \lt \frac{T_{s}}{2L}\\
+\frac{2L}{RT_{s}} \lt \left(D_{1}'\right)^{2}=\left(1-D_{1}\right)^{2}
+\end{gathered}
+$$
+
+1.  on the left side I got "constant", $K$, that depend on $L,\, R,\, T_{s}$
+
+    $K=\frac{2L}{RT_{s}}$ .
+
+2.  on the right side I got function $K_{crit}$ whose argument is $D_{1}$:
+
+    $K_{crit}=\left(1-D_{1}\right)^{2}$ .
+
+and, the converter operates in DCM when $K \lt K_{crit}$. $\square$
