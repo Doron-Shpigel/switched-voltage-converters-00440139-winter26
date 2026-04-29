@@ -443,3 +443,5 @@ VENV/
 .Rproj.user
 
 /env/
+
+/.luarc.json
