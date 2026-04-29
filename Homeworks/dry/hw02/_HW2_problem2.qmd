@@ -219,6 +219,8 @@ $$
 
 and, the converter operates in DCM when $K \lt K_{crit}$. $\square$
 
+{{< pagebreak >}}
+
 ## Question B:
 
 Find the voltage gain $V/V_{g}$, when the converter operate at DCM mode.
@@ -382,10 +384,9 @@ $$\begin{aligned}
 $$
 
 and I we use the definition of $K$ I found in question A, which is $K=\frac{2L}{RT_{s}}$, the voltage gain can be expressed as function of $K$ and $D_{1}$:
-$$\frac{V}{V_{g}}=-\frac{D_{1}}{\sqrt{K}}$$
-
-
-
+$$
+\frac{V}{V_{g}}=-\frac{D_{1}}{\sqrt{K}}
+$${#eq-Q2B-voltage-gain-with-K}
 
 :::{#fig-Idiode-t-curve}
 ```{python}
@@ -427,5 +428,184 @@ Current through the diode, $i_{diode}(t)$.
 :::
 
 
+{{< pagebreak >}}
+
+## Question C:
+
+Given $K=0.1$ and $D_{1}=0.3$ calculate the relative time of each phase, $D_{1},\, D_{2},\, D_{3}$, and plot the waveforms of the inductor voltage and current.
+
+First, I will ensure that the converter is operating in DCM mode by checking the condition I found in question A, which is $K \lt K_{crit}$, where $K_{crit}=\left(1-D_{1}\right)^{2}$:
+$$
+K=0.1 \lt K_{crit}=\left(1-0.3\right)^{2}=0.49 \Rightarrow\text{DCM mode}
+$$
+
+now, I will calculate $D_{2}$, in question B, I found that $D_{2}=\sqrt{\frac{2L}{RT_{s}}}$, and in question A, I found that $K=\frac{2L}{RT_{s}}$, therefore, $D_{2}=\sqrt{K}$:
+$$
+D_{2}=\sqrt{K}=\sqrt{0.1}\approx 0.316
+$$
+
+now, I can calculate $D_{3}$ by using the fact that $D_{1}+D_{2}+D_{3}=1$:
+$$
+D_{3}=1-D_{1}-D_{2}=1-0.3-0.316=0.384
+$$
+
+and the waveforms of the inductor voltage and current are shown in [@fig-Q-C-VL-t-curve] and  [@fig-Q-C-IL-t-curve], respectively.
 
 
+:::: {#fig-question-C-inductor-waveform layout-ncol=2}
+```{python}
+#| echo: false 
+#| warning: true
+#| error: true
+#| output: asis
+#| include: true
+import numpy as np
+from sympy import *
+from sympy.abc import x
+from tikzpy import Point, TikzPicture
+
+
+def xy_axes(
+    origin=Point(0, 0),
+    x_min=-4,
+    x_max=4,
+    y_min=-4,
+    y_max=4,
+    x_label="$X$",
+    y_label="$Y$",
+    tikzPicture=TikzPicture(),
+):
+    x_axis = dict()
+    x_axis["left"] = tikzPicture.line((x_min, origin.y), origin, options="Gray!50, -")
+    x_axis["right"] = tikzPicture.line(origin, (x_max, origin.y), options="Gray!50, ->")
+    x_axis["x_label"] = tikzPicture.node(x_axis["right"].end - (0.3, 0.3), text=x_label)
+    y_axis = dict()
+    y_axis["down"] = tikzPicture.line((origin.x, y_min), origin, options="Gray!50, -")
+    y_axis["up"] = tikzPicture.line(origin, (origin.x, y_max), options="Gray!50, ->")
+    y_axis["y_label"] = tikzPicture.node(y_axis["up"].end + (0.3, 0.3), text=y_label)
+    return x_axis, y_axis
+
+
+D1 = 0.3
+D2 = 0.316
+D3 = 0.384
+
+
+def round_list(lst, decimals=3):
+    return [tuple(round(val, decimals) for val in point) for point in lst]
+```
+
+:::{#fig-Q-C-VL-t-curve}
+```{python}
+#| echo: false 
+#| warning: true
+#| error: true
+#| output: asis
+#| include: true
+# Q-C-VL-t curve
+QC_VL_tikz = TikzPicture()
+QC_VLorigin = Point(0, 0)
+xy_axes(
+    origin=QC_VLorigin,
+    x_min=-0.1,
+    x_max=(6 + D1 * 2 + D2 * 2 + D3 * 2) * 1.1,
+    y_min=-2.5,
+    y_max=2.5,
+    x_label="$t$",
+    y_label="$v_L(t)$",
+    tikzPicture=QC_VL_tikz,
+)
+QC_VL_points = [
+    (0, 0),
+    (0, 2),
+    (2 + D1 * 2, 2),
+    (2 + D1 * 2, -2),  # D1 segment
+    (4 + D1 * 2 + D2 * 2, -2),
+    (4 + D1 * 2 + D2 * 2, 0),  # D2 segment
+    (6 + D1 * 2 + D2 * 2 + D3 * 2, 0),  # D3 segment
+]
+#QC_VL_points = round_list(QC_VL_points, 3)
+QC_VL_t_curve = QC_VL_tikz.draw_segments(QC_VL_points, circular=False, options="Blue, thick")
+# annotate the VL-t curve
+D1_line=QC_VL_tikz.line((0, 0), (2+D1*2, 0), options="|-|, black, dashed")
+QC_VL_tikz.node(D1_line.midpoint(), text=f'$D_{1}T_{s}={D1:.3f} T_{s}$', options="below")
+D2_line=QC_VL_tikz.line((2+D1*2, 0), (4+D1*2+D2*2, 0), options="|-|, black, dashed")
+QC_VL_tikz.node(D2_line.midpoint(), text=f'$D_{2}T_{s}={D2:.3f} T_{s}$', options="below")
+D3_line=QC_VL_tikz.line((4+D1*2+D2*2, 0), (6+D1*2+D2*2+D3*2, 0), options="|-|, black, dashed")
+QC_VL_tikz.node(D3_line.midpoint(), text=f'$D_{3}T_{s}={D3:.3f} T_{s}$', options="below")
+QC_VL_tikz.node(QC_VL_t_curve[((0, 2), (2 + D1 * 2, 2))].midpoint(), text="$V_{g}$", options="above")
+QC_VL_tikz.node(QC_VL_t_curve[((2 + D1 * 2, -2), (4 + D1 * 2 + D2 * 2, -2))].midpoint(), text="$V$", options="above")
+QC_VL_tikz.node(QC_VL_t_curve[((4 + D1 * 2 + D2 * 2, 0), (6 + D1 * 2 + D2 * 2 + D3 * 2, 0))].midpoint(), text="$0$", options="above")
+print(QC_VL_tikz.code())
+```
+
+Voltage across the inductor, $v_L(t)$.
+:::
+
+:::{#fig-Q-C-IL-t-curve}
+```{python}
+#| echo: false 
+#| warning: true
+#| error: true
+#| output: asis
+#| include: true
+# QC-IL-t curve
+QC_IL_tikz = TikzPicture()
+QC_ILorigin = Point(0, 0)
+xy_axes(
+    origin=QC_ILorigin,
+    x_min=-1,
+    x_max=8,
+    y_min=-2.5,
+    y_max=2.5,
+    x_label="$t$",
+    y_label="$i_L(t)$",
+    tikzPicture=QC_IL_tikz,
+)
+IL_points = [
+    (0, 0),
+    (2 + D1 * 2, 2),
+    (4 + D1 * 2 + D2 * 2, 0),
+    (6 + D1 * 2 + D2 * 2, 0),
+]
+IL_t_curve = QC_IL_tikz.draw_segments(IL_points, circular=False, options="Blue, thick")
+# annotate the IL-t curve
+il_d1 = QC_IL_tikz.line((2 + D1 * 2, 2), (2 + D1 * 2, 0), options="black, dashed")
+QC_IL_tikz.node(il_d1.end, text=f"$D_{1}T_{s}={D1:.3f} T_{s}$", options="below")
+aux = QC_IL_tikz.node(
+    (4 + D1 * 2 + D2 * 2, 0),
+    text="$\\left(D_{1}+D_{2}\\right)T_{s}$",
+    options="below",
+)
+QC_IL_tikz.node(
+    aux.position + (0, -0.5),
+    text=f"$={D1+D2:.3f} T_{s}$",
+    options="below",
+)
+QC_IL_tikz.node((6 + D1 * 2 + D2 * 2, 0), text="$T_{s}$", options="below")
+il_d2 = IL_t_curve[((0, 0), (2 + D1 * 2, 2))].shift(0.5, 0)
+QC_IL_tikz.node(il_d2.midpoint(), text="$\\frac{V_{g}}{L}$", options="")
+il_d3 = IL_t_curve[((2 + D1 * 2, 2), (4 + D1 * 2 + D2 * 2, 0))].shift(-0.5, 0)
+QC_IL_tikz.node(il_d3.midpoint(), text="$\\frac{V}{L}$", options="")
+QC_IL_tikz.node(
+    (2 + D1 * 2, 2), text="$i_{pk}=\\frac{V_{g}}{L}D_{1}T_{s}$", options="above"
+)
+print(QC_IL_tikz.code())
+```
+
+Current through the inductor, $i_L(t)$.
+:::
+
+Inductor waveforms for DCM mode with $K=0.1$ and $D_{1}=0.3$.
+:::: 
+
+{{< pagebreak >}}
+
+## Question D:
+
+What happen to $V$ when there is no load connected to the output $\left(R \to \infty \right)$?
+
+In question B, I found that the voltage gain of the converter in DCM mode is $\frac{V}{V_{g}}=-\frac{D_{1}}{\sqrt{K}}$, where $K=\frac{2L}{RT_{s}}$. when there is no load connected to the output, $R \to \infty$, therefore 
+$V=V_{g}\cdot "-\infty" \Rightarrow V\to -\infty$.
+
+In energy perspective, the energy stored in the inductor during the first phase will be delivered to the output during the second phase, but since there is no load at the output to dissipate the power, the absolute value of the voltage will increase to infinity.
