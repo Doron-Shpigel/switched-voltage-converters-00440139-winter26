@@ -40,7 +40,22 @@ format:
       gutter-width: 1.5rem
     html-math-method: katex
   pdf:
-    include-in-header: 
-      text: |
-        \usepackage{circuitikz}
-
+    documentclass: scrartcl
+    papersize: a4
+    toc: true
+    number-sections: true
+    geometry:
+      - margin=1in
+    keep-tex: true
+    include-in-header:
+      - text: |
+                  \usepackage{amsmath}
+                  \usepackage{amssymb}
+                  \usepackage{amsthm}
+                  \usepackage{cancel}
+                  \usepackage{tikz}
+                  \usepackage{circuitikz}
+                  \newcommand{\lt}{\ensuremath <}
+                  \newcommand{\gt}{\ensuremath >}
+filters:
+  - tikz-to-svg
