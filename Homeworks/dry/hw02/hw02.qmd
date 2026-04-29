@@ -16,4 +16,4 @@ format:
 
 # Problem 2:
 
-{{< include ./_HW2_problem2.qmd >}}
+{{< include _HW2_problem2.qmd >}}

@@ -218,3 +218,214 @@ $$
     $K_{crit}=\left(1-D_{1}\right)^{2}$ .
 
 and, the converter operates in DCM when $K \lt K_{crit}$. $\square$
+
+## Question B:
+
+Find the voltage gain $V/V_{g}$, when the converter operate at DCM mode.
+
+:::: {#fig-Inductor-waveform layout-ncol=2}
+```{python}
+#| echo: false 
+#| warning: true
+#| error: true
+#| output: asis
+#| include: true
+import numpy as np
+from sympy import *
+from sympy.abc import x
+from tikzpy import Point, TikzPicture
+
+def xy_axes(origin=Point(0, 0), x_min=-4, x_max=4, y_min=-4, y_max=4, x_label="$X$", y_label="$Y$", tikzPicture=TikzPicture()):
+    x_axis = dict()
+    x_axis["left"] = tikzPicture.line((x_min, origin.y), origin, options="Gray!50, -")
+    x_axis["right"] = tikzPicture.line(origin, (x_max, origin.y), options="Gray!50, ->")
+    x_axis["x_label"] = tikzPicture.node(x_axis["right"].end - (0.3, 0.3), text=x_label)
+    y_axis = dict()
+    y_axis["down"] = tikzPicture.line((origin.x, y_min), origin, options="Gray!50, -")
+    y_axis["up"] = tikzPicture.line(origin, (origin.x, y_max), options="Gray!50, ->")
+    y_axis["y_label"] = tikzPicture.node(y_axis["up"].end + (0.3, 0.3), text=y_label)
+    return x_axis, y_axis
+
+```
+
+:::{#fig-VL-t-curve}
+```{python}
+#| echo: false 
+#| warning: true
+#| error: true
+#| output: asis
+#| include: true
+# VL-t curve
+VL_tikz = TikzPicture()
+VLorigin = Point(0, 0)
+xy_axes(
+    origin=VLorigin,
+    x_min=-1,
+    x_max=8,
+    y_min=-3,
+    y_max=3,
+    x_label="$t$",
+    y_label="$v_L(t)$",
+    tikzPicture=VL_tikz,
+)
+VL_points = [(0, 0), (0, 2), (2, 2), (2, -2), (4, -2), (4, 0), (6, 0), (6, 2), (7, 2)]
+VL_t_curve = VL_tikz.draw_segments(VL_points, circular=False, options="Blue, thick")
+# annotate the VL-t curve
+VL_tikz.node(VL_t_curve[((0, 2), (2, 2))].midpoint(), text="$V_{g}$", options="above")
+vl_d1 = VL_t_curve[((0, 2), (2, 2))].shift(0, -2.1)
+vl_d1.options = "<->, black"
+VL_tikz.draw(vl_d1)
+VL_tikz.node(vl_d1.midpoint(), text="$D_{1}T_{s}$", options="below")
+VL_tikz.node(VL_t_curve[((2, -2), (4, -2))].midpoint(), text="$V$", options="above")
+vl_d2 = VL_t_curve[((2, -2), (4, -2))].shift(0, 1.9)
+vl_d2.options = "<->, black"
+VL_tikz.draw(vl_d2)
+VL_tikz.node(vl_d2.midpoint(), text="$D_{2}T_{s}$", options="below")
+VL_tikz.node(VL_t_curve[((4, 0), (6, 0))].midpoint(), text="$0$", options="above")
+vl_d3 = VL_t_curve[((4, 0), (6, 0))].shift(0, -0.1)
+vl_d3.options = "<->, black"
+VL_tikz.draw(vl_d3)
+VL_tikz.node(vl_d3.midpoint(), text="$D_{3}T_{s}$", options="below")
+print(VL_tikz.code())
+```
+
+Voltage across the inductor, $v_L(t)$.
+:::
+
+:::{#fig-IL-t-curve}
+```{python}
+#| echo: false 
+#| warning: true
+#| error: true
+#| output: asis
+#| include: true
+# IL-t curve
+IL_tikz = TikzPicture()
+ILorigin = Point(0, 0)
+xy_axes(
+    origin=ILorigin,
+    x_min=-1,
+    x_max=8,
+    y_min=-3,
+    y_max=3,
+    x_label="$t$",
+    y_label="$i_L(t)$",
+    tikzPicture=IL_tikz,
+)
+IL_points = [(0, 0), (2, 2), (4, 0), (6, 0), (8, 2)]
+IL_t_curve = IL_tikz.draw_segments(IL_points, circular=False, options="Blue, thick")
+# annotate the IL-t curve
+il_d1 = IL_tikz.line((2, 2), (2, 0), options="black, dashed")
+IL_tikz.node(il_d1.end, text="$D_{1}T_{s}$", options="below")
+IL_tikz.node((4, 0), text="$\\left(D_{1}+D_{2}\\right)T_{s}$", options="below")
+IL_tikz.node((6, 0), text="$T_{s}$", options="below")
+il_d2 = IL_t_curve[((0, 0), (2, 2))].shift(0.5, 0)
+IL_tikz.node(il_d2.midpoint(), text="$\\frac{V_{g}}{L}$", options="")
+il_d3 = IL_t_curve[((2, 2), (4, 0))].shift(-0.5, 0)
+IL_tikz.node(il_d3.midpoint(), text="$\\frac{V}{L}$", options="")
+IL_tikz.node((2, 2), text="$i_{pk}=\\frac{V_{g}}{L}D_{1}T_{s}$", options="above")
+print(IL_tikz.code())
+```
+
+Current through the inductor, $i_L(t)$.
+:::
+
+Inductor waveforms for DCM mode
+:::: 
+
+::: {.callout-note appearance="minimal"}
+#### Reminder:
+
+In DCM mode, we can't substitute currents with their average values, instead we have to calculate the integrals directly to find the connection to average voltages. 
+:::
+
+
+Following the general Methodology for DCM Analysis described in tutorial 5, firstly, I will write the inductor voltage-second balance, using the inductor voltage waveform shown in figure [-@fig-VL-t-curve], the equation for the inductor voltage-second balance is:
+$$\begin{gathered}
+D_{1}V_{g}+D_{2}V+D_{3}\cdot 0=0\\
+V=-\frac{D_{1}}{D_{2}}V_{g}
+\end{gathered}
+$${#eq-Q2B-input-output-voltage}
+
+Now, I will write the capacitor charge balance equation, knowing that the average current through the capacitor must be zero:
+$$\begin{gathered}
+\frac{1}{T_{s}} \int_{0}^{T_{s}} i_{c}\left(t\right)dt=0\\
+\frac{1}{T_{s}} \int_{0}^{T_{s}} i_{diode}\left(t\right) - \frac{v\left(t\right)}{R} dt=0
+\end{gathered}
+$$
+
+substituting the voltage, $v\left(t\right)$, with it's average voltage, and we are getting that the average current through the diode must be equal to the average current through the load resistor: 
+$$
+\frac{1}{T_{s}} \int_{0}^{T_{s}} i_{diode}\left(t\right) dt = -\frac{V}{R}
+$${#eq-Q2B-diode-current-integration}
+
+using equation [@eq-Q2A-delta-i], the peak inductor current, $i_{pk}$, is $i_{pk}=2\Delta i=\frac{V_{g}D_{1}T_{s}}{L}$, and the current that flows through the diode is the current that flows through the inductor during the second phase, therefore, the area under the diode current waveform is the charge delivered to the load during one period, dividing that by the period will give us the average current through the diode, which is equal to the average current through the load resistor, $V/R$, as shown in [@fig-Idiode-t-curve],  the area under the diode current waveform is the area of a triangle with base $D_{2}T_{s}$ and height $i_{pk}$, therefore, the average current through the diode is:
+$$\begin{aligned}
+\frac{1}{T_{s}} \int_{0}^{T_{s}} i_{diode}\left(t\right) dt &= \frac{1}{T_{s}}\cdot\text{Area of the triangle}\\
+&=\frac{1}{\cancel{T_{s}}}\cdot\frac{1}{2}i_{pk}D_{2}\cancel{T_{s}}\\ 
+&=\frac{1}{2}\frac{V_{g}D_{1}T_{s}}{L}D_{2}
+\end{aligned}
+$$
+
+and equating that to $V/R$: 
+$$
+\frac{1}{2}\frac{V_{g}D_{1}T_{s}}{L}D_{2}=-\frac{V}{R}
+$${#eq-Q2B-diode-current-integration-result}
+
+now, I got two equations, equation [@eq-Q2B-input-output-voltage] and equation [@eq-Q2B-diode-current-integration-result], with two unknowns, $V$ and $D_{2}$, I'll solve those two equations by substituting $V$ from the first equation into the second one:
+$$\begin{aligned}
+\cancel{-}\frac{\cancel{-}\frac{\cancel{D_{1}}}{D_{2}}\cancel{V_{g}}}{R}&=\frac{1}{2}\frac{\cancel{V_{g}D_{1}}T_{s}}{L}D_{2}\\
+\frac{1}{D_{2}R} &= \frac{D_{2}T_{s}}{2L}\\
+\rightarrow&D_{2}^{2}=\frac{2L}{RT_{s}}\rightarrow \boxed{D_{2}=\sqrt{\frac{2L}{RT_{s}}}}\\
+\rightarrow V&=-\frac{D_{1}}{D_{2}}V_{g}=-\frac{D_{1}}{\sqrt{\frac{2L}{RT_{s}}}}V_{g}\Rightarrow \boxed{\frac{V}{V_{g}}=-\frac{D_{1}}{\sqrt{\frac{2L}{RT_{s}}}}}
+\end{aligned}
+$$
+
+and I we use the definition of $K$ I found in question A, which is $K=\frac{2L}{RT_{s}}$, the voltage gain can be expressed as function of $K$ and $D_{1}$:
+$$\frac{V}{V_{g}}=-\frac{D_{1}}{\sqrt{K}}$$
+
+
+
+
+:::{#fig-Idiode-t-curve}
+```{python}
+#| echo: false 
+#| warning: true
+#| error: true
+#| output: asis
+#| include: true
+# IL-t curve
+Idiode_tikz = TikzPicture()
+Idiode_origin = Point(0, 0)
+xy_axes(
+    origin=Idiode_origin,
+    x_min=-1,
+    x_max=8,
+    y_min=-3,
+    y_max=3,
+    x_label="$t$",
+    y_label="$i_{diode}(t)$",
+    tikzPicture=Idiode_tikz,
+)
+Idiode_points = [(0, 0), (2, 0), (2, 2), (4, 0), (6, 0), (8, 0)]
+# Idiode_t_curve = Idiode_tikz.draw_segments(Idiode_points, circular=False, options="Blue, thick")
+# annotate the IL-t curve
+idiode_d1 = Idiode_tikz.line((0, -0.1), (2, -0.1), options="|-|, black, dashed")
+Idiode_tikz.node(idiode_d1.midpoint(), text="$D_{1}T_{s}$", options="below")
+idiode_d2 = Idiode_tikz.line((2, -0.1), (4, -0.1), options="|-|, black, dashed")
+Idiode_tikz.node(idiode_d2.midpoint(), text="$D_{2}T_{s}$", options="below")
+idiode_d3 = Idiode_tikz.line((4, -0.1), (6, -0.1), options="|-|, black, dashed")
+Idiode_tikz.node(idiode_d3.midpoint(), text="$D_{3}T_{s}$", options="below")
+Idiode_tikz.node((2, 2), text="$i_{pk}=\\frac{V_{g}}{L}D_{1}T_{s}$", options="right")
+idiode_triangle = Idiode_tikz.plot_coordinates(
+    Idiode_points, options="Blue, thick, fill={ProcessBlue!50}", action="filldraw"
+)
+print(Idiode_tikz.code())
+```
+
+Current through the diode, $i_{diode}(t)$.
+:::
+
+
+
+
