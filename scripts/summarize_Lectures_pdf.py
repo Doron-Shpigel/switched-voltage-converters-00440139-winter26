@@ -142,7 +142,7 @@ PDF content:
             if chunk_success:
                 break # Move to the next chunk if we succeeded
 
-            gemini_url = f"[https://generativelanguage.googleapis.com/v1beta/models/](https://generativelanguage.googleapis.com/v1beta/models/){model_name}:generateContent?key={GEMINI_API_KEY}"
+            gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={GEMINI_API_KEY}"
             print(f"DEBUG: Attempting with model: {model_name}")
 
             last_exc = None
