@@ -85,6 +85,7 @@ When initial conditions at $t=0$ are given, the total circuit response is the su
 *   No initial conditions are given.
 *   The current source is $i_{in}(t) = u(t)$, where $u(t)$ is a step function occurring at $t=0$.
 $$ i_{in}(t) = \begin{cases} 0 & t < 0 \\ 1 & t \ge 0 \end{cases} $$
+
 *   Calculate the voltage $v(t)$.
 
 **Solution:**

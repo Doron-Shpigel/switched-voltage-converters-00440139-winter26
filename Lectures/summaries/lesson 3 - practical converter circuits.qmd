@@ -227,6 +227,7 @@ The Forward converter is typically used for power levels of tens to hundreds of 
     *   During $Q_1$ OFF-time, the energy stored in $L_M$ is returned to the input through $D_1$ and $n_2$.
 *   **Duty Cycle Limit**: The volt-second balance condition on $L_M$ imposes a maximum duty cycle $D_{max}$.
     $$ D_{max} = \frac{n_1}{n_1+n_2} $$
+
     For example, if $n_1=n_2$, then $D_{max} = 0.5$. A higher $D$ leads to uncontrolled magnetizing current.
 *   The voltage across the primary switch $Q_1$ when OFF is $V_{Q1,max} = V_g (1 + \frac{n_1}{n_2})$. A smaller $n_2$ (for higher $D_{max}$) increases this voltage, requiring a higher voltage-rated transistor.
 
@@ -254,6 +255,7 @@ The Flyback converter is one of the most common isolated converters due to its s
     *   When the transistor is OFF, the stored energy is transferred from $L_M$ to the output (through the secondary winding and diode).
 *   **Voltage Gain (CCM)**:
     $$ V = n \frac{D}{1-D} V_g = n \frac{D}{D'} V_g $$
+
     where $n = n_{sec}/n_{pri}$.
 *   **Transformer Design**: The transformer in a Flyback converter is essentially a coupled inductor. It must be designed to store significant energy in its core, typically requiring an air gap in the magnetic core.
 
@@ -303,6 +305,7 @@ A gate driver circuit provides voltage and current to the gate of a transistor t
 *   **Analysis (Flyback example)**: During transistor turn-off, the current in the leakage inductance $L_{lk}$ cannot drop instantaneously. This current charges parasitic capacitances (e.g., $C_{DS}$ of the MOSFET), leading to an LC oscillation (ringing) on the switch voltage.
     The instantaneous voltage and current waveforms show a sinusoidal component due to this resonance.
     $$ v_{ds}(t) = \frac{L_{lk} i_{d}(0)}{C_{ds} \omega} \sin(\omega t) + (V_g - \frac{V}{n}) (1 - \cos(\omega t)) + \dots $$
+
     where $\omega = 1/\sqrt{L_{lk} C_{ds}}$.
 *   **Negative Effects**:
     *   **Losses**: The energy stored in $L_{lk}$ is dissipated as heat.
