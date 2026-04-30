@@ -10,8 +10,6 @@ Lecture summaries and source PDFs:
   → [Summary](summaries/lesson 2 - DC-DC converters at steady-state.qmd)
 - [lesson 2 - summary.pdf](lesson 2 - summary.pdf)  
   → [Summary](summaries/lesson 2 - summary.qmd)
-- [lesson 3 - practical converter circuits.pdf](lesson 3 - practical converter circuits.pdf)  
-  → [Summary](summaries/lesson 3 - practical converter circuits.qmd)
 - [lesson 3 - summary.pdf](lesson 3 - summary.pdf)  
   → [Summary](summaries/lesson 3 - summary.qmd)
 - [lesson 4 - magnetics.pdf](lesson 4 - magnetics.pdf)  
