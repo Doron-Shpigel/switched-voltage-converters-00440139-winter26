@@ -49,7 +49,7 @@ GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 # If the first hits a Rate Limit (429), it will seamlessly failover to the next.
 MODEL_PREFERENCES = [
     "gemini-2.5-flash",
-    "gemini-1.5-flash",
+    "gemini-2.5-flash-light",
     "gemini-2.5-pro"
 ]
 
