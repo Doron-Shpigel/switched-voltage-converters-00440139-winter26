@@ -48,9 +48,10 @@ GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 # Define your models in order of preference. 
 # If the first hits a Rate Limit (429), it will seamlessly failover to the next.
 MODEL_PREFERENCES = [
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-lite",
-    "gemini-2.5-pro"
+    "gemini-2.5-flash-lite",   # Primary: 10 RPM / 20 RPD limit
+    "gemini-3.1-flash-lite",   # Fallback 1: Massive 15 RPM / 500 RPD limit
+    "gemini-2.5-flash",        # Fallback 2: 5 RPM / 20 RPD limit
+    "gemini-3-flash"           # Fallback 3: 5 RPM / 20 RPD limit
 ]
 
 # -------------------------------------------------------------------
