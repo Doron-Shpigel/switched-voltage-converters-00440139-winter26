@@ -1,0 +1,138 @@
+---
+title: "lesson 6 - applications"
+date: "2026-04-30 15:46"
+---
+
+# Lecture Summary: Branded Power Converters Applications
+
+This lecture provides a structured overview of several typical applications of power converters, detailing their operation, advantages, disadvantages, and control considerations. The focus areas include linear regulators, power supplies for mobile devices, and Class D audio amplifiers.
+
+## 1. Linear Regulator
+
+A linear regulator's primary role is to deliver a controlled voltage or current to a load.
+
+### Key Characteristics
+*   **Advantages:**
+    *   **Simplicity and Cost-Effectiveness:** Often simple to design and inexpensive to implement.
+    *   **Speed:** Offers fast response times.
+    *   **Precision and Low Noise:** Provides an accurate output voltage (or current) without ripple.
+*   **Disadvantages:**
+    *   **Low Efficiency:** The main drawback is low efficiency due to significant power dissipation in the series pass transistor.
+    *   **Application Scope:** Primarily suitable for low-power applications where efficiency is not the dominant concern.
+
+### Circuit Operation Overview
+*   The circuit typically comprises a series pass transistor and a feedback system, often utilizing an operational amplifier (op-amp).
+*   The feedback loop ensures that the output voltage remains stable despite fluctuations in the input voltage ($v_{in}$) or changes in the load current ($i_{out}$).
+
+### Analysis Steps
+1.  **Operating Point Calculation:**
+    *   The desired output voltage ($V_{out}$) is determined by the reference voltage ($V_{ref}$) and the ratio of feedback resistors ($R_1, R_3$): $V_{out} = V_{ref} \left(1 + \frac{R_3}{R_1}\right)$.
+    *   Efficiency is calculated as $\eta = V_{out} / V_{in}$, which is inherently less than 1.
+2.  **Small-Signal Model:**
+    *   This model represents the dynamic behavior around the operating point. Key equations include the small-signal transistor current $\hat{i}_t(s) = g_m \hat{v}_g(s) - g_m \hat{v}(s)$ and the output capacitor current $\hat{i}_C(s) = -sC \hat{v}(s)$.
+    *   The op-amp's control function is represented as $\hat{v}_g(s) = G_c(s) \hat{v}(s)$.
+3.  **Signal Flow Diagram:** A visual representation of the small-signal feedback loop, aiding in understanding the control dynamics.
+4.  **Transfer Functions:** Derived from the small-signal equations to characterize the circuit's dynamic response.
+
+### Design Goals
+*   **Stability:** A high phase margin (e.g., $47.9^\circ$ in the provided example) is targeted to ensure circuit stability and prevent oscillations.
+*   **Low Output Impedance:** The absolute value of the transfer function $|\hat{v}(s)/\hat{i}_{out}(s)|$ should be minimized over a broad frequency range. This effectively means a low output resistance, crucial for filtering load current variations.
+
+### Performance Characteristics
+*   **Output Impedance:**
+    *   At low frequencies, the output impedance is low due to the high loop gain.
+    *   At high frequencies, the output capacitor acts as a short, also resulting in low output impedance.
+    *   A characteristic feature is a peak in output impedance within a mid-frequency range (e.g., between $10^6$ and $10^7$ rad/s), indicating reduced filtering effectiveness at these frequencies.
+*   **Step Response:**
+    *   Exhibits a very fast transient response (e.g., settling within $20 \mu s$ in the example).
+    *   Produces a ripple-free output voltage.
+    *   These qualities (fast response and no ripple) are primary advantages of linear regulators compared to switching converters.
+
+## 2. Laptop/Mobile Phone Power Supply
+
+This section details the architecture and components of a typical power supply for portable electronic devices.
+
+### Overall Architecture
+The power supply integrates several stages:
+*   An AC-DC rectifier at the input.
+*   An input filter to manage high-frequency currents.
+*   A common mode choke for electromagnetic compatibility (EMC) and ground current suppression.
+*   An isolated DC-DC converter (Flyback topology) for voltage conversion and safety isolation.
+*   A sophisticated control system, including a startup mechanism and feedback loop.
+
+### 2.1 Diode Bridge and Input Capacitor ($C_{in}$)
+*   **Function:** Converts the incoming AC mains voltage into an approximately constant DC voltage. For instance, a $220 \text{ V}_{\text{RMS}}$ AC input typically yields around $311 \text{ V}$ DC.
+*   **Mechanism:** Diodes rectify the AC waveform, and a sufficiently large input capacitor smooths the rectified DC voltage.
+*   **Drawback:** The input current drawn from the AC mains is non-sinusoidal and rich in high-frequency harmonic components, which can negatively impact the power grid.
+
+### 2.2 Input Filter ($C_x$)
+*   **Function:** A capacitor ($C_x$) placed in parallel with the input voltage effectively filters out high-frequency currents. These currents originate from both the diode bridge's harmonic generation and the switching operation of the converter.
+*   **Importance:** Preventing high-frequency currents from flowing back into the AC grid is crucial. Such currents can contaminate the power network, interfere with other electronic devices, and potentially lead to losses or damage. This filtering ensures compliance with EMC standards.
+*   **Operation:** $C_x$ provides a low-impedance path for high-frequency components, diverting them away from the AC mains. A larger $C_x$ generally leads to more effective filtering.
+
+### 2.3 Common Mode Choke
+*   **Structure:** This component consists of two coils wound on a shared magnetic core, typically without an air gap, and having an identical number of turns.
+*   **Primary Role:** To minimize undesirable common mode ground currents ($i_{gnd}$), thereby contributing to EMC compliance.
+*   **Operating Principle:**
+    *   **Common Mode Current Filtering:** For currents flowing in the same direction through both branches, the choke presents a very high magnetizing inductance, effectively blocking them. In an ideal scenario, no ground current flows.
+    *   **Differential Current Passage:** For currents flowing in opposite directions (differential currents), their magnetic fields within the core cancel each other. This prevents core saturation and allows the differential current to pass through largely unimpeded, acting almost like a short circuit.
+*   **Advantage over Separate Inductors:** Because differential currents do not saturate the core, a common mode choke does not require an air gap. This design allows for a significantly higher magnetizing inductance (compared to separate inductors) and thus superior common mode filtering capabilities.
+
+### 2.4 Flyback Converter
+*   **Function:** This is a standard Flyback converter, primarily responsible for converting the high DC input voltage (e.g., $311 \text{ V}$) to a lower, regulated DC output voltage (e.g., $19 \text{ V}$). A key feature is the galvanic isolation it provides between the input and output, essential for safety.
+*   **Outputs:**
+    *   **Main Output:** Delivers the regulated voltage and current to the load.
+    *   **Auxiliary Output:** Provides power to the control integrated circuit (IC) of the converter.
+*   **Snubber Circuits:** These circuits are included to dissipate excess energy stored in the transformer's leakage inductance, protecting the switching elements from high voltage spikes.
+
+### 2.5 Startup Mechanism
+*   **Challenge:** The control IC requires power to initiate operation, but the Flyback converter can only generate power once the IC is active.
+*   **Solution:** A dedicated startup circuit is employed. It charges the $C_{VDD}$ capacitor, which powers the IC, directly from the rectified AC input through a large series resistor and diodes. Once the voltage on $C_{VDD}$ reaches a sufficient threshold, the IC begins operation, enabling the Flyback converter. Subsequently, the startup circuit usually disconnects or ceases to supply power, as the auxiliary winding of the Flyback converter takes over.
+
+### 2.6 Control System
+*   **Objective:** To precisely regulate the output voltage by adjusting the converter's duty cycle.
+*   **Current-Mode Control:**
+    *   The duty cycle is indirectly controlled based on the transistor current and a feedback signal (FB). An increase in the FB voltage typically leads to a larger duty cycle and, consequently, greater power delivery to the load.
+*   **Advantages of Current-Mode Control:**
+    *   **Overcurrent Protection:** Inherently protects components from excessive currents.
+    *   **Dynamic Response:** Facilitates easier stabilization of the feedback loop, resulting in fast dynamic responses.
+    *   **Transformer Protection:** Offers a natural safeguard against transformer core saturation.
+*   **Disadvantage:** Susceptibility to noise in current measurements, often mitigated by incorporating a low-pass filter.
+*   **Feedback Network:** Senses the output voltage and modulates the FB voltage accordingly.
+    *   **Opto-coupler:** A critical component that transfers feedback information across the isolation barrier between the primary and secondary sides. Its performance is quantified by the Current Transfer Ratio (CTR).
+    *   **Output Voltage Regulation:** The output voltage at the operating point is set by $V_{out} = V_{ref} \left(1 + \frac{R_2}{R_1}\right)$.
+    *   **Feedback Transfer Function $G_c(s)$:** Typically designed as an integrator with lead/lag compensation to achieve desired loop stability and performance.
+*   **Loop Gain $T(s)$ Design:**
+    *   **Stability:** The loop gain $T(s)$ is shaped to achieve a high phase margin (e.g., $45^\circ - 90^\circ$) for stable and smooth transient behavior.
+    *   **Regulation:** High gain at low frequencies is crucial for effective rejection of noise and disturbances in the output current ($i_{out}$) and input voltage ($v_{in}$).
+
+## 3. Class D Audio Amplifier
+
+A Class D audio amplifier is designed to amplify low-power audio signals into high-power outputs suitable for driving loudspeakers, often delivering hundreds to thousands of watts with high efficiency.
+
+### Core Principles
+*   **Buck Converter Analogy:** Its power stage structure and high operating efficiency are analogous to a Buck converter.
+*   **Distinction from DC-DC Converters:** Unlike a typical DC-DC converter that aims for a constant output, a Class D amplifier is engineered to produce rapidly varying AC voltages and currents at audio frequencies (up to tens of kilohertz), precisely mirroring the input audio signal.
+*   **Design Challenges:**
+    *   **Fast Signal Tracking:** The control system must accurately and quickly track the dynamic input audio signal.
+    *   **Magnetic Component Design:** Inductors must be designed for high-frequency AC currents with minimal DC bias, requiring careful consideration of core losses, conductor losses, and appropriate high-frequency core materials.
+*   **Performance Goals:**
+    *   **Linearity:** The output voltage $v_a(t)$ must be directly proportional to the input audio signal $v(t)$, i.e., $v_a(t) \approx K v(t)$, to ensure high audio fidelity.
+    *   **Power Delivery:** Must supply sufficient power $P(t) = v^2(t)/R$ to effectively drive the loudspeaker.
+    *   **High Efficiency:** Operating at high efficiency is critical for energy conservation and preventing excessive heat generation in components.
+
+### Circuit Operation (Example)
+*   **Power Stage:** Often implemented using a full-bridge (H-bridge) switching topology, followed by an LC output filter connected to the speaker.
+*   **PWM Generation:** The input audio signal is used to modulate the duty cycle ($d(t)$) of a Pulse Width Modulation (PWM) signal. This is typically achieved by comparing the audio signal with a high-frequency triangular waveform.
+*   **Feedback and Compensation:** A feedback loop, including a differential amplifier and a compensation network, is employed to ensure that the amplifier's output precisely tracks the input audio signal.
+
+### Dynamic Analysis
+*   **Power Stage Dynamics (Averaged Model):** Under assumptions of a constant DC input voltage ($V_{DC}$) and negligible ripple, the power stage can be represented by a linear dynamic model. The transfer function $v(s) / (d(s) - d'(s))$ behaves as a low-pass filter, where $d(s)$ is the duty cycle.
+*   **PWM Relationship:** The differential duty cycle $(d(t) - d'(t))$ is directly proportional to the audio input signal $q(t)$ (e.g., $(d(t) - d'(t)) = 2q(t)/V_m$).
+*   **Compensation Network $G_c(s)$:** This network, typically an operational amplifier circuit with specific feedback elements, is designed to shape the loop gain for optimal stability and dynamic performance. It often incorporates an integrator and lead/lag compensation elements.
+*   **Loop Gain $T(s)$:** The overall loop gain is the product of the power stage's transfer function, the PWM gain, and the compensation network's transfer function.
+*   **Closed-Loop Transfer Function:** The relationship between the output voltage and the input audio signal is given by $\frac{v(s)}{v_a(s)} = \frac{K T(s)}{1 + T(s)}$.
+*   **Performance:**
+    *   For accurate tracking ($v(s) \approx K v_a(s)$), the loop gain $T(s)$ must be significantly greater than 1 ($T(s) \gg 1$).
+    *   An example design demonstrated a stable loop with a phase margin of $40.2^\circ$.
+    *   The closed-loop gain remained constant (e.g., $K=10$, or $20\text{ dB}$) across the entire audio frequency range (up to $20\text{ kHz}$), confirming the amplifier's ability to accurately amplify the audio input.

@@ -1,0 +1,236 @@
+---
+title: "lesson 4 - magnetics"
+date: "2026-04-30 15:45"
+---
+
+# Summary: Design and Analysis of Magnetic Devices
+
+## Introduction: Why Magnetic Devices?
+
+Magnetic devices are crucial in high-power electrical energy conversion systems. They are preferred because they can store significantly more energy in a magnetic field than in an electric field for a given volume, especially in air.
+
+*   **Electric Field Limitation:** In air, electric fields are limited to approximately $E \approx 3 \times 10^6 \, \text{V/m}$ to prevent breakdown and arcing.
+*   **Magnetic Field Advantage:** Magnetic fields do not face this limitation and can reach very high values.
+*   **Energy Storage Comparison:**
+    *   A $1 \, \text{m}^3$ device with an electric field of $3 \times 10^6 \, \text{V/m}$ (in air) stores about $40 \, \text{J}$.
+    *   Practical magnetic devices can store over $10 \, \text{MJ}$ in the same volume, representing an energy storage capacity at least $250,000$ times greater.
+
+## Analysis of Magnetic Devices
+
+Magnetic devices operate in a magneto-quasi-static regime.
+
+### Conditions for Magneto-Quasi-Static Operation
+
+*   Device dimensions are much smaller than the characteristic wavelength: $\lambda = c/f \gg \text{device dimensions}$.
+*   Magnetic field energy density is dominant over electric field energy density: $\frac{1}{2}\vec{H} \cdot \vec{B} \gg \frac{1}{2}\vec{E} \cdot \vec{D}$.
+
+### Key Maxwell's Equations
+
+*   **Ampere's Law:** $\oint \vec{H} \cdot d\vec{l} = i(t)$
+    *   The integral of the magnetic field along a closed path equals the current passing through the enclosed surface.
+*   **Faraday's Law:** $v(t) = -\frac{d\Phi}{dt} = -\frac{d}{dt} \iint \vec{B} \cdot d\vec{a}$
+    *   A time-varying magnetic flux in a loop induces an electric voltage.
+*   **Gauss's Law for Magnetism:** $\iint \vec{B} \cdot d\vec{a} = 0$
+    *   The total magnetic flux entering a closed surface is zero (no magnetic monopoles).
+
+### Units and Definitions
+
+*   **Magnetic Field ($\vec{H}$):** Amperes per meter ($\text{A/m}$).
+*   **Magnetic Flux Density ($\vec{B}$):** Tesla ($\text{T}$), or Volt-second per square meter ($\text{Vs/m}^2$).
+*   **Magnetic Flux ($\Phi$):** Volt-second ($\text{Vs}$).
+*   **Permeability ($\mu$):** Relationship between $\vec{B}$ and $\vec{H}$ in linear magnetic materials: $\vec{B} = \mu \vec{H} = \mu_r \mu_0 \vec{H}$.
+    *   $\mu_r$: Relative permeability (typically $10^2 - 10^6$ for magnetic materials).
+    *   $\mu_0$: Permeability of free space, $\mu_0 = 4\pi \times 10^{-7} \, \text{Vs/(Am)}$.
+
+### General Analysis Method
+
+A systematic approach to determine voltage from current:
+
+1.  Assume input current $i(t)$ is given.
+2.  Use Ampere's Law and Gauss's Law for Magnetism to calculate the magnetic field $\vec{H}(t)$.
+3.  Use $\vec{B} = \mu \vec{H}$ to calculate magnetic flux density $\vec{B}(t)$.
+4.  Use Faraday's Law to calculate the input voltage $v(t)$.
+
+### Simplified Assumptions for Analysis
+
+For typical magnetic devices, we often assume:
+
+*   No magnetic field outside the device core.
+*   Uniform magnetic field distribution across the core's cross-section.
+*   This implies the magnetic field is uniform along the length of a "box-like" core.
+
+## Simple Inductor
+
+### Inductance Derivation
+
+For a simple inductor with $n$ turns, core cross-sectional area $A_c$, magnetic path length $l_m$, and permeability $\mu$:
+
+*   **Inductance ($L$):** $L = \frac{n^2 A_c \mu}{l_m}$.
+
+### Saturation Current
+
+The simple linear relationship $B(t) = \mu H(t)$ holds only for free space. Real magnetic materials exhibit a non-linear $B-H$ curve with hysteresis and saturation.
+
+*   **Typical Magnetic Material B-H Curve:** Shows an initial linear region, followed by a saturation region where $B$ no longer increases significantly with $H$.
+*   **Saturation Flux Density ($B_{sat}$):** The maximum flux density the material can sustain (e.g., Ferrite: $0.3-0.5 \, \text{T}$, Iron laminations: $1-2 \, \text{T}$).
+*   **Behavior at Saturation:** When the material saturates ($B(t) \approx B_{sat}$), $\frac{dB(t)}{dt} \approx 0$, causing the induced voltage $v(t) \approx 0$.
+    *   **Implication:** A saturated inductor behaves approximately as a short circuit, disrupting circuit operation.
+*   **Saturation Current ($I_{sat}$):** The current at which the material enters saturation.
+    *   $I_{sat} = \frac{B_{sat} l_m}{n \mu}$.
+    *   This is a critical parameter for inductor selection and design.
+
+## Inductor with Air Gap
+
+### Maximizing Stored Energy
+
+The primary role of an inductor is to store energy in a magnetic field: $E = \frac{1}{2} L i^2$.
+
+*   **Counter-intuitive Result:** For a simple inductor without an air gap, maximum stored energy $E_{max} = \frac{1}{2} L I_{sat}^2$ is inversely proportional to permeability $\mu$. As $\mu \to \infty$, $E_{max} \to 0$.
+    *   **Explanation:** In an ideal magnetic material ($\mu \to \infty$), the magnetic field intensity $H \to 0$, meaning no energy is stored in the core itself ($E = \frac{1}{2} \int H \cdot B \, dv$). An ideal core is a poor energy storage device.
+*   **Role of Air Gap:** Practical inductors include an air gap to store significant magnetic energy. The air gap, having $\mu_0$ (much smaller than core's $\mu$), allows for a larger $H$ field in the gap, thus storing energy.
+
+### Analysis of Inductor with Air Gap
+
+With $n$ turns, core area $A_c$, core path length $l_m$, air gap length $l_g$, core permeability $\mu_c$:
+
+*   **Inductance ($L$):** $L = \frac{n^2 A_c}{l_m/\mu_c + l_g/\mu_0}$.
+*   **Saturation Current ($I_{sat}$):** $I_{sat} = \frac{B_{sat}}{n} \left( \frac{l_m}{\mu_c} + \frac{l_g}{\mu_0} \right)$.
+*   **Maximum Stored Energy ($E_{max}$):** $E_{max} = \frac{1}{2} L I_{sat}^2 = \frac{1}{2} A_c B_{sat}^2 \left( \frac{l_m}{\mu_c} + \frac{l_g}{\mu_0} \right)$.
+
+### Effects of Air Gap Length ($l_g$)
+
+*   Increasing $l_g$ (larger air gap):
+    *   Decreases inductance $L$.
+    *   Increases saturation current $I_{sat}$.
+    *   Increases maximum stored energy $E_{max}$.
+*   **Ideal Core with Air Gap ($\mu_c \to \infty$):**
+    *   The magnetic field in the core $H_c \to 0$.
+    *   All magnetic energy is stored in the air gap: $E_{max} = \frac{1}{2} A_c l_g \frac{B_{sat}^2}{\mu_0}$.
+    *   This energy is independent of $n$, depending only on core material and geometry.
+
+## Simple Transformer
+
+### Analysis and Equivalent Circuit
+
+A transformer with primary $n_1$ turns, secondary $n_2$ turns, core area $A_c$, path length $l_m$, and permeability $\mu$:
+
+*   **Voltage Ratio:** $\frac{v_2(t)}{v_1(t)} = \frac{n_2}{n_1}$.
+*   **Magnetizing Inductance ($L_m$):** The transformer can be represented by an ideal transformer and a magnetizing inductance: $L_m = \frac{n_1^2 A_c \mu}{l_m}$ (referred to the primary side).
+
+### Ideal Transformer
+
+*   **Conditions:** When the core material is ideal ($\mu \to \infty$), the magnetizing inductance $L_m \to \infty$.
+*   **Behavior:** The magnetizing inductance branch becomes an open circuit.
+    *   Voltage ratio: $\frac{v_2}{v_1} = \frac{n_2}{n_1}$.
+    *   Current ratio: $\frac{i_2}{i_1} = -\frac{n_1}{n_2}$.
+    *   Power conservation: $v_1 i_1 = -v_2 i_2$.
+*   **Air Gaps:** Typical transformers *do not* include an air gap.
+*   **Flyback Transformer Exception:** A flyback transformer *does* require an air gap because it explicitly uses its magnetizing inductance to store energy.
+
+### Saturation in Transformers
+
+Saturation occurs when the flux density $B$ in the core exceeds $B_{sat}$.
+
+*   **Conditions to Avoid Saturation:**
+    1.  **Magnetizing Current Limit:** The magnetizing current $i_m \le I_{m,sat}$, where $I_{m,sat} = \frac{B_{sat} l_m}{n_1 \mu}$ (if $L_m$ is referred to primary).
+    2.  **Volt-Second Balance:** In steady-state, the average voltage across the magnetizing inductance must be zero over a switching period $T_s$: $\int_0^{T_s} v_m(\tau) d\tau = 0$.
+    3.  **Maximum Flux Swing Limit:** The integral of the positive voltage across the primary winding over one switching cycle, $\lambda = \int_0^{t_1} v_1(t) dt$, must be limited.
+        *   This corresponds to the change in flux density: $\Delta B = \frac{\lambda}{n_1 A_c}$.
+        *   To avoid saturation: $n_1 A_c \Delta B_{max} \ge \lambda$.
+*   **Design Implication:** A smaller number of primary turns ($n_1$) requires a larger core cross-sectional area ($A_c$) to avoid saturation. This often dictates the physical size of the transformer.
+
+### Leakage Inductance
+
+*   In reality, some magnetic flux does not link both windings perfectly, leading to leakage inductance.
+*   This causes voltage spikes and switching losses in switched-mode power supplies.
+
+## Losses in Magnetic Devices
+
+Losses reduce efficiency and generate heat, critical considerations in design.
+
+### Core Losses (Losses in the Magnetic Material)
+
+Result primarily from "friction" as magnetic domains realign with changing magnetic fields.
+
+*   **Hysteresis Losses:** Proportional to the area of the $B-H$ loop.
+    *   Energy lost per cycle = (core volume) $\times$ (area of $B-H$ loop).
+    *   Average power loss $P_H = f \times (\text{core volume}) \times (\text{area of } B-H \text{ loop})$, where $f$ is the operating frequency.
+    *   **Implication:** Hysteresis losses increase linearly with frequency.
+*   **Eddy Current Losses:** Occur in conductive core materials due to induced currents by time-varying magnetic fields. These currents generate unwanted heat.
+    *   **Mitigation:** Cores are often made of thin, insulated laminations to break up eddy current paths.
+
+### Ohmic Losses (Copper Losses)
+
+Occur in the winding conductors due to their resistance.
+
+*   **Low Frequency:** $P_{cu} = I_{RMS}^2 R$, where $R$ is the DC resistance of the winding.
+*   **High Frequency Effects:**
+    *   **Skin Effect:** At high frequencies, AC current flows mainly near the conductor surface. The effective cross-sectional area for current flow decreases, increasing effective resistance.
+        *   **Skin Depth ($\delta$):** The characteristic depth where current density drops to $1/e$: $\delta \approx \sqrt{\frac{\rho}{\pi \mu f}}$. For copper at $100 \, \text{kHz}$, $\delta \approx 0.24 \, \text{mm}$.
+        *   **Mitigation:** **Litz wire** (multiple thin, insulated strands woven together) is used to reduce skin effect losses.
+    *   **Proximity Effect:** Current in nearby conductors can crowd into a smaller area of adjacent conductors, further increasing effective resistance and losses.
+
+## Design of Magnetic Devices
+
+Magnetic device design involves balancing conflicting constraints and requires experience.
+
+### Types of Inductors and Design Considerations
+
+*   **DC Inductor (low current ripple):**
+    *   Core losses are often negligible.
+    *   Copper losses are primarily due to the DC current.
+    *   Key design challenge: preventing saturation. High-loss core materials may be acceptable.
+*   **AC Inductor (high current ripple):**
+    *   All loss mechanisms (core, skin, proximity) are significant.
+    *   $B(t)$ must be chosen to avoid saturation and minimize losses.
+    *   Requires materials suitable for high frequencies, like Ferrites.
+
+### Basic Inductor Design Method (Simplified)
+
+Assumptions: Negligible core/skin/proximity losses, ideal magnetic material ($\mu_c \to \infty$).
+Goal: Design for desired inductance $L$, resistance $R$, and maximum current $I_{max}$.
+
+*   **Key Design Equation (Constraint):** A geometric constant $K_g = \frac{A_c A_W}{MLT}$ must satisfy:
+    $K_g \ge \frac{L I_{max}^2 \rho}{R K_u B_{max}^2}$.
+*   **Design Steps:**
+    1.  **Select a suitable core:** Choose a core with $K_g$ meeting the calculated requirement.
+    2.  **Determine air gap length ($l_g$):** $l_g = \frac{\mu_0 L I_{max}^2}{A_c B_{max}^2}$.
+    3.  **Determine number of turns ($n$):** $n = \frac{L I_{max}}{B_{max} A_c}$.
+    4.  **Choose wire size ($A_w$):** $A_w \le \frac{K_u A_W}{n}$.
+    5.  **Approximate coil resistance ($R_{cu}$):** $R_{cu} = \rho \frac{n \cdot MLT}{A_w}$.
+
+### Basic Flyback Transformer Design
+
+A flyback transformer acts like two inductors sharing a core, as it stores energy. It *requires* an air gap.
+
+*   **Design Steps:**
+    1.  **Design the primary winding as an inductor:** Use the method above, but use $A_W/2$ for the window area (and consequently half the $K_g$) to account for sharing the core window space with the secondary.
+    2.  **Determine secondary turns ($n_2$):** Based on the desired turns ratio $\frac{n_2}{n_1}$.
+    3.  **Determine secondary wire size ($A_{w2}$):** Also using $A_W/2$ for the secondary winding.
+
+## Enrichment Material: Transformer Characterization
+
+### Short Circuit and Open Circuit Tests
+
+Standard tests for measuring transformer parameters using an approximate equivalent circuit (including magnetizing inductance $L_m$, core loss resistance $R_m$, leakage inductances $L_1, L_2$, and winding resistances $R_1, R_2$).
+
+*   **Open Circuit Test (Secondary Open):**
+    *   Measures ideal turns ratio $x$, magnetizing inductance $L_m$, and core loss resistance $R_m$.
+*   **Short Circuit Test (Secondary Shorted):**
+    *   Measures ideal turns ratio $x$, total series leakage inductance ($L_1 + x^2 L_2$), and total series winding resistance ($R_1 + x^2 R_2$) referred to the primary.
+
+### Leakage Inductance and Transformer Structure
+
+Leakage inductance is directly proportional to the total magnetic energy stored in the device during a short-circuit test.
+
+*   **Minimizing Leakage Inductance:** To reduce leakage inductance, the primary and secondary windings should be wound as closely and with as much overlap as possible (e.g., interleaving windings). This minimizes the magnetic flux that does not link both windings.
+
+### Parasitic Capacitance and Insulation
+
+While close winding proximity reduces leakage inductance, it increases parasitic capacitance between the windings.
+
+*   **Trade-offs:**
+    *   **Close Windings:** Lower leakage inductance, higher parasitic capacitance, lower maximum voltage rating (due to reduced insulation distance).
+    *   **Far Apart Windings:** Higher leakage inductance, lower parasitic capacitance, higher maximum voltage rating.
+
+Magnetic design involves complex trade-offs between various electrical parameters, physical constraints, and desired performance characteristics.
