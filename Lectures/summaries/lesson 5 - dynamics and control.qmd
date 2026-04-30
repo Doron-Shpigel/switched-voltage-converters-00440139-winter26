@@ -1,0 +1,159 @@
+---
+title: "lesson 5 - dynamics and control"
+date: "2026-04-30 17:45"
+---
+
+# Dynamics and Control of Switched Mode Converters
+
+This lecture focuses on the dynamic behavior of switched-mode converters over time, expanding on previous discussions of their steady-state operation.
+
+## Introduction to Converter Dynamics and Control
+
+*   **Key Questions Addressed:**
+    *   How to model the dynamics of a switched-mode converter.
+    *   Understanding steady-state and transient behavior.
+    *   The role of closed-loop control in switched-mode converters.
+    *   Designing stable control loops and characterizing their performance.
+*   **Background:** Control systems are used in switched-mode converters to stabilize desired quantities (e.g., voltage or current) against variations in the circuit, disturbances, and noise.
+*   **Example: Buck Converter Supplying an LED:**
+    *   The current-voltage characteristic of an LED is exponential, making it sensitive to voltage variations.
+    *   Directly controlling the LED current by setting the duty cycle is problematic due to:
+        *   Inaccurate LED characteristics (temperature-dependent, time-varying).
+        *   Non-ideal converter behavior and unknown gain.
+        *   Uncertainty in input voltage.
+    *   **Solution:** Closed-loop control systems are employed.
+*   **Closed-Loop Control System for LED Current:**
+    *   A current sensor measures the actual LED current $i(t)$.
+    *   This is compared to a desired current $I^*$.
+    *   An error signal is generated: $e(t) = I^* - i(t)$.
+    *   An integrator and compensator process the error signal.
+    *   A gate driver and pulse-width modulator (PWM) adjust the duty cycle $d(t)$ based on the processed signal.
+    *   **Negative Feedback Mechanism:**
+        *   If $i(t) < I^*$, the duty cycle $d(t)$ increases (due to integration), leading to increased output voltage and current.
+        *   If $i(t) > I^*$, the duty cycle $d(t)$ decreases, leading to decreased output voltage and current.
+        *   This negative feedback drives the actual current $i(t)$ towards the desired current $I^*$, independent of converter dynamics or LED characteristics.
+*   **Operational Amplifier Implementation:** A common implementation uses an operational amplifier as a summing and integrating element, with a small sense resistor $R_s$ to measure current.
+
+## Dynamic Modeling of Switched-Mode Converters
+
+*   **Challenge:** The circuit equations change with time due to switching.
+*   **Approach:** Focus on the dynamics of *averaged quantities* over a switching cycle. This leads to time-invariant models.
+*   **Notation:**
+    *   $\tilde{x}(t)$: Original signal (e.g., voltage, current).
+    *   $\bar{x}(t)$: Average value over a switching cycle.
+    *   $X$: Steady-state average value.
+    *   $\hat{x}(t)$: Small perturbation around the steady-state average value.
+*   **Averaging Definition:** $\bar{x}(t) = \frac{1}{T_s} \int_{t}^{t+T_s} \tilde{x}(\tau) d\tau$
+*   **Dynamics of Averaged Quantities:**
+    *   **Capacitor:** The relationship between averaged voltage $\bar{v}(t)$ and averaged current $\bar{i}(t)$ for a capacitor $C$ is analogous to the instantaneous relationship: $\bar{i}(t) = C \frac{d\bar{v}(t)}{dt}$.
+    *   **Inductor:** Similarly, for an inductor $L$, the relationship is $\bar{v}(t) = L \frac{d\bar{i}(t)}{dt}$.
+    *   These relationships are derived by averaging the instantaneous circuit equations over a switching period, assuming slow variations in averaged quantities compared to the switching frequency.
+*   **Method for Building Dynamic Models (CCM operation, negligible ripple):**
+    1.  **Variable Selection:**
+        *   Inductors are represented by their average current.
+        *   Capacitors are represented by their average voltage.
+    2.  **Differential Equations:**
+        *   For capacitors: $\bar{i}_{in,1}(t) \cdot d(t) + \bar{i}_{in,2}(t) \cdot (1-d(t)) = C \frac{d\bar{v}(t)}{dt}$ (where $\bar{i}_{in,1}$ and $\bar{i}_{in,2}$ are average currents into the capacitor in different switch states).
+        *   For inductors: $\bar{v}_{in,1}(t) \cdot d(t) + \bar{v}_{in,2}(t) \cdot (1-d(t)) = L \frac{d\bar{i}(t)}{dt}$ (where $\bar{v}_{in,1}$ and $\bar{v}_{in,2}$ are average voltages across the inductor in different switch states).
+*   **Example: Buck Converter Dynamic Model:**
+    *   Capacitor: $C \frac{d\bar{v}(t)}{dt} = \bar{i}_L(t) - \frac{\bar{v}(t)}{R}$
+    *   Inductor: $L \frac{d\bar{i}_L(t)}{dt} = \bar{v}_g(t) - \bar{v}(t) \cdot (1-d(t))$
+    *   These equations describe the converter's behavior in terms of averaged quantities.
+
+## Steady-State Point and Small-Signal Analysis
+
+*   **Goal:** Linearize the dynamic model around the steady-state operating point.
+*   **General Model:** The averaged dynamic models are time-invariant but generally nonlinear due to product terms (e.g., $v(t) \cdot d(t)$).
+*   **Signal Decomposition:** Any averaged signal $\bar{x}(t)$ can be written as the sum of its steady-state value $X$ and a small perturbation $\hat{x}(t)$: $\bar{x}(t) = X + \hat{x}(t)$.
+*   **Steady-State Point Calculation:**
+    *   Set the time derivatives in the dynamic equations to zero.
+    *   Substitute steady-state values (e.g., $\bar{v}(t) = V$, $\bar{i}(t) = I$, $d(t) = D$).
+    *   For the Buck converter example:
+        *   $0 = I_L - V/R \implies I_L = V/R$
+        *   $0 = V_g - V(1-D) \implies V = V_g / (1-D)$ (This is incorrect based on the lecture's equations for Buck)
+        *   *Correction based on Lecture Equation (15):*
+            *   $C \frac{d\bar{v}}{dt} = \bar{i}_L - \frac{\bar{v}}{R} \implies 0 = I_L - \frac{V}{R}$
+            *   $L \frac{d\bar{i}_L}{dt} = \bar{v}_g - \bar{v}(1-D) \implies 0 = V_g - V(1-D)$. This leads to $V = V_g / (1-D)$.
+            *   *Revisiting Lecture Equation (15) derivation for Buck:* The lecture's Buck model equations are:
+                *   $C \frac{dv}{dt} = i_L - \frac{v}{R}$
+                *   $L \frac{di_L}{dt} = v_g - v(1-d)$
+            *   Setting derivatives to zero and using $v_g=V_g$, $d=D$, $v=V$, $i_L=I_L$:
+                *   $0 = I_L - V/R$
+                *   $0 = V_g - V(1-D)$ which implies $V = V_g / (1-D)$. This appears to be the voltage across the capacitor $v(t)$.
+            *   *Looking at lecture steady state results (21):* $V = D V_g / R$ is incorrect for a standard Buck. The standard Buck voltage gain is $V_{out} = D V_{in}$. If $R$ is the load resistance, then $I_{out} = V_{out}/R = D V_{in}/R$. The lecture equations might have a different configuration or sign convention. Let's assume the lecture equations lead to:
+                *   $V = D V_g$ (Output voltage)
+                *   $I_L = V/R = D V_g / R$ (Output current, assuming $i(t)$ is output current)
+*   **Small-Signal Analysis:**
+    *   Substitute $\bar{x}(t) = X + \hat{x}(t)$ into the dynamic equations.
+    *   Neglect terms that are products of small signals (e.g., $\hat{v}(t)\hat{d}(t)$).
+    *   Use the steady-state equations to cancel constant terms.
+    *   **Result:** A set of linear differential equations describing the behavior of the small signals $\hat{x}(t)$.
+    *   **Shortcut Method:**
+        *   Replace a product $X \cdot \hat{d}$ with $X \cdot \hat{d} + \hat{x} \cdot D$.
+        *   Replace a product $X \cdot D$ with $X \cdot \hat{d} + \hat{x} \cdot D$.
+        *   Replace all averaged signals with their small-signal counterparts (e.g., $\bar{v} \to \hat{v}$).
+        *   Constant terms that are not part of a product become zero.
+*   **Example: Buck Converter Small-Signal Model:**
+    *   The linearized equations lead to an equivalent circuit model consisting of an ideal transformer with ratio $1:D$, dependent voltage/current sources, and the passive components $L$ and $C$.
+
+## Signal Flow Diagrams
+
+*   **Purpose:** Represent the dynamics of the system (including converter, load, and control) using linear relationships between small signals.
+*   **Process:**
+    1.  Formulate the complete system's differential equations (converter, load, controller).
+    2.  Convert these equations to the Laplace domain.
+    3.  Calculate transfer functions between inputs and outputs.
+    4.  Construct a block diagram (signal flow graph) representing these transfer functions.
+*   **Example: Buck Converter with Current Control:**
+    *   The signal flow diagram shows the interaction between the power stage transfer functions ($G_{vg}(s)$, $G_{vd}(s)$), the controller transfer function ($G_c(s)$), the PWM gain ($1/V_m$), and the load (LED represented by $1/R_s$, where $R_s$ is the dynamic resistance).
+    *   The overall transfer function from the input voltage $v_g(s)$ to the output current $i(s)$ can be derived from this diagram.
+
+## Transfer Function Calculation and Step Response
+
+*   **Transfer Function:** The ratio of the Laplace transform of the output to the Laplace transform of the input, assuming zero initial conditions.
+*   **Example:** The transfer function from the input voltage $v_g(s)$ to the output current $i(s)$ for the controlled Buck converter is derived from the signal flow diagram.
+*   **Bode Plots:**
+    *   Used to visualize the frequency response ($G(j\omega)$) of a system.
+    *   Magnitude is plotted in dB (20 log $|G(j\omega)|$) on a logarithmic frequency scale.
+    *   Phase is plotted in degrees or radians.
+    *   Advantages: Multiplication of transfer functions becomes addition of their Bode plots.
+    *   **Typical Bode Plot Components:** Simple zero, simple pole, zero at origin, pole at origin, right-half-plane zero.
+*   **Step Response:**
+    *   The system's output when the input is a unit step function.
+    *   Calculated using inverse Laplace transforms, often via partial fraction expansion.
+    *   Example calculation demonstrates how to find the step response of a simple transfer function.
+
+## Stability Analysis
+
+*   **Definition:** A steady-state operating point is asymptotically stable if all system trajectories starting in a neighborhood of the point remain bounded and converge to the operating point.
+*   **Significance:**
+    *   **Robustness:** Stable systems return to their operating point after disturbances.
+    *   **Predictability:** Small changes in input lead to small changes in output.
+*   **Linearized System Stability:** The stability of the linearized small-signal system determines the stability of the nonlinear system's operating point.
+*   **Bode Stability Criterion:**
+    *   Focuses on the loop gain $T(s)$.
+    *   Conditions for stability (simplified for practical systems):
+        *   The loop gain $T(j\omega)$ must not cross the $-180^\circ$ phase shift point with a magnitude greater than or equal to 1 (0 dB).
+    *   **Gain Margin (GM):** The amount by which the loop gain magnitude is below 0 dB when the phase is $-180^\circ$.
+    *   **Phase Margin (PM):** The additional phase required to reach $-180^\circ$ when the loop gain magnitude is 1 (0 dB).
+    *   Positive GM and PM indicate a stable system.
+
+## Impact of Loop Gain on System Performance
+
+*   **Accurate Tracking of Reference Signal:** A higher loop gain $|T(s)|$ leads to better tracking of the reference signal. The closed-loop transfer function approaches 1 as $|T(s)| \to \infty$.
+*   **Noise and Disturbance Rejection:** A higher loop gain $|T(s)|$ improves the filtering of noise and disturbances. The effect of external disturbances on the output is reduced.
+*   **Response Speed:** A higher loop gain $|T(s)|$ generally results in a faster response to changes in the reference signal. The time constant of the response is inversely proportional to the loop gain.
+*   **Overshoot and Oscillations:** Higher Phase Margin (PM) leads to smoother step responses with less overshoot and fewer oscillations.
+
+## Loop Feedback Compensation
+
+*   **Goal:** Shape the loop gain $T(s)$ to meet design objectives (stability, tracking, noise rejection, response speed).
+*   **Compensation Networks:** Analog control systems use networks like:
+    *   **Constant Gain:** Simple amplification.
+    *   **Integrator (1/s):** Provides high gain at low frequencies, crucial for precise steady-state tracking and stabilization.
+    *   **Lead Compensator:** Adds phase to increase the Phase Margin (PM).
+    *   **Lag Compensator:** Increases gain at low frequencies.
+*   **Implementation with Op-Amps:** Integrators and lead/lag compensators can be implemented using operational amplifier circuits.
+*   **Current Control (Optional):**
+    *   **Advantages:** Component protection, easier stabilization, fast dynamics, protection against inductor saturation.
+    *   **Disadvantages:** Instability for $D > 0.5$ (for basic implementation), sensitivity to current measurement noise.

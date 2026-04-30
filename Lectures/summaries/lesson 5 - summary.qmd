@@ -1,0 +1,125 @@
+---
+title: "lesson 5 - summary"
+date: "2026-04-30 17:45"
+---
+
+# Dynamics and Control of Switched Mode Converters: Key Summary Points
+
+This document summarizes the core concepts related to modeling and analyzing the dynamics and stability of switched-mode converters.
+
+## Signal Decomposition and Averaging
+
+*   **Original Signal** ($x(t)$): The raw input signal (e.g., voltage or current in a circuit).
+*   **Average Signal** ($\bar{x}(t)$): The signal averaged over one switching period.
+    $$ \bar{x}(t) = \frac{1}{T} \int_{t}^{t+T} x(\tau) d\tau $$
+*   **Steady-State Average** ($X$): The average signal at the circuit's operating point.
+*   **Small-Signal** ($\hat{x}(t)$): A small perturbation around the average signal.
+    $$ x(t) = X + \hat{x}(t) $$
+    Here, $X$ is the steady-state operating point.
+
+### Component Models for Averaged Signals
+
+*   **Capacitor:** The relationship between averaged voltage and current is similar to instantaneous signals:
+    $$ i_C(t) = C \frac{dv_C(t)}{dt} $$
+*   **Inductor:** The relationship between averaged voltage and current is similar to instantaneous signals:
+    $$ v_L(t) = L \frac{di_L(t)}{dt} $$
+
+## Dynamic Modeling of Switched Converters
+
+### Assumptions
+
+*   The converter operates in Continuous Conduction Mode (CCM).
+*   The average signal is nearly constant over a switching period.
+*   Instantaneous signals are triangular or have negligible ripple.
+
+### Variable Selection
+
+*   Inductors are represented by their average current over a switching cycle.
+*   Capacitors are represented by their average voltage over a switching cycle.
+
+### Deriving Differential Equations for Averaged Signals
+
+*   **Capacitors:**
+    $$ \frac{dv_C}{dt} \approx \frac{1}{C} \left( i_{\text{in, pos1}} - i_{\text{in, pos2}} \right) $$
+*   **Inductors:**
+    $$ \frac{di_L}{dt} \approx \frac{1}{L} \left( v_{\text{in, pos1}} - v_{\text{in, pos2}} \right) $$
+    Here, $i_{\text{in, pos1/2}}$ and $v_{\text{in, pos1/2}}$ represent input currents/voltages during different switching states.
+
+### Small-Signal Model Derivation
+
+To obtain the small-signal model from the averaged signal equations:
+
+1.  Replace any product term $DX$ with $D\hat{X} + \hat{D}X$.
+2.  Replace any product term $(1-D)X$ with $(1-\hat{D})(X+\hat{X})$. More simply, for small $\hat{D}$, it becomes $(1-D)X - \hat{D}X$.
+3.  Replace remaining average signals (that are not part of a product) with their small-signal counterparts ($\hat{x}$).
+4.  Constant terms not part of any product are set to zero.
+5.  $X$ and $D$ represent the steady-state operating point values.
+
+## Buck Converter Dynamics
+
+*   **Circuit Diagram:** A Buck converter with input voltage $v_g$, inductor $L$, switch, diode, capacitor $C$, and load resistor $R$.
+*   **Averaged Model Equations:**
+    $$ \frac{dv_C}{dt} \approx \frac{i_L}{C} - \frac{v_C}{RC} $$
+    $$ \frac{di_L}{dt} \approx \frac{v_g}{L} - \frac{v_C}{L} (1-D) $$
+*   **Small-Signal Model Equations:**
+    $$ \frac{d\hat{v}_C}{dt} \approx \frac{\hat{i}_L}{C} - \frac{\hat{v}_C}{RC} $$
+    $$ \frac{d\hat{i}_L}{dt} \approx \frac{\hat{v}_g}{L} - \frac{\hat{v}_C}{L} (1-D) - \frac{V_C}{L} \hat{D} $$
+    (Note: The provided text had some discrepancies in the Buck small-signal equations. The above reflects a more standard derivation for $\hat{i}_L$).
+
+## Boost Converter Dynamics
+
+*   **Averaged Model Equations:**
+    $$ \frac{di_L}{dt} \approx \frac{v_L}{L} - \frac{v_o}{L} (1-D) $$
+    $$ \frac{dv_o}{dt} \approx \frac{i_L}{C} (1-D) - \frac{v_o}{RC} $$
+*   **Small-Signal Model Equations:**
+    $$ \frac{d\hat{i}_L}{dt} \approx \frac{\hat{v}_g}{L} - \frac{\hat{v}_o}{L} (1-D) - \frac{V_o}{L} \hat{D} $$
+    $$ \frac{d\hat{v}_o}{dt} \approx \frac{\hat{i}_L}{C} (1-D) + \frac{I_L}{C} \hat{D} - \frac{\hat{v}_o}{RC} $$
+
+## Stability Analysis
+
+The stability of the operating point is determined by the poles of the small-signal system:
+
+*   **Stable:** All poles are in the left-half of the complex plane (negative real parts).
+*   **Unstable:** At least one pole is in the right-half of the complex plane (positive real part).
+*   **Marginal Stability:** A pole lies on the imaginary axis (zero real part).
+
+## Bode Plots of Typical Transfer Functions
+
+*   **Simple Zero:** $G(s) = 1 + s/\alpha$. Magnitude slope: +20 dB/dec. Phase shift: approaches +90°.
+*   **Simple Pole:** $G(s) = 1 / (1 + s/\alpha)$. Magnitude slope: -20 dB/dec. Phase shift: approaches -90°.
+*   **Zero at Origin:** $G(s) = s$. Magnitude slope: +20 dB/dec. Phase shift: +90°.
+*   **Pole at Origin:** $G(s) = 1/s$. Magnitude slope: -20 dB/dec. Phase shift: -90°.
+*   **Right-Half Plane Zero:** $G(s) = 1 - s/\alpha$. Magnitude slope: +20 dB/dec. Phase shift: approaches -90°.
+
+## Bode Stability Criterion
+
+For a system with transfer function $T(s)$:
+
+*   **Conditions (a)-(c):** $T(s)$ is the Laplace transform of a real impulse response, has left-half-plane poles (or at most one simple pole at the origin), and $\lim_{s \to \infty} T(s)$ is real and finite, with $|1 - 1/T(\infty)| < 1$.
+*   **Condition (d):** For any frequency $\omega$ where the phase of $T(j\omega)$ is $-180^\circ + 360^\circ n$, the magnitude $|T(j\omega)| < 1$.
+
+If conditions (a)-(d) are met, the small-signal system (and thus the operating point) is stable.
+
+*   **Additional Conditions (e)-(f):** If $T(j\omega)$ gain and phase are monotonically decreasing, and the phase at $\omega \to 0$ is between -90° and +90°.
+    *   **Gain Margin (GM):** Defined at the phase crossover frequency ($180^\circ$) as $20 \log_{10}(1/|T(j\omega)|)$.
+    *   **Phase Margin (PM):** Defined at the gain crossover frequency (0 dB) as $180^\circ + \angle T(j\omega)$.
+
+*   **Stability Conclusion:**
+    *   If GM > 0 and PM > 0, the operating point is stable.
+    *   If GM < 0 or PM < 0, the operating point is unstable.
+
+*   Under these conditions, a positive GM implies a positive PM, and vice-versa.
+
+## Analog Feedback Loop Compensation Elements
+
+These elements are used to shape the loop gain's frequency response for improved stability and performance.
+
+*   **Integrator:** $G(s) = 1/(sCR)$. Provides a $-20 \text{ dB/dec}$ slope and $-90^\circ$ phase shift at low frequencies.
+*   **Lead Compensator:** $G(s) = (1 + s/\omega_z) / (1 + s/\omega_p)$ with $\omega_z < \omega_p$. Adds phase lead in a specific frequency range.
+*   **Lag Compensator:** $G(s) = (1 + s/\omega_z) / (1 + s/\omega_p)$ with $\omega_z > \omega_p$. Adds phase lag at low frequencies.
+
+## Compensation using Operational Amplifiers
+
+*   **Integrator:** A basic op-amp circuit implementing an integrator function, resulting in a transfer function like $\hat{y}(s)/\hat{x}(s) = -1/(sCR)$.
+*   **Gain + Integrator + Lead Compensator:** A more complex op-amp network that combines integration with phase lead compensation.
+*   **Integrator + 2 x (Lead Compensator):** A circuit achieving significant phase lead by cascading multiple lead compensation stages.
