@@ -18,61 +18,61 @@ The following table summarizes central semiconductor devices used for switching:
 | Device | Type      | Control Signal         | Key Characteristics                                                                                                        |
 | :----- | :-------- | :--------------------- | :----------------------------------------------------------------------------------------------------------------------- |
 | DIODE  | Passive   | None                   | Conducts current in one direction once forward biased. No external control.                                              |
-| MOSFET | Active    | Gate Voltage ($V_{GS}$) | Controlled by voltage. Has an integral body diode that conducts negative currents.                                       |
-| BJT    | Active    | Gate Current ($I_B$)    | Controlled by current. (Note: The lecture refers to "gate current" for BJT, which is less common. It's base current). |
-| IGBT   | Active    | Gate Voltage ($V_{GE}$) | Controlled by voltage. Hybrid of MOSFET and BJT, suitable for high voltage applications.                                 |
+| MOSFET | Active    | Gate Voltage (VGSV_{GS}) | Controlled by voltage. Has an integral body diode that conducts negative currents.                                       |
+| BJT    | Active    | Gate Current (IBI_B)    | Controlled by current. (Note: The lecture refers to "gate current" for BJT, which is less common. It's base current). |
+| IGBT   | Active    | Gate Voltage (VGEV_{GE}) | Controlled by voltage. Hybrid of MOSFET and BJT, suitable for high voltage applications.                                 |
 
 ### DIODE
 
 Diodes are essential passive components. Key parameters for power applications include:
 
-*   **Reverse Voltage ($V_R$)**: Maximum voltage the diode can block without damage.
-*   **Nominal Forward Current ($I_F$)**: Maximum continuous current.
-*   **Forward Voltage Drop ($V_F$)**: Voltage drop across the diode when conducting (e.g., $\approx 0.7 \text{V}$ for silicon).
-*   **Reverse Recovery Time ($t_{rr}$)**: Time required for the diode to switch from conduction to block state. During this time, a reverse current flows, causing energy losses and heating.
-    *   Energy loss due to reverse current: $E_{loss} = \int_{0}^{t_{rr}} v(t) i(t) dt$
-    *   Shorter $t_{rr}$ leads to lower losses.
+*   **Reverse Voltage (VRV_R)**: Maximum voltage the diode can block without damage.
+*   **Nominal Forward Current (IFI_F)**: Maximum continuous current.
+*   **Forward Voltage Drop (VFV_F)**: Voltage drop across the diode when conducting (e.g., ≈0.7V\approx 0.7 \text{V} for silicon).
+*   **Reverse Recovery Time (trrt_{rr})**: Time required for the diode to switch from conduction to block state. During this time, a reverse current flows, causing energy losses and heating.
+    *   Energy loss due to reverse current: Eloss=∫trr0v(t)i(t)dtE_{loss} = \int_{0}^{t_{rr}} v(t) i(t) dt
+    *   Shorter trrt_{rr} leads to lower losses.
 
 Common Diode Types:
 
-*   **Standard Recovery**: Not designed for fast switching; $t_{rr}$ is not specified.
-*   **Fast Recovery**: Specified $t_{rr}$, designed for faster switching, especially at high voltages.
-*   **Schottky Diode**: Very short (negligible) $t_{rr}$, low $V_F$ ($\approx 0.4 \text{V}$), suitable for low voltage applications.
+*   **Standard Recovery**: Not designed for fast switching; trrt_{rr} is not specified.
+*   **Fast Recovery**: Specified trrt_{rr}, designed for faster switching, especially at high voltages.
+*   **Schottky Diode**: Very short (negligible) trrt_{rr}, low VFV_F (≈0.4V\approx 0.4 \text{V}), suitable for low voltage applications.
 
 ### MOSFET
 
 MOSFETs are voltage-controlled active switches. Key features for power applications:
 
 *   **Gate Voltage Control**:
-    *   Off when $V_{GS} < V_{th}$.
-    *   Conducting (on) when $V_{GS} \gg V_{th}$.
-*   **On-State Resistance ($R_{DS,on}$)**: Behaves approximately as a small resistor when conducting, leading to conduction losses ($P_{loss} = I^2 R_{DS,on}$) and heating. $R_{DS,on}$ increases with temperature, enabling parallel connection for current sharing due to negative feedback.
+    *   Off when VGS<VthV_{GS} < V_{th}.
+    *   Conducting (on) when VGS≫VthV_{GS} \gg V_{th}.
+*   **On-State Resistance (RDS,onR_{DS,on})**: Behaves approximately as a small resistor when conducting, leading to conduction losses (Ploss=I2RDS,onP_{loss} = I^2 R_{DS,on}) and heating. RDS,onR_{DS,on} increases with temperature, enabling parallel connection for current sharing due to negative feedback.
 *   **Parasitic Elements**:
     *   **Body Diode**: Integral to the transistor, conducts negative currents.
     *   **Parasitic Capacitances**:
-        *   $C_{GS}$ (Gate-Source): Relatively large ($\approx \text{nF}$), constant.
-        *   $C_{GD}$ (Gate-Drain): Small ($\approx \text{pF}$), non-linear (voltage-dependent).
-        *   $C_{DS}$ (Drain-Source): Medium, non-linear (voltage-dependent).
+        *   CGSC_{GS} (Gate-Source): Relatively large (≈nF\approx \text{nF}), constant.
+        *   CGDC_{GD} (Gate-Drain): Small (≈pF\approx \text{pF}), non-linear (voltage-dependent).
+        *   CDSC_{DS} (Drain-Source): Medium, non-linear (voltage-dependent).
     *   These capacitances are undesirable, causing losses:
         *   Energy stored in capacitors is dissipated during discharge.
-        *   Slow switching times due to charging/discharging $C_{GS}$ and $C_{GD}$ lead to voltage-current overlap losses.
+        *   Slow switching times due to charging/discharging CGSC_{GS} and CGDC_{GD} lead to voltage-current overlap losses.
 
 Key Parameters for Power MOSFETs:
 
-*   **Maximum Drain-Source Voltage ($V_{DS,max}$)**: Maximum blocking voltage.
-*   **Nominal Current ($I_{nominal}$)**.
-*   **On-State Resistance ($R_{DS,on}$)**.
-*   **Gate Charge ($Q_g$)**: Affects switching losses (as $Q=CV$).
+*   **Maximum Drain-Source Voltage (VDS,maxV_{DS,max})**: Maximum blocking voltage.
+*   **Nominal Current (InominalI_{nominal})**.
+*   **On-State Resistance (RDS,onR_{DS,on})**.
+*   **Gate Charge (QgQ_g)**: Affects switching losses (as Q=CVQ=CV).
 
 ### IGBT
 
-IGBTs are used in high voltage applications (e.g., $1700 \text{V}$ or more). They combine features of MOSFETs (voltage-controlled gate) and BJTs.
+IGBTs are used in high voltage applications (e.g., 1700V1700 \text{V} or more). They combine features of MOSFETs (voltage-controlled gate) and BJTs.
 
 *   **Gate Voltage Control**:
-    *   Off when $V_{GE} < V_{th}$.
-    *   Conducting (on) when $V_{GE} \gg V_{th}$.
-*   **On-State Voltage Drop ($V_{CE,on}$)**: Behaves approximately as a constant voltage source when conducting, leading to conduction losses ($P_{loss} = I_C V_{CE,on}$).
-*   **High Switching Losses**: Generally higher than MOSFETs, limiting switching frequencies (typical frequencies are tens of kHz, e.g., $20 \text{kHz}$).
+    *   Off when VGE<VthV_{GE} < V_{th}.
+    *   Conducting (on) when VGE≫VthV_{GE} \gg V_{th}.
+*   **On-State Voltage Drop (VCE,onV_{CE,on})**: Behaves approximately as a constant voltage source when conducting, leading to conduction losses (Ploss=ICVCE,onP_{loss} = I_C V_{CE,on}).
+*   **High Switching Losses**: Generally higher than MOSFETs, limiting switching frequencies (typical frequencies are tens of kHz, e.g., 20kHz20 \text{kHz}).
 *   **Tail Current**: A significant current that flows for a short duration when the IGBT turns off, contributing to losses and heating.
 
 ### Comparison of Devices
@@ -81,8 +81,8 @@ IGBTs are used in high voltage applications (e.g., $1700 \text{V}$ or more). The
 | :------------- | :--------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Type**       | Passive, simple, reliable.                                                   | Active.                                                                                                                                                                                                                                                                            | Active.                                                                                                                                                                                                                                                                     |
 | **Control**    | None.                                                                        | Easy to drive (voltage controlled).                                                                                                                                                                                                                                                | Easy to drive (voltage controlled, similar to MOSFET).                                                                                                                                                                                                                                      |
-| **Voltage**    | -                                                                            | Dominant in applications $\le 1000 \text{V}$.                                                                                                                                                                                                                                     | Excellent for high voltage applications (e.g., $1700 \text{V}, 2500 \text{V}$).                                                                                                                                                                                              |
-| **Conduction** | For low voltage applications, $V_F$ can lead to high losses.                 | Relatively low conduction losses ($R_{DS,on}$ can be very low).                                                                                                                                                                                                                    | Low conduction losses ($V_{CE,on}$ is very low compared to converter voltages).                                                                                                                                                                                              |
+| **Voltage**    | -                                                                            | Dominant in applications ≤1000V\le 1000 \text{V}.                                                                                                                                                                                                                                     | Excellent for high voltage applications (e.g., 1700V,2500V1700 \text{V}, 2500 \text{V}).                                                                                                                                                                                              |
+| **Conduction** | For low voltage applications, VFV_F can lead to high losses.                 | Relatively low conduction losses (RDS,onR_{DS,on} can be very low).                                                                                                                                                                                                                    | Low conduction losses (VCE,onV_{CE,on} is very low compared to converter voltages).                                                                                                                                                                                              |
 | **Switching**  | Reverse recovery causes losses.                                              | Relatively low switching losses. Typical frequencies: tens to hundreds of kHz.                                                                                                                                                                                                     | Higher switching losses than MOSFETs (due to tail current). Typical frequencies: tens of kHz.                                                                                                                                                                             |
 
 ## Losses in Converters
@@ -91,11 +91,11 @@ Energy losses are a critical consideration for power converter design due to the
 
 Losses are generally categorized into two types:
 
-1.  **Conduction Losses ($P_{cond}$)**: Ohmic losses occurring when the switch is in the on-state.
-    *   For MOSFET: $P_{loss} = I^2 R_{DS,on}$
-    *   For Diode: $P_{loss} = I_F V_F$
-    *   For IGBT: $P_{loss} = I_C V_{CE,on}$
-2.  **Switching Losses ($P_{sw}$)**: Losses that occur during the transition between ON and OFF states. Main mechanisms include:
+1.  **Conduction Losses (PcondP_{cond})**: Ohmic losses occurring when the switch is in the on-state.
+    *   For MOSFET: Ploss=I2RDS,onP_{loss} = I^2 R_{DS,on}
+    *   For Diode: Ploss=IFVFP_{loss} = I_F V_F
+    *   For IGBT: Ploss=ICVCE,onP_{loss} = I_C V_{CE,on}
+2.  **Switching Losses (PswP_{sw})**: Losses that occur during the transition between ON and OFF states. Main mechanisms include:
     *   **Voltage-Current Overlap**: Occurs when current starts flowing before voltage drops to zero (or vice-versa), leading to instantaneous power dissipation. Faster switching (smaller parasitic capacitances) reduces this.
     *   **Diode Reverse Recovery Current**: Causes energy loss during turn-off.
     *   **IGBT Tail Current**: Causes energy loss during turn-off.
@@ -108,42 +108,42 @@ Switching losses are complex and often estimated via detailed simulations (e.g.,
 
 Consider a Buck converter during MOSFET turn-off.
 
-![Buck Converter Turn-off Waveforms](buck_turn_off_waveforms.png){width=80%}
+<!-- ![Buck Converter Turn-off Waveforms](buck_turn_off_waveforms.png){width=80%} -->
 
-The energy loss $W_{off}$ due to voltage-current overlap during turn-off (from linear approximations) is:
-$$ W_{off} = \frac{1}{2} V_A I_{L} \tau_A $$
-where $V_A$ and $I_L$ are peak voltage and current, and $\tau_A$ is the switching time.
-This loss can be reduced by shortening the switching time, which means faster charging/discharging of gate capacitances (smaller gate charge $Q_g$).
+The energy loss WoffW_{off} due to voltage-current overlap during turn-off (from linear approximations) is:
+Woff=12VAILτA W_{off} = \frac{1}{2} V_A I_{L} \tau_A 
+where VAV_A and ILI_L are peak voltage and current, and τA\tau_A is the switching time.
+This loss can be reduced by shortening the switching time, which means faster charging/discharging of gate capacitances (smaller gate charge QgQ_g).
 
 The average switching power loss over a cycle is:
-$$ P_{sw} = (W_{on} + W_{off}) f_s $$
-where $f_s$ is the switching frequency. Switching losses are proportional to $f_s$.
+Psw=(Won+Woff)fs P_{sw} = (W_{on} + W_{off}) f_s 
+where fsf_s is the switching frequency. Switching losses are proportional to fsf_s.
 
 ### Switching Loss Example: Diode Reverse Recovery (MOSFET Turn-On)
 
 Consider a Buck converter during MOSFET turn-on.
 
-![Buck Converter Turn-on Waveforms](buck_turn_on_waveforms.png){width=80%}
+<!--![Buck Converter Turn-on Waveforms](buck_turn_on_waveforms.png){width=80%} -->
 
-When the transistor turns on, the diode undergoes reverse recovery. The reverse current flows through the transistor, causing additional losses. The energy loss $W_{on}$ is approximated as:
-$$ W_{on} \approx V_g (\frac{1}{2} I_L t_r + Q_{rr}) $$
-where $I_L$ is the inductor current, $t_r$ is current rise time, $Q_{rr}$ is the reverse recovery charge, and $V_g$ is the input voltage. This loss can be reduced by choosing a diode with a shorter $t_{rr}$ (e.g., Schottky diodes, where $t_{rr}$ is negligible).
+When the transistor turns on, the diode undergoes reverse recovery. The reverse current flows through the transistor, causing additional losses. The energy loss WonW_{on} is approximated as:
+Won≈Vg(12ILtr+Qrr) W_{on} \approx V_g (\frac{1}{2} I_L t_r + Q_{rr}) 
+where ILI_L is the inductor current, trt_r is current rise time, QrrQ_{rr} is the reverse recovery charge, and VgV_g is the input voltage. This loss can be reduced by choosing a diode with a shorter trrt_{rr} (e.g., Schottky diodes, where trrt_{rr} is negligible).
 
 ### Switching Loss due to Parasitic Capacitance
 
-Energy stored in parasitic capacitances (e.g., $C_{DS}$ of the switch) is dissipated as heat when the switch turns on and the capacitor is shorted.
+Energy stored in parasitic capacitances (e.g., CDSC_{DS} of the switch) is dissipated as heat when the switch turns on and the capacitor is shorted.
 The energy loss per cycle is:
-$$ W_C = \frac{1}{2} (C_{ds} + C_j) V_g^2 $$
+WC=12(Cds+Cj)V2g W_C = \frac{1}{2} (C_{ds} + C_j) V_g^2 
 Similar losses occur due to parasitic inductances.
 
 ### Switching Frequency Selection
 
-Choosing the optimal switching frequency $f_s$ involves a trade-off:
+Choosing the optimal switching frequency fsf_s involves a trade-off:
 
-*   **High $f_s$**:
-    *   Pros: Smaller passive components (inductors, capacitors, transformers), leading to smaller physical size and potentially lower cost. For example, output voltage ripple $\Delta V_{out} \propto \frac{1}{f_s C}$ and inductor current ripple $\Delta I_L \propto \frac{1}{f_s L}$.
+*   **High fsf_s**:
+    *   Pros: Smaller passive components (inductors, capacitors, transformers), leading to smaller physical size and potentially lower cost. For example, output voltage ripple ΔVout∝1fsC\Delta V_{out} \propto \frac{1}{f_s C} and inductor current ripple ΔIL∝1fsL\Delta I_L \propto \frac{1}{f_s L}.
     *   Cons: Higher switching losses, leading to lower efficiency and increased heating.
-*   **Low $f_s$**:
+*   **Low fsf_s**:
     *   Pros: Lower switching losses, higher efficiency.
     *   Cons: Larger passive components, increased cost, larger physical size, and potentially higher conduction losses in passive components (e.g., longer copper wires).
 
@@ -155,33 +155,33 @@ By combining switches, capacitors, and magnetic components, a vast array of conv
 
 ### Basic Converters (Non-Isolated)
 
-| Converter Type          | Description                                    | Voltage Gain in CCM ($M(D) = V_{out}/V_{in}$) |
+| Converter Type          | Description                                    | Voltage Gain in CCM (M(D)=Vout/VinM(D) = V_{out}/V_{in}) |
 | :---------------------- | :--------------------------------------------- | :------------------------------------------- |
-| Buck                    | Step-down (voltage reducer)                    | $M(D) = D$                                   |
-| Boost                   | Step-up (voltage amplifier)                    | $M(D) = \frac{1}{1-D}$                       |
-| Buck-Boost              | Inverting (voltage amplifier or reducer)       | $M(D) = \frac{D}{1-D}$                       |
-| Non-inverting Buck-Boost | Non-inverting (voltage amplifier or reducer)   | $M(D) = \frac{D}{2-D}$                       |
+| Buck                    | Step-down (voltage reducer)                    | M(D)=DM(D) = D                                   |
+| Boost                   | Step-up (voltage amplifier)                    | M(D)=11−DM(D) = \frac{1}{1-D}                       |
+| Buck-Boost              | Inverting (voltage amplifier or reducer)       | M(D)=D1−DM(D) = \frac{D}{1-D}                       |
+| Non-inverting Buck-Boost | Non-inverting (voltage amplifier or reducer)   | M(D)=D2−DM(D) = \frac{D}{2-D}                       |
 | Bridge                  | Polarity changing / Inverting                  | -                                            |
 
 ### Three-Phase Inverter (DC to AC)
 
 A three-phase inverter converts DC voltage to three-phase AC voltage. It is widely used in motor drives and grid integration of renewable energy sources. It can be conceptually implemented using three Buck converters.
 
-*   **Operation**: The duty cycles $D_a(t)$, $D_b(t)$, $D_c(t)$ are modulated over time to produce balanced three-phase sinusoidal output voltages.
-    $$ v_a(t) = D_a(t) V_g $$
-    $$ v_b(t) = D_b(t) V_g $$
-    $$ v_c(t) = D_c(t) V_g $$
+*   **Operation**: The duty cycles Da(t)D_a(t), Db(t)D_b(t), Dc(t)D_c(t) are modulated over time to produce balanced three-phase sinusoidal output voltages.
+    va(t)=Da(t)Vg v_a(t) = D_a(t) V_g 
+    vb(t)=Db(t)Vg v_b(t) = D_b(t) V_g 
+    vc(t)=Dc(t)Vg v_c(t) = D_c(t) V_g 
 *   **Duty Cycle Modulation**:
-    $$ D_a(t) = \frac{1}{2} \left(1 + \frac{V_{pk}}{V_g} \cos(2\pi f_{ac} t)\right) $$
-    $$ D_b(t) = \frac{1}{2} \left(1 + \frac{V_{pk}}{V_g} \cos(2\pi f_{ac} t - \frac{2\pi}{3})\right) $$
-    $$ D_c(t) = \frac{1}{2} \left(1 + \frac{V_{pk}}{V_g} \cos(2\pi f_{ac} t + \frac{2\pi}{3})\right) $$
-    where $V_{pk}$ is the desired peak AC voltage and $f_{ac}$ is the desired AC frequency.
-*   The average voltage at the star point of a balanced load is $V_n = \frac{2}{3} V_g$.
+    Da(t)=12(1+VpkVgcos(2πfact)) D_a(t) = \frac{1}{2} \left(1 + \frac{V_{pk}}{V_g} \cos(2\pi f_{ac} t)\right) 
+    Db(t)=12(1+VpkVgcos(2πfact−2π3)) D_b(t) = \frac{1}{2} \left(1 + \frac{V_{pk}}{V_g} \cos(2\pi f_{ac} t - \frac{2\pi}{3})\right) 
+    Dc(t)=12(1+VpkVgcos(2πfact+2π3)) D_c(t) = \frac{1}{2} \left(1 + \frac{V_{pk}}{V_g} \cos(2\pi f_{ac} t + \frac{2\pi}{3})\right) 
+    where VpkV_{pk} is the desired peak AC voltage and facf_{ac} is the desired AC frequency.
+*   The average voltage at the star point of a balanced load is Vn=23VgV_n = \frac{2}{3} V_g.
 *   The phase voltages relative to the star point are:
-    $$ v_{an}(t) = V_{pk} \cos(2\pi f_{ac} t) $$
-    $$ v_{bn}(t) = V_{pk} \cos(2\pi f_{ac} t - \frac{2\pi}{3}) $$
-    $$ v_{cn}(t) = V_{pk} \cos(2\pi f_{ac} t + \frac{2\pi}{3}) $$
-    Typically, $f_{ac}$ is much lower than the switching frequency $f_s$, allowing the duty cycle to be considered almost constant over a switching cycle.
+    van(t)=Vpkcos(2πfact) v_{an}(t) = V_{pk} \cos(2\pi f_{ac} t) 
+    vbn(t)=Vpkcos(2πfact−2π3) v_{bn}(t) = V_{pk} \cos(2\pi f_{ac} t - \frac{2\pi}{3}) 
+    vcn(t)=Vpkcos(2πfact+2π3) v_{cn}(t) = V_{pk} \cos(2\pi f_{ac} t + \frac{2\pi}{3}) 
+    Typically, facf_{ac} is much lower than the switching frequency fsf_s, allowing the duty cycle to be considered almost constant over a switching cycle.
 
 ### Isolated Converters (Transformer-Based)
 
@@ -194,33 +194,33 @@ Many converters incorporate transformers primarily for two reasons:
 
 An ideal transformer is lossless and does not store energy. A practical transformer, however, has losses and stores energy, mainly in magnetic fields. This stored energy is represented by inductances in an equivalent circuit:
 
-*   **Magnetizing Inductance ($L_M$)**: Represents the magnetic field primarily within the transformer core. It is connected in parallel with the ideal transformer.
-*   **Leakage Inductance ($L_{lk}$)**: Represents the magnetic field outside the transformer core (due to incomplete coupling between windings). It is connected in series with the ideal transformer.
+*   **Magnetizing Inductance (LML_M)**: Represents the magnetic field primarily within the transformer core. It is connected in parallel with the ideal transformer.
+*   **Leakage Inductance (LlkL_{lk})**: Represents the magnetic field outside the transformer core (due to incomplete coupling between windings). It is connected in series with the ideal transformer.
 
-![Transformer Equivalent Circuit](transformer_equiv_circuit.png){width=80%}
+<!-- ![Transformer Equivalent Circuit](transformer_equiv_circuit.png){width=80%} -->
 
-The equivalent circuit models a practical transformer using an ideal transformer with turns ratio $n = n_1/n_2$, a magnetizing inductance $L_M$, and leakage inductances $L_{lk1}$ and $L_{lk2}$ on the primary and secondary sides, respectively.
-For a system with self-inductances $L_1, L_2$ and coupling coefficient $k$:
-$$ L_{lk1} = (1-k) L_1 $$
-$$ L_{lk2} = (1-k) L_2 $$
-$$ L_M = k^2 L_1 \quad \text{ (reflected to primary side)} $$
+The equivalent circuit models a practical transformer using an ideal transformer with turns ratio n=n1/n2n = n_1/n_2, a magnetizing inductance LML_M, and leakage inductances Llk1L_{lk1} and Llk2L_{lk2} on the primary and secondary sides, respectively.
+For a system with self-inductances L1,L2L_1, L_2 and coupling coefficient kk:
+Llk1=(1−k)L1 L_{lk1} = (1-k) L_1 
+Llk2=(1−k)L2 L_{lk2} = (1-k) L_2 
+LM=k2L1 (reflected to primary side) L_M = k^2 L_1 \quad \text{ (reflected to primary side)} 
 
 Key points about the practical transformer model:
 
-*   The magnetizing inductance $L_M$ is a short circuit to DC, meaning transformers do not operate with DC current.
-*   In typical transformers, $k \to 1$ (high coupling), so $L_M$ is much larger than $L_{lk}$.
+*   The magnetizing inductance LML_M is a short circuit to DC, meaning transformers do not operate with DC current.
+*   In typical transformers, k→1k \to 1 (high coupling), so LML_M is much larger than LlkL_{lk}.
 
 ### Volt-Second Balance on Magnetizing Inductance
 
-For stable operation in steady-state, the average voltage across the magnetizing inductance $L_M$ must be zero over a switching period $T_s$:
-$$ \int_{0}^{T_s} v_M(t) dt = 0 $$
+For stable operation in steady-state, the average voltage across the magnetizing inductance LML_M must be zero over a switching period TsT_s:
+∫Ts0vM(t)dt=0 \int_{0}^{T_s} v_M(t) dt = 0 
 If the average voltage is non-zero, the magnetizing current will continuously increase or decrease, leading to saturation and potential damage to the transformer and circuit. Many converters require a "transformer reset" mechanism to ensure this volt-second balance.
 
 ### Forward Converter
 
 The Forward converter is typically used for power levels of tens to hundreds of watts. It is an isolated Buck-derived converter.
 
-*   **Basic Operation (ideal transformer)**: When the switch $Q_1$ is ON, energy is transferred from the input to the output through the transformer. When $Q_1$ is OFF, the inductor $L$ current flows through $D_3$.
+*   **Basic Operation (ideal transformer)**: When the switch Q1Q_1 is ON, energy is transferred from the input to the output through the transformer. When Q1Q_1 is OFF, the inductor LL current flows through D3D_3.
     The voltage gain is $V = \frac{n_3}{n_1} D V_g$. (Where $n_1$ is primary, $n_3$ is output secondary).
 *   **Transformer Reset**: A practical Forward converter requires a mechanism to reset the magnetizing flux in the transformer. This is often achieved with an additional reset winding ($n_2$) and diode $D_1$.
     *   During $Q_1$ ON-time, $L_M$ is magnetized.
