@@ -33,6 +33,7 @@ Use headings, bullet points, and short explanations.
 Focus on clarity and structure.
 IMPORTANT: Do NOT wrap your response in markdown code blocks (like ```qmd). Return the raw markdown text directly. Do not include a YAML header, I will generate that automatically.
 LATEX WARNING: Ensure all math and symbols are compatible with strict LaTeX rendering. Do NOT use unescaped `#` characters in math mode. For active-low or complementary signals (like clock phases), use standard LaTeX notation such as `\\overline{{\\phi}}` or `\\phi'` instead of `\\phi#`.
+IMAGE WARNING: Do NOT include any markdown image links (e.g., `![alt text](image.png)`). The Quarto compilation will fail because the local image files do not exist. If a visual diagram or graph from the lecture is crucial, describe its behavior in text or represent its mathematical relationship via LaTeX.
 
 PDF content:
 {chunk}
