@@ -61,9 +61,9 @@ def pdf_hash(path):
     return h.hexdigest()
 
 # -------------------------------------------------------------------
-# Utility: call Gemini API
+# Utility: call Gemini API with Retries
 # -------------------------------------------------------------------
-def summarize_with_gemini(text):
+def summarize_with_gemini(text, retries=5, base_delay=5):
     prompt = f"""
 Create a structured Quarto .qmd summary for the following lecture PDF.
 Use headings, bullet points, and short explanations.
@@ -81,11 +81,49 @@ PDF content:
         ]
     }
 
-    response = requests.post(GEMINI_URL, json=payload)
-    response.raise_for_status()
+    last_exc = None
+    for attempt in range(1, retries + 1):
+        try:
+            response = requests.post(GEMINI_URL, json=payload, timeout=60)
 
-    data = response.json()
-    return data["candidates"][0]["content"]["parts"][0]["text"]
+            # Retry transient server errors
+            if response.status_code in (502, 503, 504):
+                raise requests.exceptions.HTTPError(
+                    f"{response.status_code} transient error", response=response
+                )
+
+            response.raise_for_status()
+            data = response.json()
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+
+        except requests.exceptions.HTTPError as e:
+            last_exc = e
+            status = getattr(e.response, "status_code", None)
+
+            # Keep existing 429 behavior (stop for today, but do not fail)
+            if status == 429:
+                raise
+
+            # Retry transient errors
+            if status in (502, 503, 504) and attempt < retries:
+                delay = base_delay * (2 ** (attempt - 1))
+                print(f"WARNING: Gemini temporary error ({status}). Retrying in {delay}s (attempt {attempt}/{retries})...")
+                time.sleep(delay)
+                continue
+
+            raise
+
+        except requests.exceptions.RequestException as e:
+            # Network/timeouts -> retry
+            last_exc = e
+            if attempt < retries:
+                delay = base_delay * (2 ** (attempt - 1))
+                print(f"WARNING: Network error ({e}). Retrying in {delay}s (attempt {attempt}/{retries})...")
+                time.sleep(delay)
+                continue
+            raise
+
+    raise last_exc
 
 # -------------------------------------------------------------------
 # Find PDFs
@@ -127,12 +165,14 @@ for pdf in pdf_files:
     try:
         summary_body = summarize_with_gemini(text)
     except requests.exceptions.HTTPError as e:
-        if e.response.status_code == 429:
-            print("WARNING: API rate limit (429) reached! Pausing generation for today.")
-            print("The script will exit successfully to allow deployment of completed summaries.")
-            break  # Break out of the loop, but let the script finish normally
-        else:
-            raise e  # If it's a different HTTP error (like 404), crash normally
+        status = e.response.status_code if e.response is not None else None
+        
+        # Now catches both Rate Limits and exhausted transient errors
+        if status in (429, 502, 503, 504):
+            print(f"WARNING: Gemini unavailable (HTTP {status}). Stopping further generation for now.")
+            print("The script will exit successfully to allow committing any completed summaries.")
+            break
+        raise
 
     # CLEANUP: Remove markdown code block backticks if Gemini added them
     summary_body = summary_body.strip()
