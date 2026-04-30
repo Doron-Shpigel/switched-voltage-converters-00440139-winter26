@@ -1,0 +1,104 @@
+---
+title: "lesson 3 - summary"
+date: "2026-04-30 14:55"
+---
+
+# Switched-Mode Power Converters: Practical Converters - Key Points
+
+This document summarizes key aspects of practical switched-mode power converters, including semiconductor device comparisons, basic converter topologies, transformer models, and specific converter characteristics.
+
+## Semiconductor Devices for Power Applications
+
+A comparison of common semiconductor devices used in power electronics:
+
+### Diode
+*   **Passive, simple, and reliable** device.
+*   **High forward voltage drop** can lead to significant losses in low-voltage applications.
+
+### MOSFET (Metal-Oxide-Semiconductor Field-Effect Transistor)
+*   A **primary device for applications requiring voltage blocking up to 1000 V**.
+*   **Easy to drive**: Turned on and off by switching the gate voltage.
+*   **Relatively low conduction losses**: Can achieve very low on-resistance.
+*   **Relatively low switching losses**.
+*   **Typical switching frequencies**: Tens to hundreds of kilohertz (kHz).
+
+### IGBT (Insulated-Gate Bipolar Transistor)
+*   **Major advantage**: Capability to block high voltages when off. A primary device for **high-voltage applications** (e.g., 1700 V, 2500 V).
+*   **Easy to drive**: Similar to MOSFETs, turned on and off by switching the gate voltage.
+*   **Low conduction losses**: Very low voltage drop compared to overall converter voltages.
+*   **Higher switching losses** compared to MOSFETs.
+*   **Typical switching frequencies**: Tens of kilohertz (kHz).
+
+## Basic DC-DC Converters (Continuous Conduction Mode - CCM)
+
+Summary of voltage gain ($M(D) = V_{out}/V_{in}$) for basic converter topologies in Continuous Conduction Mode (CCM), where $D$ is the duty cycle:
+
+*   **Buck Converter (Step-down)**
+    *   $M(D) = D$
+
+*   **Boost Converter (Step-up)**
+    *   $M(D) = \frac{1}{1-D}$
+
+*   **Buck-Boost Converter (Inverting)**
+    *   $M(D) = \frac{D}{1-D}$
+
+*   **Noninverting Buck-Boost Converter (Step-up or Step-down)**
+    *   $M(D) = \frac{D}{1-2D}$
+
+*   **Bridge Converter (Step-down and Polarity Change)**
+    *   No gain formula provided in the source for this specific entry. Typically refers to half-bridge or full-bridge configurations.
+
+## Three-Phase Inverter
+
+Equations related to a three-phase inverter, with $\omega$ as angular frequency and $V_g$, $V_{pk}$ as peak voltages:
+
+1.  **Output Peak Voltages (Modulated)**
+    *   $V_{a,pk} = D V_g (1 + \cos(2\omega t))$
+    *   $V_{b,pk} = V_g (1 + \cos(2\omega t - 2\pi/3))$
+    *   $V_{c,pk} = V_g (1 + \cos(2\omega t + 2\pi/3))$
+    *   _Note: The $D$ term is only explicitly shown for $V_{a,pk}$ in the source document._
+
+2.  **Line-to-Neutral Voltages**
+    *   $v_{an}(t) = v_a(t) - v_n(t) = V_{pk} \cos(\omega t)$
+    *   $v_{bn}(t) = v_b(t) - v_n(t) = V_{pk} \cos(\omega t - 2\pi/3)$
+    *   $v_{cn}(t) = v_c(t) - v_n(t) = V_{pk} \cos(\omega t + 2\pi/3)$
+
+## Practical Transformers
+
+An equivalent circuit model is used to represent practical transformers, accounting for non-idealities.
+
+*   **Equivalent Circuit Components**:
+    *   **Leakage Inductance of Coil 1**: Denoted as $(L_k - 1)$ in the source, typically $L_{lk1}$.
+    *   **Leakage Inductance of Coil 2**: Denoted as $(L_k - 2)$ in the source, typically $L_{lk2}$.
+    *   **Magnetizing Inductance (referred to Coil 1 side)**: Denoted as $kL_1$ in the source, typically $L_{m1}$.
+    *   **Magnetizing Inductance (referred to Coil 2 side)**: Denoted as $kL_2$ in the source, typically $L_{m2}$.
+    *   **Ideal Transformer Turns Ratio**: Denoted as $L_1:L_2$ in the source, typically $N_1:N_2$.
+
+## Specific Converter Topologies
+
+### Forward Converter
+
+*   **Voltage Gain in CCM**:
+    *   $V_g = \frac{n_2}{n_1} D V_n$
+    *   _Where $V_g$ is typically the output voltage, $V_n$ is the input voltage, $D$ is the duty cycle, and $n_2/n_1$ is the turns ratio $N_s/N_p$._
+
+*   **Duty-Cycle Constraint**: Essential for demagnetizing the transformer.
+    *   $D \le \frac{n_1}{n_1+n_2}$
+
+*   **Maximum Voltage across Transistor (when off)**:
+    *   $V_{Q,max} = V_g (1 + n_1/n_2)$
+    *   _Where $V_g$ here refers to the input voltage to the primary, and $n_1/n_2$ is the inverse turns ratio $N_p/N_s$._
+
+### Full-Bridge Converter
+
+*   **Voltage Gain in CCM**:
+    *   $V_g = n D V$
+    *   _Where $V_g$ is the output voltage, $V$ is the input voltage, $D$ is the duty cycle, and $n$ is the transformer turns ratio ($N_s/N_p$)._
+
+### Flyback Converter
+
+*   **Voltage Gain in CCM**:
+    *   $V_g = \frac{D}{1-D} n V'$
+    *   _Where $V_g$ is the output voltage, $V'$ is the input voltage, $D$ is the duty cycle, and $n$ is the transformer turns ratio ($N_s/N_p$)._
+
+*   **Average Signal Equivalent Circuit in CCM**: An equivalent circuit representation for average signal analysis in Continuous Conduction Mode is provided.
