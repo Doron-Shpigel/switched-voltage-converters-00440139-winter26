@@ -61,69 +61,143 @@ def pdf_hash(path):
     return h.hexdigest()
 
 # -------------------------------------------------------------------
-# Utility: call Gemini API with Retries
+# Utility: Minimal Viable Test (MVT)
+# -------------------------------------------------------------------
+def run_api_mvt():
+    """Pings the Gemini API with a tiny payload to check server health."""
+    print("DEBUG: Running API MVT (Health Check)...")
+    payload = {"contents": [{"parts": [{"text": "MVT Ping."}]}]}
+    try:
+        response = requests.post(GEMINI_URL, json=payload, timeout=15)
+        response.raise_for_status()
+        print("DEBUG: API MVT Passed. Servers are reachable.")
+        return True
+    except requests.exceptions.RequestException as e:
+        status = getattr(e.response, "status_code", None)
+        print(f"WARNING: API MVT Failed. HTTP {status}. Server might be down or unreachable.")
+        return False
+
+# -------------------------------------------------------------------
+# Utility: Chunk text to avoid payload limits
+# -------------------------------------------------------------------
+def chunk_text(text, max_chars=60000):
+    """Splits text into chunks, preferring to break at paragraphs or newlines."""
+    chunks = []
+    while len(text) > max_chars:
+        # Try to split at the last double newline within the limit
+        split_idx = text.rfind('\n\n', 0, max_chars)
+        
+        # Fallback to single newline
+        if split_idx == -1:
+            split_idx = text.rfind('\n', 0, max_chars)
+            
+        # Hard fallback if no newlines exist
+        if split_idx == -1:
+            split_idx = max_chars
+            
+        chunks.append(text[:split_idx].strip())
+        text = text[split_idx:].strip()
+        
+    if text:
+        chunks.append(text)
+    return chunks
+
+# -------------------------------------------------------------------
+# Utility: call Gemini API with Retries and Chunking
 # -------------------------------------------------------------------
 def summarize_with_gemini(text, retries=5, base_delay=5):
-    prompt = f"""
-Create a structured Quarto .qmd summary for the following lecture PDF.
+    chunks = chunk_text(text)
+    total_chunks = len(chunks)
+    combined_summary = []
+
+    for i, chunk in enumerate(chunks):
+        part_num = i + 1
+        
+        if total_chunks > 1:
+            print(f"DEBUG: Processing chunk {part_num} of {total_chunks}...")
+            context_note = f"This is PART {part_num} OF {total_chunks} of a larger lecture PDF. Please summarize this specific section. Ensure the output flows seamlessly so it can be concatenated with the other parts."
+        else:
+            context_note = "Please summarize the following lecture PDF."
+
+        prompt = f"""
+Create a structured Quarto .qmd summary. {context_note}
 Use headings, bullet points, and short explanations.
 Focus on clarity and structure.
 IMPORTANT: Do NOT wrap your response in markdown code blocks (like ```qmd). Return the raw markdown text directly. Do not include a YAML header, I will generate that automatically.
 LATEX WARNING: Ensure all math and symbols are compatible with strict LaTeX rendering. Do NOT use unescaped `#` characters in math mode. For active-low or complementary signals (like clock phases), use standard LaTeX notation such as `\\overline{{\\phi}}` or `\\phi'` instead of `\\phi#`.
 
 PDF content:
-{text}
+{chunk}
 """
 
-    payload = {
-        "contents": [
-            {"parts": [{"text": prompt}]}
-        ]
-    }
+        payload = {
+            "contents": [
+                {"parts": [{"text": prompt}]}
+            ]
+        }
 
-    last_exc = None
-    for attempt in range(1, retries + 1):
-        try:
-            response = requests.post(GEMINI_URL, json=payload, timeout=60)
+        last_exc = None
+        for attempt in range(1, retries + 1):
+            try:
+                response = requests.post(GEMINI_URL, json=payload, timeout=60)
 
-            # Retry transient server errors
-            if response.status_code in (502, 503, 504):
-                raise requests.exceptions.HTTPError(
-                    f"{response.status_code} transient error", response=response
-                )
+                # Retry transient server errors
+                if response.status_code in (502, 503, 504):
+                    raise requests.exceptions.HTTPError(
+                        f"{response.status_code} transient error", response=response
+                    )
 
-            response.raise_for_status()
-            data = response.json()
-            return data["candidates"][0]["content"]["parts"][0]["text"]
+                response.raise_for_status()
+                data = response.json()
+                
+                # Extract chunk text and clean up any rogue markdown code blocks
+                chunk_summary = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+                if chunk_summary.startswith("```"):
+                    lines = chunk_summary.split('\n')
+                    if lines[0].startswith("```"): lines = lines[1:]
+                    if lines[-1].startswith("```"): lines = lines[:-1]
+                    chunk_summary = '\n'.join(lines).strip()
+                
+                combined_summary.append(chunk_summary)
+                
+                # Sleep briefly between chunk requests to avoid immediate rate limits
+                if total_chunks > 1 and part_num < total_chunks:
+                    time.sleep(2)
+                    
+                break # Break retry loop on success
 
-        except requests.exceptions.HTTPError as e:
-            last_exc = e
-            status = getattr(e.response, "status_code", None)
+            except requests.exceptions.HTTPError as e:
+                last_exc = e
+                status = getattr(e.response, "status_code", None)
 
-            # Keep existing 429 behavior (stop for today, but do not fail)
-            if status == 429:
+                # Keep existing 429 behavior
+                if status == 429:
+                    raise
+
+                # Retry transient errors
+                if status in (502, 503, 504) and attempt < retries:
+                    delay = base_delay * (2 ** (attempt - 1))
+                    print(f"WARNING: Gemini temporary error ({status}). Retrying chunk {part_num} in {delay}s (attempt {attempt}/{retries})...")
+                    time.sleep(delay)
+                    continue
+
                 raise
 
-            # Retry transient errors
-            if status in (502, 503, 504) and attempt < retries:
-                delay = base_delay * (2 ** (attempt - 1))
-                print(f"WARNING: Gemini temporary error ({status}). Retrying in {delay}s (attempt {attempt}/{retries})...")
-                time.sleep(delay)
-                continue
+            except requests.exceptions.RequestException as e:
+                # Network/timeouts -> retry
+                last_exc = e
+                if attempt < retries:
+                    delay = base_delay * (2 ** (attempt - 1))
+                    print(f"WARNING: Network error ({e}). Retrying chunk {part_num} in {delay}s (attempt {attempt}/{retries})...")
+                    time.sleep(delay)
+                    continue
+                raise
 
-            raise
+        if last_exc and attempt == retries:
+            raise last_exc
 
-        except requests.exceptions.RequestException as e:
-            # Network/timeouts -> retry
-            last_exc = e
-            if attempt < retries:
-                delay = base_delay * (2 ** (attempt - 1))
-                print(f"WARNING: Network error ({e}). Retrying in {delay}s (attempt {attempt}/{retries})...")
-                time.sleep(delay)
-                continue
-            raise
-
-    raise last_exc
+    # Return the combined summary with double newlines between sections
+    return "\n\n".join(combined_summary)
 
 # -------------------------------------------------------------------
 # Find PDFs
@@ -140,6 +214,13 @@ print("DEBUG: PDFs found:", pdf_files)
 # -------------------------------------------------------------------
 # 1. Generate summaries with caching
 # -------------------------------------------------------------------
+
+# Run MVT before starting the heavy loop
+if not run_api_mvt():
+    print("WARNING: Skipping PDF processing due to failed API Health Check.")
+    print("The script will exit successfully to allow deployment of previously completed summaries.")
+    sys.exit(0)
+
 for pdf in pdf_files:
     name = os.path.splitext(os.path.basename(pdf))[0]
     qmd_path = os.path.join(SUMMARY_DIR, f"{name}.qmd")
@@ -167,22 +248,11 @@ for pdf in pdf_files:
     except requests.exceptions.HTTPError as e:
         status = e.response.status_code if e.response is not None else None
         
-        # Now catches both Rate Limits and exhausted transient errors
         if status in (429, 502, 503, 504):
             print(f"WARNING: Gemini unavailable (HTTP {status}). Stopping further generation for now.")
             print("The script will exit successfully to allow committing any completed summaries.")
             break
         raise
-
-    # CLEANUP: Remove markdown code block backticks if Gemini added them
-    summary_body = summary_body.strip()
-    if summary_body.startswith("```"):
-        lines = summary_body.split('\n')
-        if lines[0].startswith("```"):
-            lines = lines[1:]
-        if lines[-1].startswith("```"):
-            lines = lines[:-1]
-        summary_body = '\n'.join(lines).strip()
 
     # Create the proper Quarto YAML header
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
