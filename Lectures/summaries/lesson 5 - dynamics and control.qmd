@@ -65,24 +65,25 @@ This lecture focuses on the dynamic behavior of switched-mode converters over ti
 *   **Goal:** Linearize the dynamic model around the steady-state operating point.
 *   **General Model:** The averaged dynamic models are time-invariant but generally nonlinear due to product terms (e.g., $v(t) \cdot d(t)$).
 *   **Signal Decomposition:** Any averaged signal $\bar{x}(t)$ can be written as the sum of its steady-state value $X$ and a small perturbation $\hat{x}(t)$: $\bar{x}(t) = X + \hat{x}(t)$.
-*   **Steady-State Point Calculation:**
-    *   Set the time derivatives in the dynamic equations to zero.
-    *   Substitute steady-state values (e.g., $\bar{v}(t) = V$, $\bar{i}(t) = I$, $d(t) = D$).
-    *   For the Buck converter example:
-        *   $0 = I_L - V/R \implies I_L = V/R$
-        *   $0 = V_g - V(1-D) \implies V = V_g / (1-D)$ (This is incorrect based on the lecture's equations for Buck)
-        *   *Correction based on Lecture Equation (15):*
-            *   $C \frac{d\bar{v}}{dt} = \bar{i}_L - \frac{\bar{v}}{R} \implies 0 = I_L - \frac{V}{R}$
-            *   $L \frac{d\bar{i}_L}{dt} = \bar{v}_g - \bar{v}(1-D) \implies 0 = V_g - V(1-D)$. This leads to $V = V_g / (1-D)$.
-            *   *Revisiting Lecture Equation (15) derivation for Buck:* The lecture's Buck model equations are:
-                *   $C \frac{dv}{dt} = i_L - \frac{v}{R}$
-                *   $L \frac{di_L}{dt} = v_g - v(1-d)$
-            *   Setting derivatives to zero and using $v_g=V_g$, $d=D$, $v=V$, $i_L=I_L$:
-                *   $0 = I_L - V/R$
-                *   $0 = V_g - V(1-D)$ which implies $V = V_g / (1-D)$. This appears to be the voltage across the capacitor $v(t)$.
-            *   *Looking at lecture steady state results (21):* $V = D V_g / R$ is incorrect for a standard Buck. The standard Buck voltage gain is $V_{out} = D V_{in}$. If $R$ is the load resistance, then $I_{out} = V_{out}/R = D V_{in}/R$. The lecture equations might have a different configuration or sign convention. Let's assume the lecture equations lead to:
-                *   $V = D V_g$ (Output voltage)
-                *   $I_L = V/R = D V_g / R$ (Output current, assuming $i(t)$ is output current)
+### Steady-State Point Calculation:
+
+*   Set the time derivatives in the dynamic equations to zero.
+*   Substitute steady-state values (e.g., $\bar{v}(t) = V$, $\bar{i}(t) = I$, $d(t) = D$).
+*   For the Buck converter example:
+    *   $0 = I_L - V/R \implies I_L = V/R$
+    *   $0 = V_g - V(1-D) \implies V = V_g / (1-D)$ (This is incorrect based on the lecture's equations for Buck)
+    *   *Correction based on Lecture Equation (15):*
+        *   $C \frac{d\bar{v}}{dt} = \bar{i}_L - \frac{\bar{v}}{R} \implies 0 = I_L - \frac{V}{R}$
+        *   $L \frac{d\bar{i}_L}{dt} = \bar{v}_g - \bar{v}(1-D) \implies 0 = V_g - V(1-D)$. This leads to $V = V_g / (1-D)$.
+        *   *Revisiting Lecture Equation (15) derivation for Buck:* The lecture's Buck model equations are:
+            *   $C \frac{dv}{dt} = i_L - \frac{v}{R}$
+            *   $L \frac{di_L}{dt} = v_g - v(1-d)$
+        *   Setting derivatives to zero and using $v_g=V_g$, $d=D$, $v=V$, $i_L=I_L$:
+            *   $0 = I_L - V/R$
+            *   $0 = V_g - V(1-D)$ which implies $V = V_g / (1-D)$. This appears to be the voltage across the capacitor $v(t)$.
+        *   *Looking at lecture steady state results (21):* $V = D V_g / R$ is incorrect for a standard Buck. The standard Buck voltage gain is $V_{out} = D V_{in}$. If $R$ is the load resistance, then $I_{out} = V_{out}/R = D V_{in}/R$. The lecture equations might have a different configuration or sign convention. Let's assume the lecture equations lead to:
+            *   $V = D V_g$ (Output voltage)
+            *   $I_L = V/R = D V_g / R$ (Output current, assuming $i(t)$ is output current)
 *   **Small-Signal Analysis:**
     *   Substitute $\bar{x}(t) = X + \hat{x}(t)$ into the dynamic equations.
     *   Neglect terms that are products of small signals (e.g., $\hat{v}(t)\hat{d}(t)$).
